@@ -1,0 +1,113 @@
+hr {
+  margin-top: 40px;
+  margin-bottom: 40px;
+}
+
+.jumbotron p {
+  font-size: 16px;
+  font-family: arial;
+}
+
+.staff-info td.header{
+	width: 20%;
+}
+.staff-info td.value{
+	width: 25%;
+}
+
+.bs-example:after {
+	content: "staff information";
+}
+
+.edit-user-btn {
+	position: absolute;
+	right: 5px;
+	top: 5px;
+	cursor: pointer;
+	display: none;
+}
+
+.edit-user-btn:hover {
+	color: rgb(70, 124, 70);
+}
+
+.staff-info:hover .edit-user-btn {
+	display: block;
+}
+
+.notification-center {
+  margin: auto;
+  position: fixed;
+  left: 0; right: 0; top: 20px;
+  height: 50px;
+  width: 75%;
+  z-index: 9999;
+  text-align: center;
+  opacity: 0.9;
+  box-shadow: 10px 10px 5px #888888;
+}
+
+.modal-content.user-info:after{
+
+}
+
+.ts-container{
+	padding: 10px;
+}
+
+.bs-timesheet{
+	margin-top: 10px;
+}
+
+.bs-timesheet .ts-submit{
+	position: absolute;
+	right: 15px;
+}
+
+.bs-timesheet .ts-submit.affix{
+	position: fixed;
+	bottom: 6px;
+	right: 26px;
+}
+
+.bs-timesheet .ts-submit .savebtn{
+	width: 100px;
+}
+
+.bs-timesheet .ts-submit.affix .savebtn{
+	width: 150px;
+	opacity: .6;
+}
+.bs-timesheet .ts-submit.affix .savebtn:hover{
+	opacity: .9;
+}
+
+.ts-container #ts-table{
+	margin-top: 10px;
+	font-family: meiryo, Arial;
+}
+
+#ts-table td.day-6{
+	color: blue;
+}
+#ts-table td.day-0{
+	color: red;
+}
+
+#ts-table td:hover span.footable-toggle{
+	color: rgb(90, 113, 203);
+}
+
+#ts-table td .time-input{
+	width: 100%; height: 100%; border: none;
+}
+
+.footable.breakpoint > tbody > tr.footable-row-detail {
+	background: #F3F7F7;
+}
+
+#timemonth .time-load{
+	position: absolute;
+	left: -15px;
+	top: 8px;
+}

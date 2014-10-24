@@ -1,0 +1,231 @@
+<!doctype html>
+<html ng-app="scotchTodo">
+<head>
+	<title>Node Authentication</title>
+	<link rel="stylesheet" href="/lib/bootstrap-3.2.0/css/bootstrap.css">
+	<link rel="stylesheet" href="/lib/bootstrap-3.2.0/css/docs.min.css">
+	<link rel="stylesheet" href="/lib/font-awesome-4.2.0/css/font-awesome.css">
+	<link rel="stylesheet" href="/lib/eonasdan-bootstrap-datetimepicker/build/css/bootstrap-datetimepicker.css" />
+	<link rel="stylesheet" href="/lib/footable/css/footable.core.css">
+	<link rel="stylesheet" href="/lib/footable/css/footable.standalone.css">
+	
+	<link rel="stylesheet" href="css/main.css">
+	<style>
+		body { padding-top:20px; }
+	</style>
+	
+	
+	<!-- MEAN stack app-->
+	<script src="//ajax.googleapis.com/ajax/libs/jquery/2.0.3/jquery.min.js"></script><!-- load jquery -->
+	<script src="//ajax.googleapis.com/ajax/libs/angularjs/1.2.4/angular.min.js"></script><!-- load angular 1.2.4 -->
+
+	<script src="/lib/bootstrap-3.2.0/js/bootstrap.js"></script> <!-- load up bootstrap js -->
+	<script src="/lib/footable/js/footable.js"></script>
+	
+	<script type="text/javascript" src="/lib/moment/moment-with-locales.js"></script>
+	<script type="text/javascript" src="/lib/eonasdan-bootstrap-datetimepicker/build/js/bootstrap-datetimepicker.js"></script>
+	
+	<script src="js/controllers/functions.js"></script>
+	<script src="js/controllers/main.js"></script> <!-- load up our controller -->
+	<script src="js/services/todos.js"></script> <!-- load our todo service -->
+	<script src="js/core.js"></script><!-- load our main application -->
+	
+</head>
+<body ng-controller="mainController">
+
+
+<!-- message  -->
+<div id="messages" class="notification-center alert alert-success" ng-show="formData.user.updateSuccess">{{ formData.user.updateSuccess }}</div>
+<div id="" class="notification alert alert-error" ng-show="formData.user.updateFail">{{ formData.user.updateFail }}</div>
+
+<div class="jumbotron text-center">
+	<h1><span class="fa fa-lock"></span> Node Authentication</h1>
+
+	<p>Login or Register with:</p>
+
+	<a href="/login" class="btn btn-default"><span class="fa fa-user"></span> Local Login</a>
+	<a href="/signup" class="btn btn-default"><span class="fa fa-user"></span> Local Signup</a>
+	<a href="/auth/facebook" class="btn btn-primary"><span class="fa fa-facebook"></span> Facebook</a>
+	<a href="/auth/twitter" class="btn btn-info"><span class="fa fa-twitter"></span> Twitter</a>
+	<a href="/auth/google" class="btn btn-danger"><span class="fa fa-google-plus"></span> Google+</a>
+</div>
+
+
+
+
+<div class="container">
+
+	<div class="page-header text-center">
+		<h1><span class="fa fa-anchor"></span> Profile Page</h1>
+		<a href="/logout" class="btn btn-default btn-sm">Logout</a>
+	</div>
+	
+	<div class="jumbotron">
+      <div class="container">
+      	<div class="notification alert alert-success">
+	       <strong>Oh snap!</strong> Change a few things up and try submitting again.
+	    </div>
+        <h1>Hello, Timesheet!</h1>
+        <!-- Button trigger modal -->
+
+
+
+        <!-- <p><a class="btn btn-primary btn-lg" role="button">Learn more »</a></p> -->
+        <div class="bs-example staff-info">
+        	<i class="edit-user-btn fa fa-edit fa-2x" data-toggle="modal" data-target="#myModal"></i>
+	        <table class="table">
+	          <tr>
+	          	<td class="header">Name</td>
+	          	<td class="value"> {{formData.user.fullname}}</td>
+	          	<td class="header">Working Site</td>
+	          	<td class="value">Fujixerox</td>
+	          </tr>
+	          <tr>
+	          	<td class="header">Code</td>
+	          	<td class="value"></td>
+	          	<td class="header">Project</td>
+	          	<td class="value"></td>
+	          </tr>
+	          <tr>
+	          	<td class="header">Dept</td>
+	          	<td class="value"></td>
+	          	<td class="header">Timesheet of month</td>
+	          	<td class="value">
+	                
+	          	</td>
+	          </tr>
+	          <tr>
+	          	<td class="header">Start from</td>
+	          	<td class="">
+	          	
+	          		
+	          	  <div id="timemonth" class="input-group date form_datetime" data-date=""  data-link-format="YYYY-MM" data-link-field="dtp_input1">
+	          	  	<i class="time-load fa fa fa-spinner fa-spin" ng-show="loadingTimeData"></i>
+                    <input ng-change="getTimeData()" class="form-control" size="10" type="text" value="" data-date-format="YYYY-MM" ng-model="monthstr">
+					<span class="input-group-addon"><span class="glyphicon glyphicon-th"></span></span>
+                  </div>
+	          	  <input type="hidden" id="dtp_input1" value="" />
+	          	
+	          	</td>
+	          	<td class="header">Standard Working Hour</td>
+	          	<td class="value"></td>
+	          </tr>
+	          <tr>
+	          	<td class="header">Contract Type</td>
+	          	<td class="value"></td>
+	          	<td class="header">Lunch time</td>
+	          	<td class="value"></td>
+	          </tr>
+	        </table>
+	    </div>
+	    
+        
+      </div>
+      
+    </div>
+
+</div>
+
+<!-- Modal -->
+<div class="modal fade" id="myModal" tabindex="-1" role="dialog" aria-labelledby="myModalLabel" aria-hidden="true">
+  <div class="modal-dialog">
+    <div class="modal-content user-info">
+      <div class="modal-header">
+        <h4 class="modal-title" id="myModalLabel">UPDATE {{formData.user.local.username}}</h4>
+      </div>
+      
+      
+      
+      <form role="form" ng-submit="updateUser()">
+      
+      <div class="modal-body">
+      	
+  		  <div class="form-group">
+	      	<label for="fullname">Name</label>
+	        <input type="text" class="form-control" name="fullname" id="fullname" placeholder="Full name" ng-model="formData.user.fullname">
+	      </div>
+	      <div class="form-group">
+	        <label for="inputemail">Email</label>
+	    	<input type="email" class="form-control" id="inputemail" name="email" placeholder="Email" ng-model="formData.user.local.email" >
+	      </div>
+	    	
+      </div>
+      
+      <div class="modal-footer">
+      	<i class="fa fa fa-spinner fa-spin" ng-show="formData.user.updating"></i>
+        <button type="submit" class="btn btn-primary">Save</button>
+      </div>
+      
+      </form>
+      
+    </div>
+  </div>
+</div>
+
+
+<div class="ts-container">
+  
+  
+  
+  <div class="bs-timesheet bs-example">
+  	
+    <!-- TAB  -->
+	    <ul class="nav nav-tabs" id="myTab">
+		  <li class="active"><a href="#home" data-toggle="tab">Time</a></li>
+		  <li><a href="#profile" data-toggle="tab">Profile</a></li>
+		  <li><a href="#messages" data-toggle="tab">Messages</a></li>
+		  <li><a href="#settings" data-toggle="tab">Settings</a></li>
+		  <div class="ts-submit">
+		  	<i class="fa fa fa-spinner fa-spin" ng-show="savingTimeData"></i>
+		  	<button type="button" class="savebtn btn btn-success" ng-click="saveTimeData()">Save</button>
+		  </div>
+		</ul>
+		
+		<div class="tab-content">
+		  <div class="tab-pane active" id="home">
+		  <!-- Timesheet Table -->
+<!-- 			  <table id="ts-table" class="timesheet table table-striped">
+		      	
+		      </table> -->
+		      <table id="ts-table" class="">
+		      	<thead>
+		      	  <th ng-repeat="field in timeDatas.fields" data-hide="{{ field.hide ? 'all' : '' }}" ng-style="field.colStyle" data-type="ngele" >
+		      	  	{{field.name}}
+		      	  </th>
+		      	</thead>
+		      	<tr ng-repeat="timeData in timeDatas.data" on-last-repeat ng-class="cellClass()">
+				  <td ng-repeat="field in timeDatas.fields" ng-style="field.style" ngInit="dayClass = 'day-' + timeData._wday"
+				  		ng-class="cellClass( field.name, timeData._wday)" >
+				  	<span ng-if="field.fieldType === 'label'" >{{timeData[field.name]}}</span>
+				  	<input ng-if="field.fieldType === 'input'" type="text" ng-model="timeData[field.name]" ng-class="field.inputClass" style="" />
+				  	<textarea ng-if="field.fieldType === 'textarea'" ng-model="timeData[field.name]" style="width: 100%; height: 97%; border: none;"></textarea>
+				  	<span ng-if="field.fieldType === 'textarea'" >{{timeData[field.name]}}</span>
+				  </td>
+				</tr>
+		      
+			  </table>
+		  </div>
+		  <div class="tab-pane" id="profile">
+
+		  </div>
+		  <div class="tab-pane" id="messages1">...</div>
+		  <div class="tab-pane" id="settings">...</div>
+		</div>
+	
+	<script>
+	  $(function () {
+	    $('#myTab a:first').tab('show');
+	  });
+	</script>
+	
+		<!-- <input id="spinner" name="spinner" value="08:30 PM"> -->
+	
+  </div><!-- end bs-timesheet-->
+  
+</div><!-- end ts-container-->
+
+<!-- Time view-->
+
+
+</body>
+</html>
