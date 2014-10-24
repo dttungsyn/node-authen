@@ -110,6 +110,8 @@ angular.module('todoController', [])
 						$scope.timeDatas = initMonthData(moment( $scope.monthstr, "YYYY-MM" ));
 					}
 					
+					$scope.originalData = JSON.parse(JSON.stringify($scope.timeDatas.data));
+					
 					//add today info
 					var today = moment().date();
 					$scope.timeDatas.data[today-1].today = true;
@@ -124,12 +126,13 @@ angular.module('todoController', [])
 				
 		}
 		
+		//calculate cell class
 		$scope.cellClass = function(fieldName, _wday){
 			//return field.name == '曜日' ? 'day-' + _wday : field.name == '日' ? 'date-' + _wday : '';
 			var classes = [];
 			if (fieldName == '曜日'){
 				classes.push('day-' + _wday);
-			} 
+			}
 			else if (fieldName == '日'){
 				if (_wday == 0) 
 					classes.push('bg-danger'); //Sunday
@@ -138,6 +141,17 @@ angular.module('todoController', [])
 			}
 			
 			return classes
+		}
+		
+		$scope.inputClass = function(i, field){
+			var classes = [];
+			
+			if (field.inputClass) classes.push(field.inputClass);
+			
+			if ($scope.timeDatas.data[i][field.name] !== $scope.originalData[i][field.name]){
+				classes.push("diff");
+			}
+			return classes;
 		}
 		
 		// Save Time Data
