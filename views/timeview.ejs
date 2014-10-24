@@ -193,7 +193,7 @@
 		      	  	{{field.name}}
 		      	  </th>
 		      	</thead>
-		      	<tr ng-repeat="timeData in timeDatas.data" on-last-repeat ng-class="cellClass()">
+		      	<tr ng-repeat="timeData in timeDatas.data" on-last-repeat ng-class="{'tr-today': timeData.today}">
 				  <td ng-repeat="field in timeDatas.fields" ng-style="field.style" ngInit="dayClass = 'day-' + timeData._wday"
 				  		ng-class="cellClass( field.name, timeData._wday)" >
 				  	<span ng-if="field.fieldType === 'label'" >{{timeData[field.name]}}</span>

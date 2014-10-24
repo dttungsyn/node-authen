@@ -110,6 +110,11 @@ angular.module('todoController', [])
 						$scope.timeDatas = initMonthData(moment( $scope.monthstr, "YYYY-MM" ));
 					}
 					
+					//add today info
+					var today = moment().date();
+					$scope.timeDatas.data[today-1].today = true;
+					
+					//end loading
 					$scope.loadingTimeData = false;
 				})
 				

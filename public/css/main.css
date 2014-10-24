@@ -87,6 +87,10 @@ hr {
 	font-family: meiryo, Arial;
 }
 
+#ts-table tr.tr-today{
+	background: rgba(147, 200, 237, 0.2);
+}
+
 #ts-table td.day-6{
 	color: blue;
 }
