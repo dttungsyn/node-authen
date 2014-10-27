@@ -33,7 +33,7 @@ var defaultData = [
 	{
 		"header" : "休日",
 		"defaultVal": "",
-		"hide" : true
+		"hide" : "all"
 	},
 	{
 		"header" : "出社",
@@ -68,17 +68,17 @@ var defaultData = [
 	{
 		"header" : "有給休暇",
 		"defaultVal": "",
-		"hide" : true
+		"hide" : "all"
 	},
 	{
 		"header" : "実働",
 		"defaultVal": "",
-		"hide" : true
+		"hide" : "all"
 	},
 	{
 		"header" : "平日無給",
 		"defaultVal": "",
-		"hide" : true
+		"hide" : "all"
 	},
 	{
 		"header" : "平日通常残業",
@@ -87,7 +87,7 @@ var defaultData = [
 	{
 		"header" : "備考/Note (休みの種別など記入）",
 		"defaultVal": "",
-		"hide" : true,
+		"hide" : "phone,tablet",//phone,tablet
 		"fieldType" : "textarea",
 		"style": {
 			"padding": 0

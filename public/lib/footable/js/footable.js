@@ -31,7 +31,11 @@
                 },
                 //tungdt
                 ngele: function(cell){
-                	return $(cell).find("[ng-model]");
+                	// if ng-element data not exist, save to cell data ng-models
+                	if (!$(cell).data("ng-models")){
+                		$(cell).data("ng-models", $(cell).find("> [ng-model]") );
+                	}
+                	return $(cell).data("ng-models");	//return cell data ng-models
                 }
             },
             addRowToggle: true,
@@ -626,7 +630,18 @@
                     selector += ', > thead > tr[data-group-row="true"] > th[data-group="' + data.group + '"]';
                     var $column = $table.find(selector).add(this);
                     if (breakpointName !== '') {
-                      if (data.hide[breakpointName] === false) $column.addClass('footable-visible').show();
+                      if (data.hide[breakpointName] === false){
+                    	  //$column.addClass('footable-visible').show();
+                    	  //tungdt
+                    	  //recover ng-model element when show this column
+                    	  $column.each(function(){
+                    		  var cell = $(this);
+                    		  if ( cell.data("ng-models") ){
+                    			  cell.append( cell.data("ng-models") );
+                    		  }
+                    		  cell.addClass('footable-visible').show();
+                    	  })
+                      }
                       else $column.removeClass('footable-visible').hide();
                     }
 

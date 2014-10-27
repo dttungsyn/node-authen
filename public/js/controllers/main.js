@@ -113,8 +113,10 @@ angular.module('todoController', [])
 					$scope.originalData = JSON.parse(JSON.stringify($scope.timeDatas.data));
 					
 					//add today info
-					var today = moment().date();
-					$scope.timeDatas.data[today-1].today = true;
+					var today = moment();
+					if ( today.format("YYYY-MM") == $scope.monthstr ){
+						$scope.timeDatas.data[ today.date() - 1 ].today = true;
+					}
 					
 					//end loading
 					$scope.loadingTimeData = false;
@@ -143,6 +145,9 @@ angular.module('todoController', [])
 			return classes
 		}
 		
+		// create input class for a cell 
+		// i: index of day
+		// field: column information
 		$scope.inputClass = function(i, field){
 			var classes = [];
 			
@@ -160,6 +165,10 @@ angular.module('todoController', [])
 			//show saving pin
 			$scope.savingTimeData = true;
 			
+			//clear today info before save to database
+			var today = moment();
+			delete $scope.timeDatas.data[today.date()-1].today ;
+			
 			$http.post('/api/savetimedata', {
 				"monthstr": $scope.monthstr,
 				"data"	  : $scope.timeDatas.data,
@@ -173,6 +182,14 @@ angular.module('todoController', [])
             		$scope.formData.user.updateSuccess = null;
             		$scope.$apply();
             	}, 5000);
+            	
+            	//add today info
+				if ( today.format("YYYY-MM") == $scope.monthstr ) $scope.timeDatas.data[today.date()-1].today = true;
+            	
+				//update origin data to the latest
+				$scope.originalData = {};
+				$scope.originalData = JSON.parse(JSON.stringify($scope.timeDatas.data));
+				
 				console.log(data)
 			})
 			
@@ -182,5 +199,8 @@ angular.module('todoController', [])
 	        });
 		}
 		
+		$scope.isToday = function(timeData){
+			
+		}
 		
 	});
