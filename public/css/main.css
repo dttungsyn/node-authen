@@ -55,8 +55,13 @@ hr {
 	padding: 10px;
 }
 
-.bs-timesheet{
+.bs-timesheet.bs-example{
 	margin-top: 10px;
+	margin-bottom: 35px;
+}
+
+.bs-timesheet.bs-example:after{
+	content: "Time Table";	
 }
 
 .bs-timesheet .ts-submit{
@@ -76,10 +81,10 @@ hr {
 
 .bs-timesheet .ts-submit.affix .savebtn{
 	width: 150px;
-	opacity: .6;
+	opacity: .7;
 }
 .bs-timesheet .ts-submit.affix .savebtn:hover{
-	opacity: .9;
+	opacity: .95;
 }
 
 .ts-container #ts-table{

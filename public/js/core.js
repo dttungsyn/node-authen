@@ -3,7 +3,7 @@
  */
 // js/core.js
 
-angular.module('scotchTodo', ['todoController', 'todoService']);
+angular.module('scotchTodo', ['todoController', 'todoService', 'nvd3ChartDirectives']);
 
 (function($){
 $("document").ready(function(){

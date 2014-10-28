@@ -94,7 +94,7 @@ angular.module('todoController', [])
 		}
 		
 		// get Time data after set month
-		$scope.getTimeData = function() {
+		$scope.getTimeData = function(monthval) {
 			
 			//show loading pin
 			$scope.loadingTimeData = true;
@@ -145,7 +145,7 @@ angular.module('todoController', [])
 			return classes
 		}
 		
-		// create input class for a cell 
+		// create input class for a cell input
 		// i: index of day
 		// field: column information
 		$scope.inputClass = function(i, field){
