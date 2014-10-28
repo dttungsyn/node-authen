@@ -6,7 +6,7 @@ angular.module('todoController', [])
 	.directive('onLastRepeat', function() {
         return function(scope, element, attrs) {
             if (scope.$last) setTimeout(function(){
-                console.log(scope);
+                //console.log(scope);
                 makeTimeTable();
                 //scope.loadingTimeData = false;
             }, 5);
