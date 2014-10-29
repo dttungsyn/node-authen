@@ -153,6 +153,7 @@ function initMonthData( mmObj ){
 	return rs;
 }
 
+// after set month
 function makeTimeTable(){
 	/*
      * fooTable
