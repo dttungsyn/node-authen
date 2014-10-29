@@ -80,7 +80,7 @@ hr {
 }
 
 .bs-timesheet .ts-submit.affix .savebtn{
-	width: 150px;
+	width: 100px;
 	opacity: .7;
 }
 .bs-timesheet .ts-submit.affix .savebtn:hover{
