@@ -11,6 +11,10 @@
 <script>
 
 function MyCtlr($scope){
+	
+	var fpttime = window.fpttime || {};
+	window.fpttime = fpttime;
+	
 	nv.addGraph(function() {
 	  var chart = nv.models.discreteBarChart()
 	      .x(function(d) { return d.label ;})    //Specify the data accessors.
@@ -29,13 +33,22 @@ function MyCtlr($scope){
 	  
 	  $scope.$watch(function(scope) { return scope.$parent.timeDatas.data ; },
 	      function() {
+	      	var timedata = scope.$parent.timeDatas.data;
 	      	console.log("Time data changed!");
+	      	
+	      	//update chart
 	      	setTimeout(function(){
-	      		chart.update();
+	      		/*
+				  d3.select('#mychart svg')
+									.datum(exampleData())
+									.call(chart);*/
+				  
 	      	}, 500);
 	      	
 	      }
 	  );
+	  
+	  fpttime.chart = chart;
 	
 	  return chart;
 	});

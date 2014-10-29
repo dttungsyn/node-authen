@@ -6,6 +6,15 @@
 angular.module('scotchTodo', ['todoController', 'todoService', 'nvd3ChartDirectives']);
 
 (function($){
+	
+var fpttime = window.fpttime || {};
+
+
+fpttime.version = '1.0';
+fpttime.dev = true //set false when in production
+
+window.fpttime = fpttime;
+
 $("document").ready(function(){
 	//======= init layout ==========
 	
@@ -38,6 +47,7 @@ $("document").ready(function(){
 	  else if ( $(e.target).attr("href") == "#chart" ){
 		  // update chart
 		  console.log("update chart");
+		  fpttime.chart.update();
 	  }
 	  //console.log(e.relatedTarget) // previous tab
 	})
