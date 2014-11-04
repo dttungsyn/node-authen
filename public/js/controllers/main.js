@@ -3,15 +3,7 @@
  */
 // js/controllers/main.js
 angular.module('todoController', [])
-	.directive('onLastRepeat', function() {
-        return function(scope, element, attrs) {
-            if (scope.$last) setTimeout(function(){
-                //console.log(scope);
-                makeTimeTable();
-                //scope.loadingTimeData = false;
-            }, 5);
-        };
-    })
+	
 
 	// inject the Todo service factory into our controller
 	.controller('mainController', function($scope, $http, Todos) {

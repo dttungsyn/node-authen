@@ -18,4 +18,14 @@ angular.module('todoService', [])
 				//return $http.delete('/api/todos/' + id);
 			}
 		}
-	});
+	})
+	
+	.directive('onLastRepeat', function() {
+        return function(scope, element, attrs) {	// this is link by default
+            if (scope.$last) setTimeout(function(){
+                //console.log(scope);
+                makeTimeTable();
+                //scope.loadingTimeData = false;
+            }, 5);
+        };
+    });
