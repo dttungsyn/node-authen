@@ -136,7 +136,7 @@ function initMonthData( mmObj ){
 		rs.data.push(data);
 	}
 	
-	rs.fields = defaultData.map(function( field, i ){
+	/*rs.fields = defaultData.map(function( field, i ){
 		return {
 			"name" : field.header,
 			"hide" : field.hide || false, 
@@ -148,7 +148,7 @@ function initMonthData( mmObj ){
 	})
 	.filter(function( field , i ){
 		return field.name[0] != '_';
-	});
+	});*/
 	
 	return rs;
 }

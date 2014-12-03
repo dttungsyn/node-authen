@@ -220,10 +220,16 @@ module.exports = function(app, passport) {
 			if (!user) {
 				return res.json(req.flash('loginMessage'));
 			}
+			
+			var data = {
+				"username" : req.user.local.username,
+				"monthStr" : req.body.monthstr,
+				"data"	   : req.body.data
+			};
 
 			//save data & return success
-			TimeData.updateTimeData(req.body, function(rs) {
-				res.json(rs);
+			TimeData.updateTimeData(data, function(rs) {
+				return res.json(rs);
 			})
 
 		})(req, res, next);
@@ -237,7 +243,7 @@ module.exports = function(app, passport) {
 		res.json(user);
 	})
 
-	// Get time data
+	// Get time data TODO
 	app.post('/api/timedata', isLoggedInAPI, function(req, res) {
 
 		console.log(req.body.monthstr);
@@ -245,7 +251,7 @@ module.exports = function(app, passport) {
 		TimeData.findOne({
 			"username" : req.user.local.username,
 			"monthStr" : req.body.monthstr
-		}, function(err, timedata) {
+		}).populate("fieldset").exec(function(err, timedata) {
 			if (err) {
 				return res.json({
 					"success" : false,
@@ -253,20 +259,37 @@ module.exports = function(app, passport) {
 				});
 
 			}
+			
+			//var found = timeData ? true: false;
+			
+			
 
 			// not found
 			if (!timedata) {
-				return res.json({
-					"success" : false,
-					"message" : "not found!"
+				console.log("not found, get fields");
+				//get fields
+				TimeData.FieldSet.findOne(function(err, fieldset){
+					var data = err? {} : {"fieldset": fieldset.fields};
+					console.log(data);
+					return res.json({
+						"success" : false,
+						"message" : "not found!",
+						"timedata" : data
+					})
+					
+				});
+				
+				
+			}
+			else {
+				console.log(timedata.fieldset.fields);
+				//timedata.fields = timedata.fields.fields;
+				res.json({
+					"success" : true,
+					"message" : "",
+					"timedata" : timedata
 				})
 			}
-
-			res.json({
-				"success" : true,
-				"message" : "",
-				"timedata" : timedata
-			})
 
 			// time data found
 
@@ -298,64 +321,16 @@ module.exports = function(app, passport) {
 	// Add / Update time data
 	app.post('/api/savetimedata', isLoggedInAPI, function(req, res) {
 
-		TimeData.findOne({
+		var data = {
 			"username" : req.user.local.username,
-			"monthStr" : req.body.monthstr
-		}, function(err, timedata) {
-			if (err) {
-				return res.json({
-					"success" : false,
-					"message" : "interal error!"
-				});
-
-			}
-
-			// not found
-			if (!timedata) {
-				//add new
-				var newTimeData = new TimeData();
-				newTimeData.username = req.user.local.username;
-				newTimeData.monthStr = req.body.monthstr;
-				newTimeData.fields = req.body.fields;
-				newTimeData.data = req.body.data;
-
-				newTimeData.save(function(err) {
-					if (err) {
-						return res.json({
-							"success" : false,
-							"message" : "Db save error"
-						})
-					}
-
-					return res.json({
-						"success" : true,
-						"message" : "Add new Time Data Success!"
-					})
-				})
-			}
-
-			else {
-				timedata.fields = req.body.fields;
-				timedata.data = req.body.data;
-
-				timedata.save(function(err) {
-					if (err) {
-						return res.json({
-							"success" : false,
-							"message" : "Db save error"
-						})
-					}
-
-					return res.json({
-						"success" : true,
-						"message" : "Update Time Data Success!"
-					})
-				})
-			}
-
-			// time data found
-
-		});
+			"monthStr" : req.body.monthstr,
+			"data"	   : req.body.data
+		};
+		
+		TimeData.updateTimeData(data, function(json){
+			return res.json(json);
+		})
+		
 	})
 
 	// =============================================================================

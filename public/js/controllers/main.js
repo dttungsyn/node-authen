@@ -96,15 +96,17 @@ angular.module('todoController', [])
 					console.log( data );
 					if ( data.success ){
 						$scope.timeDatas.data  = data.timedata.data;
-						$scope.timeDatas.fields = data.timedata.fields;
+						$scope.timeDatas.fields = data.timedata.fieldset.fields;
 					}
 					else {
-						$scope.timeDatas = initMonthData(moment( $scope.monthstr, "YYYY-MM" ));
+						$scope.timeDatas = initMonthData(moment( $scope.monthstr, "YYYY-MM" ));	//initMonthData: functions.js
+						if (data.timedata.fieldset) $scope.timeDatas.fields = data.timedata.fieldset;	//get fields from server if possible
 					}
 					
+					//save originalData to detect change
 					$scope.originalData = JSON.parse(JSON.stringify($scope.timeDatas.data));
 					
-					//add today info
+					//add today info timedata
 					var today = moment();
 					if ( today.format("YYYY-MM") == $scope.monthstr ){
 						$scope.timeDatas.data[ today.date() - 1 ].today = true;
@@ -162,9 +164,9 @@ angular.module('todoController', [])
 			delete $scope.timeDatas.data[today.date()-1].today ;
 			
 			$http.post('/api/savetimedata', {
-				"monthstr": $scope.monthstr,
-				"data"	  : $scope.timeDatas.data,
-				"fields"  : $scope.timeDatas.fields
+				"monthstr": $scope.monthstr
+				, "data"	  : $scope.timeDatas.data
+				//, "fields"  : $scope.timeDatas.fields
 			})	// monthstr: 2014-01
 			.success( function ( data ){
 				$scope.savingTimeData = false;

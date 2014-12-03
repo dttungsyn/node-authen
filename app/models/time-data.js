@@ -1,11 +1,14 @@
+'use strict'
+
 /**
  * time-data model
  */
 
 var mongoose = require('mongoose');
+var Schema = mongoose.Schema;
 
-// define the schema for time-data model
-var timeDataSchema = mongoose.Schema({
+// ============ define the schema for time-data model ==========
+var TimeDataSchema = new Schema({
 
 	username : String,
 
@@ -13,14 +16,14 @@ var timeDataSchema = mongoose.Schema({
 		type : String
 	},
 
-	fields : [],
+	fieldset : { type: mongoose.Schema.Types.ObjectId, ref: 'fieldset' },
 
 	data : []
 
 });
 
 // add new or update time data
-timeDataSchema.statics.updateTimeData = function(data, callback) {
+TimeDataSchema.statics.updateTimeData = function(data, callback) {
 	var username = data.username;
 	var monthStr = data.monthStr;
 	this.findOne({
@@ -40,24 +43,31 @@ timeDataSchema.statics.updateTimeData = function(data, callback) {
 			timedata = new TimeData();
 			timedata.username = data.username;
 			timedata.monthStr = data.monthStr;
-			timedata.data = [ JSON.parse(data.data) ];
-			timedata.save(function(err) {
-				if (err)
-					return callback({
-						"status" : 1,
-						"message" : "save error!"
-					});
+			timedata.data = data.data;
+			
+			//add default fieldset
+			FieldSet.findOne(function(err, fieldset){
+				if (!err) timedata.fieldset = fieldset._id;
+				
+				timedata.save(function(err) {
+					if (err)
+						return callback({
+							"status" : 1,
+							"message" : "save error!"
+						});
 
-				callback({
-					"status" : 0,
-					"message" : "Added successful!"
-				});
-			})
+					callback({
+						"status" : 0,
+						"message" : "Added successful!"
+					});
+				})
+			});
+			
 		}
 
 		else {
 			// update current data
-			timedata.data = [ JSON.parse(data.data) ];
+			timedata.data = data.data;
 			timedata.save(function(err) {
 				if (err)
 					return callback({
@@ -75,5 +85,24 @@ timeDataSchema.statics.updateTimeData = function(data, callback) {
 	})
 }
 
+
+
+var TimeData = mongoose.model('time-data', TimeDataSchema);
+
+
+//=========== define the schema for fields model =========
+var FieldSetSchema = new Schema({
+
+	_id : mongoose.Schema.Types.ObjectId,
+
+	fields : []
+
+});
+var FieldSet = mongoose.model('fieldset', FieldSetSchema);
+
+
+//
+TimeData.FieldSet = FieldSet;
+
 // create the model for users and expose it to our app
-var TimeData = module.exports = mongoose.model('time-data', timeDataSchema);
+module.exports = TimeData
