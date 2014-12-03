@@ -34,7 +34,7 @@ function MyCtlr($scope){
 	  $scope.$watch(function(scope) { return scope.$parent.timeDatas.data ; },
 	      function() {
 	      	var timedata = $scope.$parent.timeDatas.data;
-	      	console.log("Time data changed!");
+	      	console.log( "Time data changed!" );
 	      	
 	      	//update chart
 	      	setTimeout(function(){
