@@ -18,7 +18,15 @@ var TimeDataSchema = new Schema({
 
 	fieldset : { type: mongoose.Schema.Types.ObjectId, ref: 'fieldset' },
 
-	data : []
+	data : [],
+	
+	state: Number
+	/*
+	 * 0: unapply
+	 * 1: applied  -  Leader can see to approve
+	 * 2: approved -  Admin can see to approve, user can not modify
+	 * 3: approved 2 - done, leader can not modify
+	 */
 
 });
 

@@ -13,7 +13,7 @@
 	
 	<link rel="stylesheet" href="css/main.css ">
 	<style>
-		body { padding-top:20px;}
+		body { padding-top:0px;}
 	</style>
 	
 	
@@ -47,17 +47,7 @@
 <div id="messages" class="notification-center alert alert-success" ng-show="formData.user.updateSuccess">{{ formData.user.updateSuccess }}</div>
 <div id="" class="notification alert alert-error" ng-show="formData.user.updateFail">{{ formData.user.updateFail }}</div>
 
-<div class="jumbotron text-center">
-	<h1><span class="fa fa-lock"></span> Node Authentication</h1>
-
-	<p>Login or Register with:</p>
-
-	<a href="/login" class="btn btn-default"><span class="fa fa-user"></span> Local Login</a>
-	<a href="/signup" class="btn btn-default"><span class="fa fa-user"></span> Local Signup</a>
-	<a href="/auth/facebook" class="btn btn-primary"><span class="fa fa-facebook"></span> Facebook</a>
-	<a href="/auth/twitter" class="btn btn-info"><span class="fa fa-twitter"></span> Twitter</a>
-	<a href="/auth/google" class="btn btn-danger"><span class="fa fa-google-plus"></span> Google+</a>
-</div>
+<% include partials/navheader.ejs %>
 
 <% include partials/userinfo.ejs %>
 
