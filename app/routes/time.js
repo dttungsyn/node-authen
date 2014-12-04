@@ -3,6 +3,7 @@
  */
 
 var TimeData = require("../models/time-data.js");
+var User = require("../models/user.js");
 module.exports = function(app, passport) {
 	
 	// Update time data, posted from excel
@@ -105,10 +106,20 @@ module.exports = function(app, passport) {
 	// used to ...
 	app.get('/timeview', isLoggedIn, function(req, res) {
 
-		console.log(req.user);
-		res.render('timeview.ejs', {
-			user : req.user
+		
+		//populate user's staffs if exist
+		User.findOne({"_id": req.user._id}).populate("staffs", "local.username").exec(function(err, user){
+			if (err) return;
+			
+			//console.log(user.staffs);
+			
+			res.render('timeview.ejs', {
+				user : user,
+				isApprover: user.staffs && user.staffs.length > 0
+			});
 		});
+		
+		
 	});
 
 }

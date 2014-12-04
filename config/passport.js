@@ -43,16 +43,21 @@ module.exports = function(passport) {
         if (username)
             username = username.toLowerCase(); // Use lower-case e-mails to avoid case-sensitive e-mail matching
 
-        //console.log(arguments[0].res);
+        //console.log( req.user );
         
         // asynchronous
         process.nextTick(function() {
-            User.findOne({ 'local.username' :  username }, function(err, user) {
+            User.findOne({ 'local.username' :  username }).exec( function(err, user) {
+            	
             	
                 // if there are any errors, return the error
                 if (err)
                     return done(err);
 
+                //console.log(user);
+                //req.user = null;
+                //console.log(user);
+                //user.local.username = "123";
 
                 // if no user is found, return the message
                 if (!user)
