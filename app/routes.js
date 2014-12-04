@@ -209,6 +209,8 @@ module.exports = function(app, passport) {
 
 	// Update time data
 	app.post('/api/timedata-with-authen', function(req, res, next) {
+		req.body = JSON.parse(req.body.data);
+		console.log(req.body.username);
 		passport.authenticate('local-login', {
 			session : false,
 			failureFlash : "Invalid username or password."
@@ -216,13 +218,12 @@ module.exports = function(app, passport) {
 			if (err) {
 				return res.json(req.flash('loginMessage'));
 			}
-
 			if (!user) {
 				return res.json(req.flash('loginMessage'));
 			}
 			
 			var data = {
-				"username" : req.user.local.username,
+				"username" : user.local.username,
 				"monthStr" : req.body.monthstr,
 				"data"	   : req.body.data
 			};
