@@ -123,8 +123,10 @@ angular.module('todoController', [])
 		}
 		
 		//calculate cell class
-		$scope.cellClass = function(fieldName, _wday){
+		$scope.cellClass = function(fieldName, index){
 			//return field.name == '曜日' ? 'day-' + _wday : field.name == '日' ? 'date-' + _wday : '';
+			
+			var _wday = moment( $scope.monthstr, "YYYY-MM" ).date(index + 1).day();
 			var classes = [];
 			if (fieldName == '曜日'){
 				classes.push('day-' + _wday);

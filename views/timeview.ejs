@@ -104,8 +104,8 @@
 		      	  </th>
 		      	</thead>
 		      	<tr ng-repeat="timeData in timeDatas.data" on-last-repeat ng-class="{'tr-today': timeData.today}" ng-init="outerIndex = $index">
-				  <td ng-repeat="field in timeDatas.fields" ng-style="field.style" ngInit="dayClass = 'day-' + timeData._wday"
-				  		ng-class="cellClass( field.name, timeData._wday)" >
+				  <td ng-repeat="field in timeDatas.fields" ng-style="field.style" ngInit=""
+				  		ng-class="cellClass( field.name, outerIndex)" >
 				  	<span ng-if="field.fieldType === 'label'" >{{timeData[field.name]}}</span>
 				  	<input ng-if="field.fieldType === 'input'" type="text" ng-model="timeData[field.name]" ng-class="inputClass(outerIndex, field)" style="" />
 				  	<textarea ng-if="field.fieldType === 'textarea'" ng-model="timeData[field.name]" ng-class="inputClass(outerIndex, field)" style="width: 100%; height: 97%; border: none;"></textarea>
