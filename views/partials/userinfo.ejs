@@ -1,3 +1,10 @@
+<style>
+.selectpicker .selfopt{
+    color: green;
+    font-style: italic;
+}    
+</style>
+
 <!-- User info container-->
 <div class="jumbotron">
   <div class="container">
@@ -60,13 +67,13 @@
         
         <% if (isApprover) {%>
         <div class="col-md-2">
-            <select multiple class="form-control">
-              <option>1</option>
-              <option>2</option>
-              <option>3</option>
-              <option>4</option>
-              <option>5</option>
+            <select class="selectpicker" data-live-search="true">
+                <option class="selfopt"><%= user.local.username%></option>
+            <% user.staffs.forEach(function(el, index) {%>
+                <option><%= el.local.username%></option>
+            <% });%>
             </select>
+            <input class="selectstaff" type="text" style="display: none;" ng-model="formData.selectingUsername" />
         </div>
         <% }%>
     </div>

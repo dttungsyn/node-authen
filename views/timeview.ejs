@@ -10,6 +10,7 @@
 	<link rel="stylesheet" href="/lib/footable/css/footable.standalone.css">
 	<link rel="stylesheet" href="/lib/angularjs-nvd3/nv.d3.css">
 	<link rel="stylesheet" href="/lib/kartik-v-bootstrap-fileinput/css/fileinput.css">
+	<link rel="stylesheet" href="/lib/bootstrap-select/css/bootstrap-select.css">
 	
 	<link rel="stylesheet" href="css/main.css ">
 	<style>
@@ -32,6 +33,9 @@
 	<script src="/lib/angularjs-nvd3/d3.js"></script>
 	<script src="/lib/angularjs-nvd3/nv.d3.js"></script>
 	<script src="/lib/angularjs-nvd3/angularjs-nvd3-directives.js"></script>
+	
+	<!--bootstrap select-->
+	<script src="/lib/bootstrap-select/js/bootstrap-select.js"></script>
 	
 	<!-- own script-->
 	<script src="js/controllers/functions.js"></script>
@@ -68,6 +72,10 @@
 		  	<i class="fa fa fa-spinner fa-spin" ng-show="savingTimeData"></i>
 		  	
 		  	<div class="btn-group">
+		  	    <button type="button" class="savebtn btn btn-primary" ng-show="formData.loginUser.local.username != formData.user.local.username" ng-click="approveTime()">
+                    <i class="fa fa-check-square-o" style="font-size: 16px;"></i>&nbsp;
+                    Approve
+                </button>
 			  	<button type="button" class="savebtn btn btn-success disabled" ng-click="applyTimeData()">
 			  		<i class="fa fa-check-circle-o"></i>&nbsp;
 			  		Apply
@@ -76,6 +84,7 @@
 			  		<i class="fa fa-floppy-o"></i>&nbsp;
 			  		Save
 			  	</button>
+			  	
 		  	</div>
 		  	
 		  </div>

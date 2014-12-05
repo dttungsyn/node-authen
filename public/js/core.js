@@ -52,5 +52,14 @@ $("document").ready(function(){
 	  //console.log(e.relatedTarget) // previous tab
 	})
 	
+	$('.selectpicker').selectpicker();
+	
+	$('select.selectpicker').on('change', function(){
+        var selected = $('.selectpicker option:selected').val();
+        $('.selectstaff').val(selected);
+        $('.selectstaff').change();
+        //console.log(selected);
+     });
+	
 })
 })(jQuery);

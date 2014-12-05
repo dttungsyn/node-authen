@@ -15,6 +15,13 @@ module.exports = function(app, passport) {
 	/// API for logged in user--------------------------------
 	
 
+	// Param
+	app.param('username', function (req, res, next, username) {
+	  req.params.username = username;
+	  console.log('CALLED ONLY ONCE');
+	  next();
+	});
+	
 	require("./routes/authen.js")(app, passport);
 	require("./routes/time.js")(app, passport);
 	require("./routes/user.js")(app, passport);

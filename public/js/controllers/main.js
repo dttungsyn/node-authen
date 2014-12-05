@@ -7,11 +7,6 @@ angular.module('todoController', [])
 
 	// inject the Todo service factory into our controller
 	.controller('mainController', function($scope, $http, Todos) {
-		$scope.formData  = {};
-		$scope.timeDatas = {
-			fields: [],
-			data: {}
-		};
 
 		// GET =====================================================================
 		// when landing on the page, get all todos and show them
@@ -51,11 +46,46 @@ angular.module('todoController', [])
 				});*/
 		};
 		
-		//TungDT
+		
+		
+		
+		
+		//TungDT ==================================================================
+		
+		//init
+		$scope.formData  = {};
+		$scope.timeDatas = {
+			fields: [],
+			data: {}
+		};
+		
 		//get user info at first
 		$http.get('/api/userdata').success(function(data) {
-			$scope.formData.user = data;
+			$scope.formData.loginUser = data;		// store login user
+			$scope.formData.user = data;	// user used to display
+			$scope.formData.selectingUsername = data.local.username;	//selecting username
         })
+        
+        
+        // Watch staff select TODO
+		$scope.$watch(function() { 
+			return $scope.formData.selectingUsername
+		},
+        function() {
+			var username = $scope.formData.selectingUsername;
+			if (!username) return;
+			console.log("select changed! " + username);
+			
+			//http get selectingUsername, assign to 
+			$http.get('/api/userdata/' + username).success(function(data) {
+				$scope.formData.user = data;	// user used to display
+				if ($scope.monthstr){
+					$scope.getTimeData();
+				}
+	        });
+			
+			
+		});
         
         
 		
@@ -68,7 +98,7 @@ angular.module('todoController', [])
 			console.log( $scope.formData.user );
 			
 			//request update
-			$http.post('/api/userdata', $scope.formData.user)
+			$http.post('/api/userdata/' + $scope.formData.user.local.username, $scope.formData.user)
 	            .success(function(data) {
 	            	$scope.formData.user.updateSuccess = data.message ;
 	            	$scope.formData.user.updating      = null;
@@ -86,12 +116,12 @@ angular.module('todoController', [])
 		}
 		
 		// get Time data after set month
-		$scope.getTimeData = function(monthval) {
+		$scope.getTimeData = function() {
 			
 			//show loading pin
 			$scope.loadingTimeData = true;
 			
-			$http.post('/api/timedata', {"monthstr": $scope.monthstr})	// monthstr: 2014-01
+			$http.post('/api/timedata/' + $scope.formData.user.local.username, {"monthstr": $scope.monthstr})	// monthstr: 2014-01
 				.success( function ( data ){
 					console.log( data );
 					if ( data.success ){
@@ -120,6 +150,46 @@ angular.module('todoController', [])
 	                console.log('Error: ' + data);
 		        });
 				
+		}
+		
+		// Save Time Data
+		$scope.saveTimeData = function(){
+			
+			//show saving pin
+			$scope.savingTimeData = true;
+			
+			//clear today info before save to database
+			var today = moment();
+			delete $scope.timeDatas.data[today.date()-1].today ;
+			
+			$http.post('/api/savetimedata/' + $scope.formData.user.local.username, {
+				"monthstr": $scope.monthstr
+				, "data"	  : $scope.timeDatas.data
+				//, "fields"  : $scope.timeDatas.fields
+			})	// monthstr: 2014-01
+			.success( function ( data ){
+				$scope.savingTimeData = false;
+				$scope.formData.user.updateSuccess = data.message ;
+                // clear the message after 5s
+            	setTimeout(function(){
+            		$scope.formData.user.updateSuccess = null;
+            		$scope.$apply();
+            	}, 5000);
+            	
+            	//add today info
+				if ( today.format("YYYY-MM") == $scope.monthstr ) $scope.timeDatas.data[today.date()-1].today = true;
+            	
+				//update origin data to the latest
+				$scope.originalData = {};
+				$scope.originalData = JSON.parse(JSON.stringify($scope.timeDatas.data));
+				
+				console.log(data)
+			})
+			
+			.error(function(data) {
+				$scope.savingTimeData = false;
+                console.log('Error: ' + data);
+	        });
 		}
 		
 		//calculate cell class
@@ -155,48 +225,5 @@ angular.module('todoController', [])
 			return classes;
 		}
 		
-		// Save Time Data
-		$scope.saveTimeData = function(){
-			
-			//show saving pin
-			$scope.savingTimeData = true;
-			
-			//clear today info before save to database
-			var today = moment();
-			delete $scope.timeDatas.data[today.date()-1].today ;
-			
-			$http.post('/api/savetimedata', {
-				"monthstr": $scope.monthstr
-				, "data"	  : $scope.timeDatas.data
-				//, "fields"  : $scope.timeDatas.fields
-			})	// monthstr: 2014-01
-			.success( function ( data ){
-				$scope.savingTimeData = false;
-				$scope.formData.user.updateSuccess = data.message ;
-                // clear the message after 5s
-            	setTimeout(function(){
-            		$scope.formData.user.updateSuccess = null;
-            		$scope.$apply();
-            	}, 5000);
-            	
-            	//add today info
-				if ( today.format("YYYY-MM") == $scope.monthstr ) $scope.timeDatas.data[today.date()-1].today = true;
-            	
-				//update origin data to the latest
-				$scope.originalData = {};
-				$scope.originalData = JSON.parse(JSON.stringify($scope.timeDatas.data));
-				
-				console.log(data)
-			})
-			
-			.error(function(data) {
-				$scope.savingTimeData = false;
-                console.log('Error: ' + data);
-	        });
-		}
-		
-		$scope.isToday = function(timeData){
-			
-		}
 		
 	});

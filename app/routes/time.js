@@ -37,10 +37,11 @@ module.exports = function(app, passport) {
 	
 	
 	// Get time data TODO move to model
-	app.post('/api/timedata', isLoggedInAPI, function(req, res) {
+	app.post('/api/timedata/:username', isLoggedInAPI, function(req, res) {
 
+		//TODO check right to get time data
 		TimeData.findOne({
-			"username" : req.user.local.username,
+			"username" : req.params.username,
 			"monthStr" : req.body.monthstr
 		}).populate("fieldset").exec(function(err, timedata) {
 			if (err) {
@@ -86,10 +87,12 @@ module.exports = function(app, passport) {
 	
 	
 	// Add / Update time data, from view
-	app.post('/api/savetimedata', isLoggedInAPI, function(req, res) {
+	app.post('/api/savetimedata/:username', isLoggedInAPI, function(req, res) {
 
+		// TODO check right to update time data
+		
 		var data = {
-			"username" : req.user.local.username,
+			"username" : req.params.username,
 			"monthStr" : req.body.monthstr,
 			"data"	   : req.body.data
 		};
