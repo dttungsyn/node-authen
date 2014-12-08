@@ -128,18 +128,23 @@ angular.module('todoController', [])
 						$scope.timeDatas.data  = data.timedata.data;
 						$scope.timeDatas.fields = data.timedata.fieldset.fields;
 					}
-					else {
+					//init data if own timesheet
+					else if ($scope.formData.loginUser.local.username == $scope.formData.user.local.username){
 						$scope.timeDatas = initMonthData(moment( $scope.monthstr, "YYYY-MM" ));	//initMonthData: functions.js
 						if (data.timedata.fieldset) $scope.timeDatas.fields = data.timedata.fieldset;	//get fields from server if possible
+					} else {
+						$scope.timeDatas.data = null;
 					}
 					
-					//save originalData to detect change
-					$scope.originalData = JSON.parse(JSON.stringify($scope.timeDatas.data));
-					
-					//add today info timedata
-					var today = moment();
-					if ( today.format("YYYY-MM") == $scope.monthstr ){
-						$scope.timeDatas.data[ today.date() - 1 ].today = true;
+					if ($scope.timeDatas.data){
+						//save originalData to detect change
+						$scope.originalData = JSON.parse(JSON.stringify($scope.timeDatas.data));
+						
+						//add today info timedata
+						var today = moment();
+						if ( today.format("YYYY-MM") == $scope.monthstr ){
+							$scope.timeDatas.data[ today.date() - 1 ].today = true;
+						}
 					}
 					
 					//end loading

@@ -55,6 +55,17 @@ hr {
 	padding: 10px;
 }
 
+.control .date{
+	float: left;
+	padding-left: 15px;
+	padding-right: 15px;
+	margin-bottom: 5px;
+}
+
+.select-staff .bootstrap-select.btn-group{
+	float: right;
+}
+
 .bs-timesheet.bs-example{
 	margin-top: 10px;
 	margin-bottom: 35px;
@@ -81,10 +92,8 @@ hr {
 
 .bs-timesheet .ts-submit.affix .savebtn{
 	width: 100px;
-	opacity: .7;
 }
 .bs-timesheet .ts-submit.affix .savebtn:hover{
-	opacity: .95;
 }
 
 .ts-container #ts-table{
@@ -121,6 +130,6 @@ hr {
 
 #timemonth .time-load{
 	position: absolute;
-	left: -15px;
+	right: 2px;
 	top: 8px;
 }

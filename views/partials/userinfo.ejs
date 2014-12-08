@@ -17,7 +17,7 @@
 
     <div class="row">
         <!-- <p><a class="btn btn-primary btn-lg" role="button">Learn more »</a></p> -->
-        <div class="bs-example staff-info <%= isApprover ? 'col-md-10': ''%>">
+        <div class="bs-example staff-info">
         	<i class="edit-user-btn fa fa-edit fa-2x" data-toggle="modal" data-target="#myModal"></i>
             <table class="table">
               <tr>
@@ -45,12 +45,7 @@
               	<td class="">
               	
               		
-              	  <div id="timemonth" class="input-group date form_datetime" data-date=""  data-link-format="YYYY-MM" data-link-field="dtp_input1">
-              	  	<i class="time-load fa fa fa-spinner fa-spin" ng-show="loadingTimeData"></i>
-                    <input ng-change="getTimeData()" class="form-control" size="10" type="text" value="" data-date-format="YYYY-MM" ng-model="monthstr">
-    				<span class="input-group-addon"><span class="glyphicon glyphicon-th"></span></span>
-                  </div>
-              	  <input type="hidden" id="dtp_input1" value="" />
+              	  
               	
               	</td>
               	<td class="header">Standard Working Hour</td>
@@ -65,17 +60,7 @@
             </table>
         </div>
         
-        <% if (isApprover) {%>
-        <div class="col-md-2">
-            <select class="selectpicker" data-live-search="true">
-                <option class="selfopt"><%= user.local.username%></option>
-            <% user.staffs.forEach(function(el, index) {%>
-                <option><%= el.local.username%></option>
-            <% });%>
-            </select>
-            <input class="selectstaff" type="text" style="display: none;" ng-model="formData.selectingUsername" />
-        </div>
-        <% }%>
+        
     </div>
   </div>
   
