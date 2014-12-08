@@ -26,5 +26,6 @@ module.exports = function(app, passport) {
 	require("./routes/time.js")(app, passport);
 	require("./routes/user.js")(app, passport);
 
+	require("./routes/controller.js")(app, passport);
 };
 

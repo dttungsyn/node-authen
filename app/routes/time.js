@@ -4,6 +4,9 @@
 
 var TimeData = require("../models/time-data.js");
 var User = require("../models/user.js");
+
+var controller = require("../controllers/time.js");
+
 module.exports = function(app, passport) {
 	
 	// Update time data, posted from excel
