@@ -58,7 +58,27 @@
 <!-- Time data container-->
 <div class="ts-container">
   
-  
+
+    <div class="control row">
+      <div id="timemonth" class="input-group date col-sm-3" data-date=""  data-link-format="YYYY-MM" data-link-field="dtp_input1">
+        
+        <input ng-change="getTimeData()" class="form-control" size="10" type="text" value="" data-date-format="YYYY-MM" ng-model="monthstr">
+        <span class="input-group-addon"><span class="glyphicon glyphicon-th"></span></span>
+        <i class="time-load fa fa fa-spinner fa-spin" ng-show="loadingTimeData"></i>
+      </div>
+  <!--<input type="hidden" id="dtp_input1" value="" />-->
+      <% if (isApprover) {%>
+        <div class="select-staff col-sm-9">
+            <select class="selectpicker" data-live-search="true">
+                <option class="selfopt"><%= user.local.username%></option>
+            <% user.staffs.forEach(function(el, index) {%>
+                <option><%= el.local.username%></option>
+            <% });%>
+            </select>
+            <input class="selectstaff" type="text" style="display: none;" ng-model="formData.selectingUsername" />
+        </div>
+      <% }%>
+    </div>
   
   <div class="bs-timesheet bs-example">
   	
@@ -76,7 +96,7 @@
                     <i class="fa fa-check-square-o" style="font-size: 16px;"></i>&nbsp;
                     Approve
                 </button>
-			  	<button type="button" class="savebtn btn btn-success disabled" ng-click="applyTimeData()">
+			  	<button type="button" class="savebtn btn btn-success disabled" ng-show="formData.loginUser.local.username == formData.user.local.username" ng-click="applyTimeData()">
 			  		<i class="fa fa-check-circle-o"></i>&nbsp;
 			  		Apply
 			  	</button>
@@ -94,7 +114,7 @@
 		  <div class="tab-pane active" id="home">
 		  <!-- Timesheet Table -->
 <!-- 			  <table id="ts-table" class="timesheet table table-striped">
-		      	
+		      
 		      </table> -->
 		      <table id="ts-table" class="toggle-square-filled">
 		      	<thead>
