@@ -132,6 +132,10 @@ TimeDataSchema.statics.updateTimeData = function(data, callback) {
 						}
 
 						else {
+							
+							if (!timedata.state){
+								timedata.state = 0;
+							}
 
 							if (!(timedata.state === 0 || timedata.state === 0)) {
 								return callback({

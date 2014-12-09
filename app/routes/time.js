@@ -1,18 +1,16 @@
-/*
+'use strict'
+
+/**
  * Time routes
  */
-
-var TimeData = require("../models/time-data.js");
-var User = require("../models/user.js");
-
 var controller = require("../controllers/time.js");
 
 module.exports = function(app, passport) {
 	
-	// Update time data, posted from excel
+	// Update time data, posted from excel - updateTimeFromExcel
 	app.post('/api/timedata-with-authen', function(req, res, next) {
 		req.body = JSON.parse(req.body.data);
-		console.log(req.body.username);
+		//console.log(req.body.username);
 		passport.authenticate('local-login', {
 			session : false,
 			failureFlash : "Invalid username or password."
@@ -24,109 +22,27 @@ module.exports = function(app, passport) {
 				return res.json(req.flash('loginMessage'));
 			}
 			
-			var data = {
-				"username" : user.local.username,
-				"monthStr" : req.body.monthstr,
-				"data"	   : req.body.data
-			};
-
-			//save data & return success
-			TimeData.updateTimeData(data, function(rs) {
-				return res.json(rs);
-			})
+			req.params.username = user.local.username;
+			
+			//invoke controller
+			controller.updateTimeData(req, res);
 
 		})(req, res, next);
 	});
 	
 	
-	// Get time data TODO move to model
-	app.post('/api/timedata/:username', isLoggedInAPI, function(req, res) {
-
-		//TODO check right to get time data
-		TimeData.findOne({
-			"username" : req.params.username,
-			"monthStr" : req.body.monthstr
-		}).populate("fieldset").exec(function(err, timedata) {
-			if (err) {
-				return res.json({
-					"success" : false,
-					"message" : "interal error!"
-				});
-
-			}
-			
-			//var found = timeData ? true: false;
-
-			// not found
-			if (!timedata) {
-				console.log("not found, get fields");
-				//get fields
-				TimeData.FieldSet.findOne(function(err, fieldset){
-					var data = err? {} : {"fieldset": fieldset.fields};
-					return res.json({
-						"success" : false,
-						"message" : "not found!",
-						"timedata" : data
-					})
-					
-				});
-				
-				
-			}
-			else {
-				console.log(timedata.fieldset.fields);
-				//timedata.fields = timedata.fields.fields;
-				res.json({
-					"success" : true,
-					"message" : "",
-					"timedata" : timedata
-				})
-			}
-
-			// time data found
-
-		});
-	})
+	// Get time data TODO move to model - getTimeData
+	app.post('/api/timedata/:username', isLoggedInAPI, controller.getTimeData);
 	
 	
-	// Add / Update time data, from view
-	app.post('/api/savetimedata/:username', isLoggedInAPI, function(req, res) {
-
-		// TODO check right to update time data
-		
-		var data = {
-			"username" : req.params.username,
-			"monthStr" : req.body.monthstr,
-			"data"	   : req.body.data
-		};
-		
-		TimeData.updateTimeData(data, function(json){
-			return res.json(json);
-		})
-		
-	})
+	// Add / Update time data, from view - updateTimeData
+	app.post('/api/savetimedata/:username', isLoggedInAPI, controller.updateTimeData);
 
 	// =============================================================================
 	// LOAD PAGE =============================================================
 	// =============================================================================
-	// used to ...
-	app.get('/timeview', isLoggedIn, function(req, res) {
-
-		
-		//populate user's staffs if exist
-		User.findOne({"_id": req.user._id}).populate("staffs", "local.username").exec(function(err, user){
-			if (err) return;
-			
-			//console.log(user.staffs);
-			
-			res.render('timeview.ejs', {
-				user : user,
-				isApprover: user.staffs && user.staffs.length > 0
-			});
-		});
-		
-		
-	});
+	// used to ... - renderTimeview
+	app.get('/timeview', isLoggedIn, controller.renderTimeview);
 
 }
 
