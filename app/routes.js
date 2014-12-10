@@ -25,6 +25,8 @@ module.exports = function(app, passport) {
 	require("./routes/authen.js")(app, passport);
 	require("./routes/time.js")(app, passport);
 	require("./routes/user.js")(app, passport);
+	require("./routes/status.js")(app, passport);
+	require("./routes/fieldset.js")(app, passport);
 
 };
 

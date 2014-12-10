@@ -1,5 +1,5 @@
 /*
- * Time routes
+ * state routes
  */
 
 var controller = require("../controllers/status.js");

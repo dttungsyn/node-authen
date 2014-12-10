@@ -165,14 +165,7 @@ TimeDataSchema.statics.updateTimeData = function(data, callback) {
 var TimeData = mongoose.model('time-data', TimeDataSchema);
 
 // =========== define the schema for fields model =========
-var FieldSetSchema = new Schema({
-
-	_id : mongoose.Schema.Types.ObjectId,
-
-	fields : []
-
-});
-var FieldSet = mongoose.model('fieldset', FieldSetSchema);
+var FieldSet = require("./fieldset.js");
 
 //
 TimeData.FieldSet = FieldSet;
