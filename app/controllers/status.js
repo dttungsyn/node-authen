@@ -12,7 +12,8 @@ function approve(req, res) {
 		"username" : req.params.username,
 		"monthStr" : req.body.monthstr
 	};
-	if (data.monthStr === null || data.monthStr.trim() === "" || data.username.trim()) {
+	console.log( data );
+	if (data.monthStr === null || data.monthStr.trim() === "" || data.username.trim() ==="") {
 		res.json({
 			"success" : false,
 			"message" : "Invalid parameter"
@@ -37,6 +38,9 @@ function approve(req, res) {
 		} else {
 			data.state = state + 1;
 			Timedata.updateState(data, function(err, result) {
+				
+				console.log("1" + err);
+				
 				if (err) {
 					res.json({
 						"success" : false,
@@ -46,7 +50,7 @@ function approve(req, res) {
 				} else {
 					res.json({
 						"success" : true,
-						"message" : result
+						"message" : "approved successful"
 					});
 				}
 			});
@@ -94,7 +98,7 @@ function reject(req, res) {
 				} else {
 					res.json({
 						"success" : true,
-						"message" : result
+						"message" : "rejected successful"
 					});
 				}
 			});
@@ -103,6 +107,8 @@ function reject(req, res) {
 }
 
 function checkStatus(data, callback) {
+	console.log("Check");
+	console.log(data);
 	Timedata.findState(data, function(err, result) {
 		if (err) {
 			callback(err, false);

@@ -51,7 +51,7 @@ TimeDataSchema.statics.updateState = function(data, callback) {
 			timedata.save(function(err) {
 				if (err)
 					return callback(err);
-				callback(null, "Updated successful!");
+				callback();
 			});
 		}
 	});
@@ -78,7 +78,7 @@ TimeDataSchema.statics.findState = function(data, callback) {
 			});
 		}
 
-		callback({
+		callback(null, {
 			"state" : timedata.state
 		});
 	});
