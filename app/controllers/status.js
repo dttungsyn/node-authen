@@ -7,9 +7,12 @@ exports.approve = approve;
 exports.reject = reject;
 
 function approve(req, res) {
-	
-	var data = req.body.data;
-	if (data === null || data === "") {
+
+	var data = {
+		"username" : req.params.username,
+		"monthStr" : req.body.monthstr
+	};
+	if (data.monthStr === null || data.monthStr.trim() === "" || data.username.trim()) {
 		res.json({
 			"success" : false,
 			"message" : "Invalid parameter"
@@ -53,8 +56,11 @@ function approve(req, res) {
 }
 
 function reject(req, res) {
-	var data = req.body.data;
-	if (data === null || data === "") {
+	var data = {
+		"username" : req.params.username,
+		"monthStr" : req.body.monthstr
+	};
+	if (data.monthStr === null || data.monthStr.trim() === "" || data.username.trim()) {
 		res.json({
 			"success" : false,
 			"message" : "Invalid parameter"
@@ -95,7 +101,6 @@ function reject(req, res) {
 		}
 	});
 }
-
 
 function checkStatus(data, callback) {
 	Timedata.findState(data, function(err, result) {
