@@ -92,11 +92,11 @@
 		  	<i class="fa fa fa-spinner fa-spin" ng-show="savingTimeData"></i>
 		  	
 		  	<div class="btn-group">
-		  	    <button type="button" class="savebtn btn btn-primary" ng-show="formData.loginUser.local.username != formData.user.local.username" ng-click="approveTime()">
+		  	    <button type="button" class="savebtn btn btn-primary" ng-show="formData.loginUser.local.username != formData.user.local.username && (timeDatas.state == 1 || timeDatas.state == 2)" ng-click="approveTime()">
                     <i class="fa fa-check-square-o" style="font-size: 16px;"></i>&nbsp;
                     Approve
                 </button>
-			  	<button type="button" class="savebtn btn btn-success disabled" ng-show="formData.loginUser.local.username == formData.user.local.username" ng-click="applyTimeData()">
+			  	<button type="button" class="savebtn btn btn-success disabled" ng-show="formData.loginUser.local.username == formData.user.local.username" ng-click="approveTime()">
 			  		<i class="fa fa-check-circle-o"></i>&nbsp;
 			  		Apply
 			  	</button>

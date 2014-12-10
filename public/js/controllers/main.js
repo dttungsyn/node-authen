@@ -127,6 +127,7 @@ angular.module('todoController', [])
 					if ( data.success ){
 						$scope.timeDatas.data  = data.timedata.data;
 						$scope.timeDatas.fields = data.timedata.fieldset.fields;
+						$scope.timeDatas.state = data.timedata.state;
 					}
 					//init data if own timesheet
 					else if ($scope.formData.loginUser.local.username == $scope.formData.user.local.username){
@@ -135,6 +136,8 @@ angular.module('todoController', [])
 					} else {
 						$scope.timeDatas.data = null;
 					}
+					
+					//check state > 0
 					
 					if ($scope.timeDatas.data){
 						//save originalData to detect change
@@ -195,6 +198,20 @@ angular.module('todoController', [])
 				$scope.savingTimeData = false;
                 console.log('Error: ' + data);
 	        });
+		}
+		
+		$scope.approveTime = function(){
+			$http.post('/api/approve-timedata/' + $scope.formData.user.local.username, {
+				"monthstr": $scope.monthstr
+			})	// monthstr: 2014-01
+			.success( function ( data ){
+				$scope.formData.user.updateSuccess = data.message ;
+                // clear the message after 5s
+            	setTimeout(function(){
+            		$scope.formData.user.updateSuccess = null;
+            		$scope.$apply();
+            	}, 5000);
+			})
 		}
 		
 		//calculate cell class
