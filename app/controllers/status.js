@@ -17,7 +17,7 @@ function approve(req, res) {
 		return;
 	}
 
-	checkStatus(data, function(err, canApprove) {
+	checkStatus(data, function(err, state) {
 		if (err) {
 			res.json({
 				"success" : false,
@@ -25,16 +25,14 @@ function approve(req, res) {
 			});
 			return;
 		}
-		if (!canApprove) {
+		if (state === null) {
 			res.json({
 				"success" : false,
 				"message" : "Invalid data"
 			});
 			return;
 		} else {
-			if (data.type === "apply") data.state = 1;
-			if (data.type === "approved1") data.state = 2;
-			if (data.type === "approved2") data.state = 3;
+			data.state = state + 1;
 			Timedata.updateState(data, function(err, result) {
 				if (err) {
 					res.json({
@@ -64,7 +62,7 @@ function reject(req, res) {
 		return;
 	}
 
-	checkStatus(data, function(err, canReject) {
+	checkStatus(data, function(err, state) {
 		if (err) {
 			res.json({
 				"success" : false,
@@ -72,7 +70,7 @@ function reject(req, res) {
 			});
 			return;
 		}
-		if (!canReject) {
+		if (state === null) {
 			res.json({
 				"success" : false,
 				"message" : "Invalid data"
@@ -105,11 +103,9 @@ function checkStatus(data, callback) {
 			callback(err, false);
 			return;
 		}
-		if (result.length === 0) {
+		if (result.length === 0 || result === null) {
 			callback("not exist data", false);
 		}
-		if (data.type === "approve1" || data.type === "reject1") return callback(null, result.state === 1);
-		if (data.type === "approve2" || data.type === "reject2") return callback(null, result.state === 2);
-		if (data.type === "apply" || data.type ==="unapply") return callback(null, result.state === 0);
+		return callback(null, result.state);
 	});
 }
