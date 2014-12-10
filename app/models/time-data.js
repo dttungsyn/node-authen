@@ -137,7 +137,7 @@ TimeDataSchema.statics.updateTimeData = function(data, callback) {
 								timedata.state = 0;
 							}
 
-							if (!(timedata.state === 0 || timedata.state === 0)) {
+							if (!(timedata.state === 0 || timedata.state === 1)) {
 								return callback({
 									"status" : 1,
 									"message" : "Data has been approved already, cannot update!"
