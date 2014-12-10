@@ -1,19 +1,25 @@
+'use strict'
+
+/**
+ * 
+ */
+
 var weekday = ["日", "月", "火","水","木","金","土"];
 var defaultData = [
 	{
-		"header" : "_day",
+		"name" : "_day",
 		"defaultVal": function(mmObj){
 			return mmObj.date();
 		}
 	},
 	{
-		"header" : "_wday",
+		"name" : "_wday",
 		"defaultVal": function(mmObj){
 			return mmObj.day();
 		}
 	},
 	{
-		"header" : "日",
+		"name" : "日",
 		"defaultVal": function(mmObj){
 			return mmObj.format("MM月DD日");
 		},
@@ -22,7 +28,7 @@ var defaultData = [
 		}
 	},
 	{
-		"header" : "曜日",
+		"name" : "曜日",
 		"defaultVal": function(mmObj){
 			return weekday[ mmObj.day() ]
 		},
@@ -31,12 +37,12 @@ var defaultData = [
 		}
 	},
 	{
-		"header" : "休日",
+		"name" : "休日",
 		"defaultVal": "",
 		"hide" : "all"
 	},
 	{
-		"header" : "出社",
+		"name" : "出社",
 		"defaultVal": "9:00",
 		"defaultValWend": "",
 		"fieldType"  : "input",
@@ -46,7 +52,7 @@ var defaultData = [
 		}
 	},
 	{
-		"header" : "退社",
+		"name" : "退社",
 		"defaultVal": "18:00",
 		"defaultValWend": "",
 		"fieldType" : "input",
@@ -56,7 +62,7 @@ var defaultData = [
 		}
 	},
 	{
-		"header" : "休憩",
+		"name" : "休憩",
 		"defaultVal": "1:00",
 		"defaultValWend": "",
 		"fieldType" : "input",
@@ -66,26 +72,26 @@ var defaultData = [
 		}
 	},
 	{
-		"header" : "有給休暇",
+		"name" : "有給休暇",
 		"defaultVal": "",
 		"hide" : "all"
 	},
 	{
-		"header" : "実働",
+		"name" : "実働",
 		"defaultVal": "",
 		"hide" : "all"
 	},
 	{
-		"header" : "平日無給",
+		"name" : "平日無給",
 		"defaultVal": "",
 		"hide" : "all"
 	},
 	{
-		"header" : "平日通常残業",
+		"name" : "平日通常残業",
 		"defaultVal": "",
 	},
 	{
-		"header" : "備考/Note (休みの種別など記入）",
+		"name" : "備考/Note (休みの種別など記入）",
 		"defaultVal": "",
 		"hide" : "phone,tablet",//phone,tablet
 		"fieldType" : "textarea",
@@ -103,8 +109,9 @@ function getInputMonth(){
 	return jQuery("#timemonth input").val();
 }
 
-function initMonthData( mmObj ){
+function initMonthData(fieldset, mmObj ){
 	mmObj = mmObj || moment();
+	if (fieldset) defaultData = fieldset;
 	
 	var rs = {
 		fields: [],
@@ -114,23 +121,46 @@ function initMonthData( mmObj ){
 	var daysInMonth = mmObj.daysInMonth();
 	for (var d = 1; d <= daysInMonth; d++){
 		var date = mmObj.date(d); 
-		/*rs.data.push({
-			"_day" : d,
-			"_wday": date.day(),
-			"日"  : date.format("MM月DD日"),
-			"曜日" : weekday[ date.day() ],
-			"休日" : "",
-			"出社" : "9:00",
-			"退社" : "18:00",
-			"休憩" : "1:00"
-		});*/
 		
-		var data = new Object();
-		defaultData.forEach(function(field, i){
-			data[field.header] = typeof field.defaultVal === 'function' ? field.defaultVal(date) : field.defaultVal;
-			if ( ( date.day() == 0 || date.day() == 6 ) && field.defaultValWend != null ){
-				data[field.header] = typeof field.defaultValWend === 'function' ? field.defaultValWend(date) : field.defaultValWend;
+		var data = [];
+		/*defaultData.forEach(function(field, i){
+			data[field.name] = typeof field.defaultVal === 'function' ? field.defaultVal(date) : field.defaultVal;
+			if ( ( date.day() == 0 || date.day() == 6 ) && field.defaultValWend ){
+				data[field.name] = typeof field.defaultValWend === 'function' ? field.defaultValWend(date) : field.defaultValWend;
 			}
+		});*/
+		defaultData.forEach(function(field, i){
+			var val = "";
+			//day
+			if (field.name === "日"){
+				val = date.format("MM月DD日");
+			}
+			
+			//weekday
+			if (field.name === "曜日"){
+				val = weekday[ mmObj.day() ]
+			}
+			
+			
+			
+			//input
+			if (field.name === "出社"){
+				val = "9:00";
+			}
+			
+			if (field.name === "退社"){
+				val = "18:00";
+			}
+			
+			if (field.name === "休憩"){
+				val = "1:00";
+			}
+			
+			if ( ( date.day() == 0 || date.day() == 6 ) && field.fieldType === "input"){
+				val = "";
+			}
+			
+			data.push(val);
 		});
 		
 		rs.data.push(data);

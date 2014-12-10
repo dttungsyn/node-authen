@@ -130,7 +130,7 @@ angular.module('todoController', [])
 					}
 					//init data if own timesheet
 					else if ($scope.formData.loginUser.local.username == $scope.formData.user.local.username){
-						$scope.timeDatas = initMonthData(moment( $scope.monthstr, "YYYY-MM" ));	//initMonthData: functions.js
+						$scope.timeDatas = initMonthData(data.timedata.fieldset, moment( $scope.monthstr, "YYYY-MM" ));	//initMonthData: functions.js
 						if (data.timedata.fieldset) $scope.timeDatas.fields = data.timedata.fieldset;	//get fields from server if possible
 					} else {
 						$scope.timeDatas.data = null;
@@ -165,7 +165,7 @@ angular.module('todoController', [])
 			
 			//clear today info before save to database
 			var today = moment();
-			delete $scope.timeDatas.data[today.date()-1].today ;
+			if ( today.format("YYYY-MM") == $scope.monthstr ) delete $scope.timeDatas.data[today.date()-1].today ;
 			
 			$http.post('/api/savetimedata/' + $scope.formData.user.local.username, {
 				"monthstr": $scope.monthstr
@@ -219,12 +219,13 @@ angular.module('todoController', [])
 		// create input class for a cell input
 		// i: index of day
 		// field: column information
-		$scope.inputClass = function(i, field){
+		// ind: field's index
+		$scope.inputClass = function(i, field, ind){
 			var classes = [];
 			
 			if (field.inputClass) classes.push(field.inputClass);
 			
-			if ($scope.timeDatas.data[i][field.name] !== $scope.originalData[i][field.name]){
+			if ($scope.timeDatas.data[i][ind] !== $scope.originalData[i][ind]){
 				classes.push("diff");
 			}
 			return classes;
