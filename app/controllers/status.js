@@ -2,8 +2,12 @@
  * New node file
  */
 var Timedata = require("../models/time-data.js");
+var APPROVE = 1;
+var UNAPPROVE = 2;
+var REJECT = 3;
 
 exports.approve = approve;
+exports.unapprove = unapprove;
 exports.reject = reject;
 
 function approve(req, res) {
@@ -12,51 +16,23 @@ function approve(req, res) {
 		"username" : req.params.username,
 		"monthStr" : req.body.monthstr
 	};
-	console.log( data );
-	if (data.monthStr === null || data.monthStr.trim() === "" || data.username.trim() ==="") {
-		res.json({
-			"success" : false,
-			"message" : "Invalid parameter"
-		});
-		return;
-	}
 
-	checkStatus(data, function(err, state) {
-		if (err) {
-			res.json({
-				"success" : false,
-				"message" : err
-			});
-			return;
-		}
-		if (state === null) {
-			res.json({
-				"success" : false,
-				"message" : "Invalid data"
-			});
-			return;
-		} else {
-			data.state = state + 1;
-			Timedata.updateState(data, function(err, result) {
-				
-				console.log("1" + err);
-				
-				if (err) {
-					res.json({
-						"success" : false,
-						"message" : err
-					});
-					return;
-				} else {
-					res.json({
-						"success" : true,
-						"message" : "approved successful"
-					});
-				}
-			});
-		}
-
+	changeStatus(data, APPROVE, function(err, result) {
+		res.json(err ? err : result);
 	});
+}
+
+function unapprove(req, res) {
+
+	var data = {
+		"username" : req.params.username,
+		"monthStr" : req.body.monthstr
+	};
+
+	changeStatus(data, UNAPPROVE, function(err, result) {
+		res.json(err ? err : result);
+	});
+
 }
 
 function reject(req, res) {
@@ -64,8 +40,16 @@ function reject(req, res) {
 		"username" : req.params.username,
 		"monthStr" : req.body.monthstr
 	};
-	if (data.monthStr === null || data.monthStr.trim() === "" || data.username.trim()) {
-		res.json({
+	changeStatus(data, REJECT, function(err, result) {
+		res.json(err ? err : result);
+	});
+}
+
+function changeStatus(data, type, callback) {
+
+	if (data.monthStr === null || data.monthStr.trim() === ""
+			|| data.username.trim() === "") {
+		callback({
 			"success" : false,
 			"message" : "Invalid parameter"
 		});
@@ -73,32 +57,38 @@ function reject(req, res) {
 	}
 
 	checkStatus(data, function(err, state) {
-		if (err) {
-			res.json({
-				"success" : false,
-				"message" : err
-			});
-			return;
-		}
-		if (state === null) {
-			res.json({
+		if (err || state === null) {
+			callback({
 				"success" : false,
 				"message" : "Invalid data"
 			});
-			return;
 		} else {
-			data.state = 0;
+			var message;
+			switch (type) {
+			case 1:
+				data.state = (state >= 3) ? 3 : state + 1;
+				message = "approved";
+				break;
+			case 2:
+				data.state = (state <= 0) ? 0 : state - 1;
+				message = "unapproved";
+				break;
+			case 3:
+				data.state = 0;
+				message = "rejected";
+				break;
+			}
+
 			Timedata.updateState(data, function(err, result) {
 				if (err) {
-					res.json({
+					callback({
 						"success" : false,
 						"message" : err
 					});
-					return;
 				} else {
-					res.json({
+					callback(null, {
 						"success" : true,
-						"message" : "rejected successful"
+						"message" : message + " successful"
 					});
 				}
 			});
@@ -107,8 +97,6 @@ function reject(req, res) {
 }
 
 function checkStatus(data, callback) {
-	console.log("Check");
-	console.log(data);
 	Timedata.findState(data, function(err, result) {
 		if (err) {
 			callback(err, false);

@@ -8,5 +8,6 @@ module.exports = function(app, passport) {
 	
 	//app.post('/api/apply-timedata', controller.apply);
 	app.post('/api/approve-timedata/:username', controller.approve);
+	app.post('/api/unapprove-timedata/:username', controller.unapprove);
 	app.post('/api/reject-timedata/:username', controller.reject);
 }
