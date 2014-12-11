@@ -87,11 +87,11 @@ hr {
 }
 
 .bs-timesheet .ts-submit .savebtn{
-	width: 100px;
+	width: 120px;
 }
 
 .bs-timesheet .ts-submit.affix .savebtn{
-	width: 100px;
+
 }
 .bs-timesheet .ts-submit.affix .savebtn:hover{
 }

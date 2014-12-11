@@ -55,10 +55,19 @@
 
 <% include partials/userinfo.ejs %>
 
+<div class="alert alert-info">
+    <span class="Timename" style="font-size: 20px">{{formData.user.local.username}}</span>
+    <span ng-show="timeDatas.state == 2" class="alert alert-success pull-right">
+        <i class="fa fa-check-circle-o fa-2x"></i>
+        Approved
+    </span>
+</div>
+
 <!-- Time data container-->
 <div class="ts-container">
   
 
+    
     <div class="control row">
       <div id="timemonth" class="input-group date col-sm-3" data-date=""  data-link-format="YYYY-MM" data-link-field="dtp_input1">
         
@@ -95,14 +104,14 @@
 		  	    <button type="button" class="savebtn btn btn-primary" ng-show="formData.loginUser.local.username != formData.user.local.username && (timeDatas.state == 1 || timeDatas.state == 2)" ng-click="approveTime()">
                     <i class="fa fa-check-square-o" style="font-size: 16px;"></i>&nbsp;
                     <span ng-show="timeDatas.state == 1">Approve</span>
-                    <span ng-show="timeDatas.state == 2">UnApprove</span> 
+                    <span ng-show="timeDatas.state == 2">Unapprove</span> 
                 </button>
-			  	<button type="button" class="savebtn btn btn-success" ng-show="formData.loginUser.local.username == formData.user.local.username" ng-click="applyTime()">
+			  	<button type="button" class="savebtn btn btn-success" ng-show="formData.loginUser.local.username == formData.user.local.username && (timeDatas.state == 1 || timeDatas.state == 0)" ng-click="applyTime()">
 			  		<i class="fa fa-check-circle-o"></i>&nbsp;
 			  		<span ng-show="timeDatas.state == 0">Apply</span>
 			  		<span ng-show="timeDatas.state == 1">UnApply</span>
 			  	</button>
-			  	<button type="button" class="savebtn btn btn-success" ng-click="saveTimeData()">
+			  	<button type="button" class="savebtn btn btn-success" ng-disabled="timeDatas.state > 1" ng-click="saveTimeData()">
 			  		<i class="fa fa-floppy-o"></i>&nbsp;
 			  		Save
 			  	</button>
