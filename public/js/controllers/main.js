@@ -133,7 +133,9 @@ angular.module('todoController', [])
 					else if ($scope.formData.loginUser.local.username == $scope.formData.user.local.username){
 						$scope.timeDatas = initMonthData(data.timedata.fieldset, moment( $scope.monthstr, "YYYY-MM" ));	//initMonthData: functions.js
 						if (data.timedata.fieldset) $scope.timeDatas.fields = data.timedata.fieldset;	//get fields from server if possible
+						$scope.timeDatas.state = 0;
 					} else {
+						//dont display
 						$scope.timeDatas.data = null;
 					}
 					
@@ -200,19 +202,50 @@ angular.module('todoController', [])
 	        });
 		}
 		
+		//approve or unapprove
 		$scope.approveTime = function(){
-			$http.post('/api/approve-timedata/' + $scope.formData.user.local.username, {
+			if ($scope.timeDatas.state < 1 && $scope.timeDatas.state > 2) return;
+			
+			var url = $scope.timeDatas.state == 1 ? '/api/approve-timedata/' : '/api/unapprove-timedata/';
+			$http.post(url + $scope.formData.user.local.username, {
 				"monthstr": $scope.monthstr
 			})	// monthstr: 2014-01
-			.success( function ( data ){
+			.success( success );
+			
+			function success(data){
 				$scope.formData.user.updateSuccess = data.message ;
                 // clear the message after 5s
             	setTimeout(function(){
             		$scope.formData.user.updateSuccess = null;
             		$scope.$apply();
             	}, 5000);
-			})
+            	
+            	$scope.timeDatas.state = $scope.timeDatas.state == 1? 2 : 1;
+			}
 		}
+		
+		//apply or unapply
+		$scope.applyTime = function(){
+			if ($scope.timeDatas.state > 1) return;
+			
+			var url = $scope.timeDatas.state == 0 ? '/api/approve-timedata/' : '/api/unapprove-timedata/';
+			$http.post(url + $scope.formData.user.local.username, {
+				"monthstr": $scope.monthstr
+			})	// monthstr: 2014-01
+			.success( success );
+			
+			function success(data){
+				$scope.formData.user.updateSuccess = data.message ;
+                // clear the message after 5s
+            	setTimeout(function(){
+            		$scope.formData.user.updateSuccess = null;
+            		$scope.$apply();
+            	}, 5000);
+            	
+            	$scope.timeDatas.state = $scope.timeDatas.state == 0? 1 : 0;
+			}
+		}
+		
 		
 		//calculate cell class
 		$scope.cellClass = function(fieldName, index){

@@ -88,17 +88,19 @@
 		  <li><a href="#overtime" data-toggle="tab">OverTime</a></li>
 		  <li><a href="#chart" data-toggle="tab">Chart</a></li>
 		  <li><a href="#settings" data-toggle="tab">Settings</a></li>
-		  <div class="ts-submit">
+		  <div class="ts-submit" ng-show="timeDatas.data">
 		  	<i class="fa fa fa-spinner fa-spin" ng-show="savingTimeData"></i>
 		  	
 		  	<div class="btn-group">
 		  	    <button type="button" class="savebtn btn btn-primary" ng-show="formData.loginUser.local.username != formData.user.local.username && (timeDatas.state == 1 || timeDatas.state == 2)" ng-click="approveTime()">
                     <i class="fa fa-check-square-o" style="font-size: 16px;"></i>&nbsp;
-                    Approve
+                    <span ng-show="timeDatas.state == 1">Approve</span>
+                    <span ng-show="timeDatas.state == 2">UnApprove</span> 
                 </button>
-			  	<button type="button" class="savebtn btn btn-success disabled" ng-show="formData.loginUser.local.username == formData.user.local.username" ng-click="approveTime()">
+			  	<button type="button" class="savebtn btn btn-success" ng-show="formData.loginUser.local.username == formData.user.local.username" ng-click="applyTime()">
 			  		<i class="fa fa-check-circle-o"></i>&nbsp;
-			  		Apply
+			  		<span ng-show="timeDatas.state == 0">Apply</span>
+			  		<span ng-show="timeDatas.state == 1">UnApply</span>
 			  	</button>
 			  	<button type="button" class="savebtn btn btn-success" ng-click="saveTimeData()">
 			  		<i class="fa fa-floppy-o"></i>&nbsp;
