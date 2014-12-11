@@ -55,6 +55,27 @@
 
 <% include partials/userinfo.ejs %>
 
+
+<!--list user and state-->
+<% if (isApprover) {%>
+<div class="container">
+    <div class="list-group">
+      <a href="#" class="list-group-item active">
+        Cras justo odio
+      </a>
+      <a href="#" class="list-group-item">
+          Dapibus ac facilisis in &nbsp;<span class="label label-success pull-right">Approved</span>
+      </a>
+      <a href="#" class="list-group-item">
+          Morbi leo risus &nbsp;<span class="label label-info pull-right">Applied</span>
+      </a>
+      <a href="#" class="list-group-item">Porta ac consectetur ac</a>
+      <a href="#" class="list-group-item">Vestibulum at eros</a>
+    </div>
+</div>
+<% }%>
+
+
 <div class="alert alert-info">
     <span class="Timename" style="font-size: 20px">{{formData.user.local.username}}</span>
     <span ng-show="timeDatas.state == 2" class="alert alert-success pull-right">
