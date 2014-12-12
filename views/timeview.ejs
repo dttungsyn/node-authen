@@ -18,31 +18,6 @@
 	</style>
 	
 	
-	<!-- MEAN stack app-->
-	<script src="//ajax.googleapis.com/ajax/libs/jquery/2.0.3/jquery.min.js"></script><!-- load jquery -->
-	<script src="//ajax.googleapis.com/ajax/libs/angularjs/1.2.4/angular.min.js"></script><!-- load angular 1.2.4 -->
-
-	<script src="/lib/bootstrap-3.2.0/js/bootstrap.js"></script> <!-- load up bootstrap js -->
-	<script src="/lib/kartik-v-bootstrap-fileinput/js/fileinput.js"></script>
-	<script src="/lib/footable/js/footable.js"></script>
-	
-	<script type="text/javascript" src="/lib/moment/moment-with-locales.js"></script>
-	<script type="text/javascript" src="/lib/eonasdan-bootstrap-datetimepicker/build/js/bootstrap-datetimepicker.js"></script>
-	
-	<!-- angular nvd3 lib-->
-	<script src="/lib/angularjs-nvd3/d3.js"></script>
-	<script src="/lib/angularjs-nvd3/nv.d3.js"></script>
-	<script src="/lib/angularjs-nvd3/angularjs-nvd3-directives.js"></script>
-	
-	<!--bootstrap select-->
-	<script src="/lib/bootstrap-select/js/bootstrap-select.js"></script>
-	
-	<!-- own script-->
-	<script src="js/controllers/functions.js"></script>
-	<script src="js/controllers/main.js"></script> <!-- load up our controller -->
-	<script src="js/services/todos.js"></script> <!-- load our todo service -->
-	<script src="js/core.js"></script><!-- load our main application -->
-	
 </head>
 <body ng-controller="mainController">
 
@@ -166,20 +141,18 @@
 		      
 			  </table>
 		  </div>
-		  <div class="tab-pane" id="overtime">
+		  
+		  <div class="tab-pane" id="overtime" data-ng-include="'/packages/overtime/view/overtime.html'">
 
 		  </div>
-		  <div class="tab-pane" id="chart">
-		  	<% include partials/chart %>
+		  
+		  
+		  <div class="tab-pane" id="chart" data-ng-include="'/packages/chart/view/chart.html'">
 		  </div>
+		  
+		  
 		  <div class="tab-pane" id="settings">...</div>
 		</div>
-	
-	<script>
-	  $(function () {
-	    $('#myTab a:first').tab('show');
-	  });
-	</script>
 	
 		<!-- <input id="spinner" name="spinner" value="08:30 PM"> -->
 	
@@ -187,8 +160,38 @@
   
 </div><!-- end ts-container-->
 
-<!-- Time view-->
+<!-- MEAN stack app-->
+<script src="//ajax.googleapis.com/ajax/libs/jquery/2.0.3/jquery.min.js"></script><!-- load jquery -->
+<script src="//ajax.googleapis.com/ajax/libs/angularjs/1.2.4/angular.min.js"></script><!-- load angular 1.2.4 -->
 
+<script src="/lib/bootstrap-3.2.0/js/bootstrap.js"></script> <!-- load up bootstrap js -->
+<script src="/lib/kartik-v-bootstrap-fileinput/js/fileinput.js"></script>
+<script src="/lib/footable/js/footable.js"></script>
+
+<script type="text/javascript" src="/lib/moment/moment-with-locales.js"></script>
+<script type="text/javascript" src="/lib/eonasdan-bootstrap-datetimepicker/build/js/bootstrap-datetimepicker.js"></script>
+
+<!-- angular nvd3 lib-->
+<script src="/lib/angularjs-nvd3/d3.js"></script>
+<script src="/lib/angularjs-nvd3/nv.d3.js"></script>
+<script src="/lib/angularjs-nvd3/angularjs-nvd3-directives.js"></script>
+
+<!--bootstrap select-->
+<script src="/lib/bootstrap-select/js/bootstrap-select.js"></script>
+
+<!-- own script-->
+<script src="/js/controllers/functions.js"></script>
+<script src="/js/controllers/main.js"></script> <!-- load up our controller -->
+<script src="/packages/chart/js/chart.js"></script>
+<script src="/packages/overtime/js/overtime.js"></script>
+<script src="/js/services/todos.js"></script> <!-- load our todo service -->
+<script src="/js/core.js"></script><!-- load our main application -->
+
+<script>
+  $(function () {
+    $('#myTab a:first').tab('show');
+  });
+</script>
 
 </body>
 </html>
