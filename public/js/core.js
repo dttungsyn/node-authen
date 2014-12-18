@@ -31,10 +31,15 @@ $("document").ready(function(){
 	
 	//save button affix
 	setTimeout(function(){
-		var top = $('.ts-submit').offset().top;
 		$('.ts-submit').affix({
 		    offset: {
-		      top: top + 20
+		      top: $('.ts-submit').offset().top + 20
+		    }
+		})
+		
+		$('.name-bar').affix({
+		    offset: {
+		      top: $('.name-bar').offset().top
 		    }
 		})
 	}, 1000);
