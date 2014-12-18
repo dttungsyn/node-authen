@@ -133,3 +133,8 @@ hr {
 	right: 2px;
 	top: 8px;
 }
+
+.footable {
+	font-size: 12px;
+	line-height: 1;
+}

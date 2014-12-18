@@ -6,17 +6,21 @@
 </style>
 
 <!-- User info container-->
-<div class="jumbotron">
+<i class="fa fa-table" ng-click="showUserinfo = !showUserinfo" style="margin: 5px; font-size: 18px; cursor: pointer"></i>
+<div class="jumbotron"  ng-show="showUserinfo" ng-init="showUserinfo = false">
   <div class="container">
-  	<div class="notification alert alert-success">
-       <strong>Oh snap!</strong> Change a few things up and try submitting again.
-    </div>
-    <h1>Hello, Timesheet!</h1>
+  	<!--
+	  <div class="notification alert alert-success">
+			 <strong>Oh snap!</strong> Change a few things up and try submitting again.
+		  </div>
+		  <h1>Hello, Timesheet!</h1>-->
+	  
     <!-- Button trigger modal -->
 
-
+    
     <div class="row">
         <!-- <p><a class="btn btn-primary btn-lg" role="button">Learn more »</a></p> -->
+        
         <div class="bs-example staff-info">
         	<i class="edit-user-btn fa fa-edit fa-2x" data-toggle="modal" data-target="#myModal"></i>
             <table class="table">

@@ -32,27 +32,24 @@
 
 
 <!--list user and state-->
-<% if (isApprover) {%>
-<div class="container">
-    <div class="list-group">
-      <a href="#" class="list-group-item active">
-        Cras justo odio
+<div class="container" ng-show="staffs && staffs.length > 0">
+    <div class="list-group col-md-4">
+
+      <a href="#" class="list-group-item" ng-repeat="staff in staffs"
+        ng-class="{'active': staff.local.username === formData.selectingUsername}" ng-click="selectStaff(staff.local.username)">
+          {{ staff.fullname || staff.local.username }}
+          <span class="label pull-right" ng-show="staff.state === 0"><i class="fa fa-columns" style="color: black"></i></span>
+          <span class="label label-info pull-right" ng-show="staff.state === 1">Applied</span>
+          <span class="label label-success pull-right" ng-show="staff.state === 2">Approved</span>
       </a>
-      <a href="#" class="list-group-item">
-          Dapibus ac facilisis in &nbsp;<span class="label label-success pull-right">Approved</span>
-      </a>
-      <a href="#" class="list-group-item">
-          Morbi leo risus &nbsp;<span class="label label-info pull-right">Applied</span>
-      </a>
-      <a href="#" class="list-group-item">Porta ac consectetur ac</a>
-      <a href="#" class="list-group-item">Vestibulum at eros</a>
+      
+      
     </div>
 </div>
-<% }%>
 
 
 <div class="alert alert-info">
-    <span class="Timename" style="font-size: 20px">{{formData.user.local.username}}</span>
+    <span class="Timename" style="font-size: 20px">{{formData.user.fullname || formData.user.local.username}}</span>
     <span ng-show="timeDatas.state == 2" class="alert alert-success pull-right">
         <i class="fa fa-check-circle-o fa-2x"></i>
         Approved
@@ -67,10 +64,11 @@
     <div class="control row">
       <div id="timemonth" class="input-group date col-sm-3" data-date=""  data-link-format="YYYY-MM" data-link-field="dtp_input1">
         
-        <input ng-change="getTimeData()" class="form-control" size="10" type="text" value="" data-date-format="YYYY-MM" ng-model="monthstr">
+        <input ng-change="getTimeData(true)" class="form-control" size="10" type="text" value="" data-date-format="YYYY-MM" ng-model="monthstr">
         <span class="input-group-addon"><span class="glyphicon glyphicon-th"></span></span>
         <i class="time-load fa fa fa-spinner fa-spin" ng-show="loadingTimeData"></i>
       </div>
+      <button class="btn btn-primary" ng-click="getTimeData(false)">reload</button>
   <!--<input type="hidden" id="dtp_input1" value="" />-->
       <% if (isApprover) {%>
         <div class="select-staff col-sm-9">
@@ -97,7 +95,7 @@
 		  	<i class="fa fa fa-spinner fa-spin" ng-show="savingTimeData"></i>
 		  	
 		  	<div class="btn-group">
-		  	    <button type="button" class="savebtn btn btn-primary" ng-show="formData.loginUser.local.username != formData.user.local.username && (timeDatas.state == 1 || timeDatas.state == 2)" ng-click="approveTime()">
+		  	    <button type="button" class="savebtn btn btn-primary" ng-show="formData.loginUser.staffs.length > 0 && (timeDatas.state == 1 || timeDatas.state == 2)" ng-click="approveTime()">
                     <i class="fa fa-check-square-o" style="font-size: 16px;"></i>&nbsp;
                     <span ng-show="timeDatas.state == 1">Approve</span>
                     <span ng-show="timeDatas.state == 2">Unapprove</span> 

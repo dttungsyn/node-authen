@@ -64,10 +64,24 @@ angular.module('todoController', [])
 			$scope.formData.loginUser = data;		// store login user
 			$scope.formData.user = data;	// user used to display
 			$scope.formData.selectingUsername = data.local.username;	//selecting username
+			
+			$scope.staffs = data.staffs;
+			
+			//add approve to the list 
+			if (data.staffs.length > 0)
+				$scope.staffs.unshift({
+					_id: data._id,
+					fullname: data.fullname,
+					local: {
+						username: data.local.username
+					}
+				});
+			
+			
         })
         
         
-        // Watch staff select TODO
+        // select staff
 		$scope.$watch(function() { 
 			return $scope.formData.selectingUsername
 		},
@@ -80,12 +94,22 @@ angular.module('todoController', [])
 			$http.get('/api/userdata/' + username).success(function(data) {
 				$scope.formData.user = data;	// user used to display
 				if ($scope.monthstr){
-					$scope.getTimeData();
+					$scope.getTimeData(false);//get time data without other staff's state
+				} else {
+					// default to current month
+					$scope.monthstr = moment().format("YYYY-MM");
+					$scope.getTimeData(true);//first, get time data with other staff's state
 				}
 	        });
 			
 			
 		});
+		
+		$scope.selectStaff = function( username ){
+			$scope.formData.selectingUsername = username;
+			$('.selectpicker').val(username);
+			$('.selectpicker').selectpicker('refresh');
+		}
         
         
 		
@@ -115,13 +139,28 @@ angular.module('todoController', [])
 		        });
 		}
 		
-		// get Time data after set month
-		$scope.getTimeData = function() {
+		/**
+		 * get Time data after set month, or select user
+		 * getState: boolean //get other staff'state of this month or not 
+		 */
+		$scope.getTimeData = function(getState) {
+			var isGetState = getState || false;
+			var staffs = [];
+			if (isGetState){
+				staffs = $scope.staffs || [];
+				
+				staffs = staffs.map(function(val, i){
+					return val.local.username;
+				})
+			}
 			
 			//show loading pin
 			$scope.loadingTimeData = true;
 			
-			$http.post('/api/timedata/' + $scope.formData.user.local.username, {"monthstr": $scope.monthstr})	// monthstr: 2014-01
+			$http.post('/api/timedata/' + $scope.formData.user.local.username, {
+				"monthstr": $scope.monthstr,
+				"staffs": staffs
+				})	// monthstr: 2014-01
 				.success( function ( data ){
 					console.log( data );
 					if ( data.success ){
@@ -154,6 +193,13 @@ angular.module('todoController', [])
 					
 					//end loading
 					$scope.loadingTimeData = false;
+					
+					//update other staff's state of this month
+					if (data.staffStates && isGetState){
+						$scope.staffs.map(function(val){
+							val.state = data.staffStates.hasOwnProperty( val.local.username ) ? data.staffStates[ val.local.username ] : -1;
+						})
+					}
 				})
 				
 				.error(function(data) {
@@ -221,6 +267,14 @@ angular.module('todoController', [])
             	}, 5000);
             	
             	$scope.timeDatas.state = $scope.timeDatas.state == 1? 2 : 1;
+            	
+            	//update list staff
+            	for (var i = 0; i < $scope.staffs.length; i ++){
+            		if ($scope.staffs[i].local.username === $scope.formData.user.local.username){
+            			$scope.staffs[i].state = $scope.timeDatas.state;
+            			break;
+            		}
+            	}
 			}
 		}
 		
