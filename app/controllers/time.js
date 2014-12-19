@@ -61,14 +61,12 @@ function getTimeData(req, res){
 		
 		//get staff's state if needed
 		var staffs = req.body.staffs;
-		console.log(staffs);
 		TimeData.find({
 			"username" : {
 				'$in': staffs
 			},
 			"monthStr" : req.body.monthstr
 		}, {'username': 1, 'state': 1}).exec(function(err, timeUsers) {
-			console.log(timeUsers);
 			if (err || !timeUsers){
 				return res.json(rs);
 			}
@@ -82,7 +80,6 @@ function getTimeData(req, res){
 			
 			rs.staffStates = staffStates;
 			
-			console.log(rs);
 			res.json(rs);
 		})
 		
