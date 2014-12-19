@@ -22,6 +22,7 @@ function getTimeData(req, res){
 		"username" : req.params.username,
 		"monthStr" : req.body.monthstr
 	}).populate("fieldset").exec(function(err, timedata) {
+		
 		if (err) {
 			return res.json({
 				"success" : false,
@@ -30,17 +31,20 @@ function getTimeData(req, res){
 
 		}
 		
+		
+		var rs = {};
+		
 		// not found
 		if (!timedata) {
 			console.log("not found, get fields");
 			//get & return fields only
 			TimeData.FieldSet.findOne(function(err, fieldset){
 				var data = err? {} : {"fieldset": fieldset.fields};
-				return res.json({
+				rs = {
 					"success" : false,
 					"message" : "not found!",
 					"timedata" : data
-				})
+				}
 				
 			});
 			
@@ -48,12 +52,41 @@ function getTimeData(req, res){
 		}
 		// time data found
 		else {
-			res.json({
+			rs = {
 				"success" : true,
 				"message" : "",
 				"timedata" : timedata
-			})
+			}
 		}
+		
+		//get staff's state if needed
+		var staffs = req.body.staffs;
+		console.log(staffs);
+		TimeData.find({
+			"username" : {
+				'$in': staffs
+			},
+			"monthStr" : req.body.monthstr
+		}, {'username': 1, 'state': 1}).exec(function(err, timeUsers) {
+			console.log(timeUsers);
+			if (err || !timeUsers){
+				return res.json(rs);
+			}
+			
+			var staffStates = {};
+			for (var i = 0; i < timeUsers.length; i ++){
+				var username = timeUsers[i].username;
+				var state = timeUsers[i].state || 0;
+				staffStates[ username ] = state;
+			}
+			
+			rs.staffStates = staffStates;
+			
+			console.log(rs);
+			res.json(rs);
+		})
+		
+		
 
 	});
 }

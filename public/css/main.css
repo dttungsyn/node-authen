@@ -133,3 +133,17 @@ hr {
 	right: 2px;
 	top: 8px;
 }
+
+.footable {
+	font-size: 12px;
+	line-height: 1;
+}
+
+.name-bar.affix {
+	position: fixed;
+	width: 100%;
+	top: 0px;
+	z-index: 1000;
+	opacity: 0.8;
+	height: 60px;
+}

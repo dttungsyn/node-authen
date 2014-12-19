@@ -22,7 +22,7 @@ $("document").ready(function(){
 	$('#timemonth').datetimepicker({
 		pickTime : false,
 		minViewMode: "months",
-		useCurrent: false
+		useCurrent: true
 		
 	})
 	.on("dp.change",function (e) {
@@ -30,12 +30,20 @@ $("document").ready(function(){
 	});
 	
 	//save button affix
-	var top = $('.ts-submit').offset().top;
-	$('.ts-submit').affix({
-	    offset: {
-	      top: top + 20
-	    }
-	})
+	setTimeout(function(){
+		$('.ts-submit').affix({
+		    offset: {
+		      top: $('.ts-submit').offset().top + 20
+		    }
+		})
+		
+		$('.name-bar').affix({
+		    offset: {
+		      top: $('.name-bar').offset().top
+		    }
+		})
+	}, 1000);
+	
 	
 	//tab change event
 	$('.bs-timesheet a[data-toggle="tab"]').on('shown.bs.tab', function (e) {
@@ -56,7 +64,7 @@ $("document").ready(function(){
 	
 	$('select.selectpicker').on('change', function(){
         var selected = $('.selectpicker option:selected').val();
-        $('.selectstaff').val(selected);
+        $('.selectstaff').val(selected);	//element that is bind with ng-model
         $('.selectstaff').change();
         //console.log(selected);
      });

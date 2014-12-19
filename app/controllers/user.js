@@ -12,7 +12,23 @@ exports.getUserDataByUsername = getUserDataByUsername;
 exports.updateUserDataByUsername = updateUserDataByUsername;
 
 function getUserData(req, res){
-	return res.json(req.user);
+	var user = req.user;
+	
+	//not approver
+	if (!user.staffs || user.staffs.length === 0)
+		return res.json(user);
+	
+	//approver
+	User.findOne({"_id": user._id}).populate("staffs", "fullname local.username").exec(function(err, user){
+		if (err){
+			return res.json("error!");
+		}
+		if (!user){
+			return res.json("user not found!");
+		}
+		
+		return res.json(user);
+	});
 }
 
 function getUserDataByUsername(req, res){
