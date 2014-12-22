@@ -66,6 +66,7 @@ angular.module('todoController').controller(
 
 						});
 
+						fpttime.chart = chart;	//expose to global to update when tab change
 						return chart;
 					});
 
