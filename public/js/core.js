@@ -37,11 +37,45 @@ $("document").ready(function(){
 		    }
 		})
 		
+		//name bar
 		$('.name-bar').affix({
 		    offset: {
-		      top: $('.name-bar').offset().top
+		      top: function(){
+		    	  if ( $('.name-bar').hasClass('affix') )
+		    		  return name_bar_top;
+		    	  
+		    	  return $('.name-bar').offset().top;
+		    	  
+		    	  
+		      }
 		    }
 		})
+		var name_bar_top;
+		$('.name-bar').on('affix.bs.affix', function(){
+			name_bar_top = $('.name-bar').offset().top;
+			console.log( name_bar_top );
+		});
+		
+		//staff list
+		$('.list-group').affix({
+		    offset: {
+		      top: function(){
+		    	  if ( $('.list-group').hasClass('affix') )
+		    		  return list_group_top;
+		    	  
+		    	  return $('.list-group').offset().top - 60;
+		    	  
+		    	  
+		      }
+		    }
+		})
+		var list_group_top;
+		$('.list-group').on('affix.bs.affix', function(){
+			list_group_top = $('.list-group').offset().top - 60;
+			console.log( list_group_top );
+		});
+		
+		
 	}, 1000);
 	
 	

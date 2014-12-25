@@ -19,7 +19,7 @@
 	
 	
 </head>
-<body ng-controller="mainController">
+<body ng-controller="mainController" ng-init="showStaff = true">
 
 
 <!-- message  -->
@@ -32,6 +32,7 @@
 
 
 <!--list user and state-->
+<!--
 <div class="container" ng-show="staffs && staffs.length > 0">
     <div class="list-group col-md-4">
 
@@ -45,33 +46,39 @@
       
       
     </div>
-</div>
+</div>-->
+
 
 
 <div class="name-bar alert alert-info">
     <span class="Timename" style="font-size: 20px">{{formData.user.fullname || formData.user.local.username}}</span>
-    <span ng-show="timeDatas.state == 2" class="alert alert-success pull-right">
+    <span ng-show="timeDatas.state == 2" class="alert alert-success pull-right" style="margin: -15px">
         <i class="fa fa-check-circle-o fa-2x"></i>
         Approved
     </span>
 </div>
 
 <!-- Time data container-->
-<div class="ts-container">
-  
 
+
+<div class="ts-container" >
     
-    <div class="control row">
-      <div id="timemonth" class="input-group date col-sm-3" data-date=""  data-link-format="YYYY-MM" data-link-field="dtp_input1">
-        
-        <input ng-change="getTimeData(true)" class="form-control" size="10" type="text" value="" data-date-format="YYYY-MM" ng-model="monthstr">
-        <span class="input-group-addon"><span class="glyphicon glyphicon-th"></span></span>
-        <i class="time-load fa fa fa-spinner fa-spin" ng-show="loadingTimeData"></i>
+  <!--Time pick row-->
+  <div class="control row">
+      
+      <div class="col-sm-2">
+          <div id="timemonth" class="input-group date" data-date=""  data-link-format="YYYY-MM" data-link-field="dtp_input1">
+            
+            <input ng-change="getTimeData(true)" class="form-control" size="10" type="text" value="" data-date-format="YYYY-MM" ng-model="monthstr">
+            <span class="input-group-addon"><span class="glyphicon glyphicon-th"></span></span>
+            <i class="time-load fa fa fa-spinner fa-spin" ng-show="loadingTimeData"></i>
+          </div>
+          
       </div>
-      <button class="btn btn-primary" ng-click="getTimeData(false)">reload</button>
-  <!--<input type="hidden" id="dtp_input1" value="" />-->
+      
       <% if (isApprover) {%>
-        <div class="select-staff col-sm-9">
+        <div class="select-staff col-sm-10">
+            <button class="btn btn-primary" ng-click="getTimeData(false)">reload</button>
             <select class="selectpicker" data-live-search="true">
                 <option class="selfopt"><%= user.local.username%></option>
             <% user.staffs.forEach(function(el, index) {%>
@@ -81,81 +88,99 @@
             <input class="selectstaff" type="text" style="display: none;" ng-model="formData.selectingUsername" />
         </div>
       <% }%>
-    </div>
+  </div>
   
-  <div class="bs-timesheet bs-example">
-  	
-    <!-- TAB  -->
-	    <ul class="nav nav-tabs" id="myTab">
-		  <li class="active"><a href="#home" data-toggle="tab">Time</a></li>
-		  <li><a href="#overtime" data-toggle="tab">OverTime</a></li>
-		  <li><a href="#chart" data-toggle="tab">Chart</a></li>
-		  <li><a href="#settings" data-toggle="tab">Settings</a></li>
-		  <div class="ts-submit" ng-show="timeDatas.data">
-		  	<i class="fa fa fa-spinner fa-spin" ng-show="savingTimeData"></i>
-		  	
-		  	<div class="btn-group">
-		  	    <button type="button" class="savebtn btn btn-primary" ng-show="formData.loginUser.staffs.length > 0 && (timeDatas.state == 1 || timeDatas.state == 2)" ng-click="approveTime()">
-                    <i class="fa fa-check-square-o" style="font-size: 16px;"></i>&nbsp;
-                    <span ng-show="timeDatas.state == 1">Approve</span>
-                    <span ng-show="timeDatas.state == 2">Unapprove</span> 
-                </button>
-			  	<button type="button" class="savebtn btn btn-success" ng-show="formData.loginUser.local.username == formData.user.local.username && (timeDatas.state == 1 || timeDatas.state == 0)" ng-click="applyTime()">
-			  		<i class="fa fa-check-circle-o"></i>&nbsp;
-			  		<span ng-show="timeDatas.state == 0">Apply</span>
-			  		<span ng-show="timeDatas.state == 1">UnApply</span>
-			  	</button>
-			  	<button type="button" class="savebtn btn btn-success" ng-disabled="timeDatas.state > 1" ng-click="saveTimeData()">
-			  		<i class="fa fa-floppy-o"></i>&nbsp;
-			  		Save
-			  	</button>
-			  	
-		  	</div>
-		  	
-		  </div>
-		</ul>
-		
-		<div class="tab-content">
-		  <div class="tab-pane active" id="home">
-		  <!-- Timesheet Table -->
-<!-- 			  <table id="ts-table" class="timesheet table table-striped">
-		      
-		      </table> -->
-		      <table id="ts-table" class="toggle-square-filled">
-		      	<thead>
-		      	  <th ng-repeat="field in timeDatas.fields" data-hide="{{ field.hide }}" ng-style="field.colStyle" data-type="ngele" >
-		      	  	{{field.name}}
-		      	  </th>
-		      	</thead>
-		      	<tr ng-repeat="timeData in timeDatas.data" on-last-repeat ng-class="{'tr-today': timeData.today}" ng-init="outerIndex = $index">
-				  <td ng-repeat="field in timeDatas.fields" ng-style="field.style" ngInit=""
-				  		ng-class="cellClass( field.name, outerIndex)" >
-				  	<span ng-if="field.fieldType === 'label'" >{{timeData[$index]}}</span>
-				  	<input ng-if="field.fieldType === 'input'" type="text" ng-model="timeData[$index]" ng-class="inputClass(outerIndex, field, $index)" style="" />
-				  	<textarea ng-if="field.fieldType === 'textarea'" ng-model="timeData[$index]" ng-class="inputClass(outerIndex, field, $index)" style="width: 100%; height: 97%; border: none;"></textarea>
-				  	<!--<span ng-if="field.fieldType === 'textarea'" >{{timeData[field.name]}}</span>-->
-				  </td>
-				</tr>
-		      
-			  </table>
-		  </div>
-		  
-		  <div class="tab-pane" id="overtime" data-ng-include="'/packages/overtime/view/overtime.html'">
-
-		  </div>
-		  
-		  
-		  <div class="tab-pane" id="chart" data-ng-include="'/packages/chart/view/chart.html'">
-		  </div>
-		  
-		  
-		  <div class="tab-pane" id="settings">...</div>
-		</div>
-	
-		<!-- <input id="spinner" name="spinner" value="08:30 PM"> -->
-	
-  </div><!-- end bs-timesheet-->
-  
+  <!--Time data row-->
+  <div class="control row">
+      <div class="col-md-2" ng-show="hasStaff && showStaff" style="margin-top: 10px;">
+            <div class="list-group">
+        
+              <a href="#" class="list-group-item" ng-repeat="staff in staffs"
+                ng-class="{'active': staff.local.username === formData.selectingUsername}" ng-click="selectStaff(staff.local.username)">
+                  {{ staff.fullname || staff.local.username }}
+                  <span class="label pull-right" ng-show="staff.state === 0"><i class="fa fa-columns" style="color: black"></i></span>
+                  <span class="label label-info pull-right" ng-show="staff.state === 1">Applied</span>
+                  <span class="label label-success pull-right" ng-show="staff.state === 2">Approved</span>
+              </a>
+              
+              
+            </div>
+        </div>
+        
+      <div class="bs-timesheet bs-example" ng-class="{'col-md-10': hasStaff && showStaff}">
+      	<i class="fa fa-list-alt" ng-show="hasStaff" ng-click="showStaff = !showStaff" style="margin: 5px; font-size: 18px; cursor: pointer"></i>
+        <!-- TAB  -->
+    	    <ul class="nav nav-tabs" id="myTab">
+    		  <li class="active"><a href="#home" data-toggle="tab">Time</a></li>
+    		  <li><a href="#overtime" data-toggle="tab">OverTime</a></li>
+    		  <li><a href="#chart" data-toggle="tab">Chart</a></li>
+    		  <li><a href="#settings" data-toggle="tab">Settings</a></li>
+    		  <div class="ts-submit" ng-show="timeDatas.data">
+    		  	<i class="fa fa fa-spinner fa-spin" ng-show="savingTimeData"></i>
+    		  	
+    		  	<div class="btn-group">
+    		  	    <button type="button" class="savebtn btn btn-primary" ng-show="formData.loginUser.staffs.length > 0 && (timeDatas.state == 1 || timeDatas.state == 2)" ng-click="approveTime()">
+                        <i class="fa fa-check-square-o" style="font-size: 16px;"></i>&nbsp;
+                        <span ng-show="timeDatas.state == 1">Approve</span>
+                        <span ng-show="timeDatas.state == 2">Unapprove</span> 
+                    </button>
+    			  	<button type="button" class="savebtn btn btn-success" ng-show="formData.loginUser.local.username == formData.user.local.username && (timeDatas.state == 1 || timeDatas.state == 0)" ng-click="applyTime()">
+    			  		<i class="fa fa-check-circle-o"></i>&nbsp;
+    			  		<span ng-show="timeDatas.state == 0">Apply</span>
+    			  		<span ng-show="timeDatas.state == 1">UnApply</span>
+    			  	</button>
+    			  	<button type="button" class="savebtn btn btn-success" ng-disabled="timeDatas.state > 1" ng-click="saveTimeData()">
+    			  		<i class="fa fa-floppy-o"></i>&nbsp;
+    			  		Save
+    			  	</button>
+    			  	
+    		  	</div>
+    		  	
+    		  </div>
+    		</ul>
+    		
+    		<div class="tab-content">
+    		  <div class="tab-pane active" id="home">
+    		  <!-- Timesheet Table -->
+    <!-- 			  <table id="ts-table" class="timesheet table table-striped">
+    		      
+    		      </table> -->
+    		      <table id="ts-table" class="toggle-square-filled">
+    		      	<thead>
+    		      	  <th ng-repeat="field in timeDatas.fields" data-hide="{{ field.hide }}" ng-style="field.colStyle" data-type="ngele" >
+    		      	  	{{field.name}}
+    		      	  </th>
+    		      	</thead>
+    		      	<tr ng-repeat="timeData in timeDatas.data" on-last-repeat ng-class="{'tr-today': timeData.today}" ng-init="outerIndex = $index">
+    				  <td ng-repeat="field in timeDatas.fields" ng-style="field.style" ngInit=""
+    				  		ng-class="cellClass( field.name, outerIndex)" >
+    				  	<span ng-if="field.fieldType === 'label'" >{{timeData[$index]}}</span>
+    				  	<input ng-if="field.fieldType === 'input'" type="text" ng-model="timeData[$index]" ng-class="inputClass(outerIndex, field, $index)" style="" />
+    				  	<textarea ng-if="field.fieldType === 'textarea'" ng-model="timeData[$index]" ng-class="inputClass(outerIndex, field, $index)" style="width: 100%; height: 97%; border: none;"></textarea>
+    				  	<!--<span ng-if="field.fieldType === 'textarea'" >{{timeData[field.name]}}</span>-->
+    				  </td>
+    				</tr>
+    		      
+    			  </table>
+    		  </div>
+    		  
+    		  <div class="tab-pane" id="overtime" data-ng-include="'/packages/overtime/view/overtime.html'">
+    
+    		  </div>
+    		  
+    		  
+    		  <div class="tab-pane" id="chart" data-ng-include="'/packages/chart/view/chart.html'">
+    		  </div>
+    		  
+    		  
+    		  <div class="tab-pane" id="settings">...</div>
+    		</div>
+    	
+    		<!-- <input id="spinner" name="spinner" value="08:30 PM"> -->
+    	
+      </div><!-- end bs-timesheet-->
+      
+  </div>
 </div><!-- end ts-container-->
 
 <!-- MEAN stack app-->

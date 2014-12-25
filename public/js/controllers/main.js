@@ -59,6 +59,8 @@ angular.module('todoController', [])
 			data: {}
 		};
 		
+		$scope.hasStaff = false;
+		
 		//get user info at first
 		$http.get('/api/userdata').success(function(data) {
 			$scope.formData.loginUser = data;		// store login user
@@ -66,6 +68,8 @@ angular.module('todoController', [])
 			$scope.formData.selectingUsername = data.local.username;	//selecting username
 			
 			$scope.staffs = data.staffs;
+			
+			$scope.hasStaff = $scope.staffs && $scope.staffs.length > 0;
 			
 			//add approve to the list 
 			if (data.staffs.length > 0)
