@@ -1,5 +1,27 @@
+
+<style>
+	.footable > tfoot#ot-tfoot > tr > th {
+		background-color: #FCD692;
+		background-image: none;
+	}
+	.footable > thead#ot-thead > tr > th {
+		background-image: none;
+	}
+</style>
 <div ng-controller="overTimeController">
-    
-    <!-- overtime table -->
-    table
+
+	<table id="ot-table" class="toggle-square-filled">
+		<thead id="ot-thead">
+			<th ng-repeat="header in overTimeData.headers track by $index" data-type="ngele" > {{header}} </th>
+		</thead>
+
+		<tr ng-repeat="rowData in overTimeData.data track by $index" on-ot-last-repeat ng-init="outerIndex = $index">
+			<td ng-repeat="cellData in rowData track by $index" >{{cellData}}</td>
+		</tr>
+
+		<tfoot id="ot-tfoot">
+			<th ng-repeat="footer in overTimeData.footers track by $index" data-type="ngele" > {{footer}} </th>
+		</tfoot>
+
+	</table>
 </div>
