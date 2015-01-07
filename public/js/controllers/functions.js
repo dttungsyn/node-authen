@@ -5,7 +5,7 @@
  */
 
 var weekday = ["日", "月", "火","水","木","金","土"];
-var defaultData = [
+var defaultData = [	// usually get from database
 	{
 		"name" : "_day",
 		"defaultVal": function(mmObj){
@@ -109,6 +109,12 @@ function getInputMonth(){
 	return jQuery("#timemonth input").val();
 }
 
+/**
+ * 
+ * @param fieldset
+ * @param mmObj
+ * @returns {___anonymous1865_1896}
+ */
 function initMonthData(fieldset, mmObj ){
 	mmObj = mmObj || moment();
 	if (fieldset) defaultData = fieldset;
@@ -118,7 +124,7 @@ function initMonthData(fieldset, mmObj ){
 		data: []
 	};
 	
-	var daysInMonth = mmObj.daysInMonth();
+	var daysInMonth = mmObj.month() === moment().month() ? moment().date() : mmObj.daysInMonth();
 	for (var d = 1; d <= daysInMonth; d++){
 		var date = mmObj.date(d); 
 		
@@ -181,6 +187,71 @@ function initMonthData(fieldset, mmObj ){
 	});*/
 	
 	return rs;
+}
+
+/**
+ * Add each day with default data until the current day, if it already has the current day, add 1 more next day (TODO) 
+ * @param fieldset: define default data
+ * @param mmObj: month
+ * @param timeData: data result to be added
+ */
+function addDay2MonthData(fieldset, mmObj, timeData){
+	mmObj = mmObj || moment();
+	if ( mmObj.month() !== moment().month() ) return;
+	if (fieldset) defaultData = fieldset;
+	
+	var lastday = moment().date();
+	if (timeData.length >= lastday){
+		//add more 1 next day TODO
+		return;
+	}
+	
+	for (var d = timeData.length + 1; d <= lastday; d++){
+		var date = mmObj.date(d); 
+		
+		var data = [];
+		/*defaultData.forEach(function(field, i){
+			data[field.name] = typeof field.defaultVal === 'function' ? field.defaultVal(date) : field.defaultVal;
+			if ( ( date.day() == 0 || date.day() == 6 ) && field.defaultValWend ){
+				data[field.name] = typeof field.defaultValWend === 'function' ? field.defaultValWend(date) : field.defaultValWend;
+			}
+		});*/
+		defaultData.forEach(function(field, i){
+			var val = "";
+			//day
+			if (field.name === "日"){
+				val = date.format("MM月DD日");
+			}
+			
+			//weekday
+			if (field.name === "曜日"){
+				val = weekday[ mmObj.day() ]
+			}
+			
+			
+			
+			//input
+			if (field.name === "出社"){
+				val = "9:00";
+			}
+			
+			if (field.name === "退社"){
+				val = "18:00";
+			}
+			
+			if (field.name === "休憩"){
+				val = "1:00";
+			}
+			
+			if ( ( date.day() == 0 || date.day() == 6 ) && field.fieldType === "input"){
+				val = "";
+			}
+			
+			data.push(val);
+		});
+		
+		timeData.push(data);
+	}
 }
 
 // after set month
