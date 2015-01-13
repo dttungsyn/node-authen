@@ -343,9 +343,11 @@ angular.module('todoController', [])
 		//data change event
 		$('#ts-table').on('change', 'input', function(e){
 			var index = $(e.target).closest('tr').index();
-			console.log( $scope.timeDatas.data[index] );
 			
 			//apply
+			calculateTime($scope.timeDatas.data, index, function(){
+				$scope.$apply();
+			});
 		});
 		
 		
