@@ -33,7 +33,7 @@
                 ngele: function(cell){
                 	// if ng-element data not exist, save to cell data ng-models
                 	if (!$(cell).data("ng-models")){
-                		$(cell).data("ng-models", $(cell).find("> [ng-model]") );
+                		$(cell).data("ng-models", $(cell).find("> .ng-scope") );	// update 2015/1/13
                 	}
                 	return $(cell).data("ng-models");	//return cell data ng-models
                 }
