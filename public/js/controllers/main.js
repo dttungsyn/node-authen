@@ -170,6 +170,7 @@ angular.module('todoController', [])
 						$scope.timeDatas.data  = data.timedata.data;
 						$scope.timeDatas.fields = data.timedata.fieldset.fields;
 						$scope.timeDatas.state = data.timedata.state;
+						
 						addDay2MonthData(data.timedata.fieldset.fields, moment( $scope.monthstr, "YYYY-MM" ), data.timedata.data);	// addDay2MonthData: functions.js
 					}
 					//not found, init data if own timesheet
