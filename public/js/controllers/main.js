@@ -92,7 +92,6 @@ angular.module('todoController', [])
         function() {
 			var username = $scope.formData.selectingUsername;
 			if (!username) return;
-			console.log("select changed! " + username);
 			
 			//http get selectingUsername, assign to 
 			$http.get('/api/userdata/' + username).success(function(data) {
