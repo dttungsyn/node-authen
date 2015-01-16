@@ -343,9 +343,16 @@ angular.module('todoController', [])
 		//data change event
 		$('#ts-table').on('change', 'input', function(e){
 			var index = $(e.target).closest('tr').index();
-			
 			//apply
-			calculateTime($scope.timeDatas.data, index, function(){
+			calculateTime($scope.timeDatas.data, index, function(err){
+				if (err) {
+					$scope.formData.user.updateWarn = err ;
+	                // clear the message after 5s
+	            	setTimeout(function(){
+	            		$scope.formData.user.updateWarn = null;
+	            		$scope.$apply();
+	            	}, 5000);
+				}
 				$scope.$apply();
 			});
 		});

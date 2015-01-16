@@ -62,9 +62,6 @@ angular
 // Each bar represents a single discrete quantity.
 function getOTData(timeData) {
 
-	console.log('timeData');
-	console.log(timeData);
-
 	if (timeData === null || timeData == "")
 		return [ "", "", "", "", "", "", "", "", "", "", "", "", "", "", "" ];
 

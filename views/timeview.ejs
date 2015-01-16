@@ -24,7 +24,8 @@
 
 <!-- message  -->
 <div id="messages" class="notification-center alert alert-success" ng-show="formData.user.updateSuccess">{{ formData.user.updateSuccess }}</div>
-<div id="" class="notification alert alert-error" ng-show="formData.user.updateFail">{{ formData.user.updateFail }}</div>
+<div id="" class="notification-center alert alert-danger" ng-show="formData.user.updateFail">{{ formData.user.updateFail }}</div>
+<div id="" class="notification-center alert alert-warning" ng-show="formData.user.updateWarn">{{ formData.user.updateWarn }}</div>
 
 <% include partials/navheader.ejs %>
 
