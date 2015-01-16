@@ -356,6 +356,4 @@ angular.module('todoController', [])
 				$scope.$apply();
 			});
 		});
-		
-		
 	});
