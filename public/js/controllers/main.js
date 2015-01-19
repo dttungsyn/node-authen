@@ -346,7 +346,7 @@ angular.module('todoController', [])
 			//apply
 			calculateTime($scope.timeDatas.data, index, function(err){
 				if (err) {
-					$scope.formData.user.updateWarn = err ;
+					$scope.formData.user.updateWarn = err;
 	                // clear the message after 5s
 	            	setTimeout(function(){
 	            		$scope.formData.user.updateWarn = null;
@@ -354,6 +354,10 @@ angular.module('todoController', [])
 	            	}, 5000);
 				}
 				$scope.$apply();
+			});
+			
+			calFooterTime($scope.timeDatas.data,function(footData){
+				console.log(footData);
 			});
 		});
 	});

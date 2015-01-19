@@ -328,206 +328,160 @@ function makeTimeTable() {
 function calculateTime(timeData, index, callback) {
 
 	var msg;
-	var overTime, restTime, exitTime, enterTime, outPutTime, workHourHoliday, actualWorkHour, workTime, restTimeLine, standardTime, fjpStandardTime, lunchTime, totalBaseTime, halfOfDay;
-	var restDate, furikae, totalBaseTime, fjpRestDay, workHour, absentHour, furikaeRest, annualLeave, goOutTime;
-	var workTimeTmp;
+	var overTime, exitTime, enterTime, actualRest, workHourHoliday, actualWorkHoliday, actualWorkHour, workTime;
+	var restDate, furikae, fjpRestDay, workHour, absentHour, furikaeRest, annualLeave, goOutTime,nightWorkTime;
+	
 	var endIdx = (index === "all") ? timeData.length : index;
 	var startIdx = (index === "all") ? 0 : index;
 
-	var timeZero = "00:00";
-	var timeFifteen = "00:15";
+	var time0 =  moment.duration("00:00");
+	var time15 = "00:15";
 
-	// TODO cac gia tri nhu lunchtime, standardtime can fai truyen vao tu ngoai.
-	// dang chuyen het tu string ve duration -> can chu y format (ko cong time
-	// neu ko dung format)
-	lunchTime = moment.duration('1:00');
-	standardTime = fjpStandardTime = moment.duration('8:00');
-	halfOfDay = moment.duration('4:00');
-	totalBaseTime = moment.duration(standardTime).add(lunchTime);
+	var lunchTime = moment.duration('1:00');
+	var standardTime = fjpStandardTime = moment.duration('8:00');
+	var halfOfDay = moment.duration('4:00');
+	var totalBaseTime = moment.duration(standardTime).add(lunchTime);
+	
 	for (var idx = startIdx; idx <= endIdx; idx++) {
 		var data = timeData[idx];
 		restDate = data[1];
 		fjpRestDay = data[2];
 		enterTime = moment.duration(data[3]);
 		exitTime = moment.duration(data[4]);
-		restTime = moment.duration(data[5]);
 		goOutTime = moment.duration(data[6]);
 		furikaeRest = moment.duration(data[7]);
 		annualLeave = moment.duration(data[8]);
 
-		if (exitTime > moment.duration("23:00")) {
-			var nightWorkTime = moment.duration(exitTime).subtract("23:00")
-					.format("hh:mm");
-			data[13] = dateFormat(nightWorkTime);
-		}
-
-		workHour = moment.duration(exitTime).subtract(enterTime);
-		overTime = timeZero;
-		if (restDate === '日' || restDate === '土' || data[2] === '*') {
-			workHourHoliday = workHour;
-			if (moment.duration(workHourHoliday) > halfOfDay.add(lunchTime)) {
+		workTime = moment.duration(exitTime).subtract(enterTime);
+		overTime = time0;
+		if (restDate === '日' || restDate === '土' || fjpRestDay === '*') {
+			if (workTime >= moment.duration(halfOfDay).add(lunchTime)) {
+				var restTime = moment.duration(data[5]);
 				if (restTime == "" || restTime == '00') {
-					outPutTime = lunchTime;
+					actualRest = lunchTime;
 				} else {
-					outPutTime = (moment.duration(restTime) > lunchTime) ? restTime
+					actualRest = (moment.duration(restTime) >= lunchTime) ? restTime
 							: lunchTime;
 				}
 			}
 
-			actualWorkHour = moment.duration(workHourHoliday).subtract(
-					outPutTime);
-			if (actualWorkHour < standardTime && actualWorkHour >= halfOfDay) {
+			
+			workHour = moment.duration(workTime).subtract(actualRest);
+			if (workHour < standardTime && workHour >= halfOfDay) {
 				furikae = halfOfDay;
-			} else if (actualWorkHour >= standardTime
-					&& actualWorkHour < momment.duration(fjpStandardTime)) {
-				furikae = actualWorkHour;
-			} else if (actualWorkHour >= momment.duration(fjpStandardTime)) {
+			} else if (workHour >= standardTime
+					&& workHour < moment.duration(fjpStandardTime)) {
+				furikae = workHour;
+			} else if (workHour >= moment.duration(fjpStandardTime)) {
 				furikae = fjpStandardTime;
 			} else {
-				furikae = timeZero;
+				furikae = time0;
 			}
+
+			workHourHoliday = (workHour > furikae) ? moment.duration(workHour).add(furikae) : time0 ;
+			actualWorkHour = moment.duration(workHour).add(goOutTime);
+			overTime = absentHour = nightWorkTime = time0;
 		} else {
-			furikae = outPutTime = timeZero;
+			furikae = workHourHoliday = time0;
 			if (enterTime == "" || enterTime == "00" || exitTime == ""
 					|| exitTime == "00" || exitTime <= enterTime) {
-				outPutTime = overTime = actualWorkHour = timeZero;
-				workTime = moment.duration(goOutTime).add(actualWorkHour);
-			} else if (moment.duration(workHour) <= moment.duration(halfOfDay)) {
-				overTime = timeZero;
-				actualWorkHour = moment.duration(workHour).subtract(outPutTime);
-				workTime = moment.duration(actualWorkHour).add(goOutTime);
-			} else if (workHour >= moment.duration(halfOfDay).add(lunchTime)
-					&& workHour < totalBaseTime) {
-				outPutTime = lunchTime;
-				actualWorkHour = moment.duration(workHour).subtract(outPutTime);
-				workTime = moment.duration(actualWorkHour).add(goOutTime);
+				workHour = actualRest = overTime = nightWorkTime = time0;
 			} else {
-				// if ("HAKEN") {
-				if (false) {
-					outPutTime = lunchTime;
+				if (moment.duration(workTime) <= moment.duration(halfOfDay)) {
+					actualRest = overTime = time0;
+				} else if (workTime >= moment.duration(halfOfDay)
+						.add(lunchTime)
+						&& workTime < totalBaseTime) {
+					actualRest = lunchTime;
+
 				} else {
-					var otCheck = moment.duration(workHour).subtract(
-							fjpStandardTime).subtract(lunchTime);
-					// console.log("overTime-check : " +
-					// otCheck.format("hh:mm"));
-					// console.log("condition 1 : " + (otCheck >
-					// moment.duration(timeZero) && otCheck <
-					// moment.duration('02:15')) || (otCheck ==
-					// moment.duration('02:15')));
-					if (otCheck > moment.duration(timeZero)
-							&& otCheck <= moment.duration('02:15')) {
-						outPutTime = moment.duration(lunchTime).add(
-								fjpStandardTime).subtract(standardTime).add(
-								timeFifteen);
-						console.log("outPutTime1 : "
-								+ outPutTime.format("hh:mm"));
-					} else if (otCheck > moment.duration('02:15')) {
-						outPutTime = moment.duration(lunchTime).add(
-								fjpStandardTime).subtract(standardTime).add(
-								timeFifteen).add(timeFifteen);
-						console.log("outPutTime2 : "
-								+ outPutTime.format("hh:mm"));
+					// if ("HAKEN") {
+					if (false) {
+						actualRest = lunchTime;
 					} else {
-						outPutTime = moment.duration(lunchTime).add(
-								fjpStandardTime).subtract(standardTime);
-						console.log("outPutTime3 : "
-								+ outPutTime.format("hh:mm"));
+						var otCheck = moment.duration(workTime).subtract(
+								fjpStandardTime).subtract(lunchTime);
+						if (otCheck > moment.duration(time0)
+								&& otCheck <= moment.duration('02:15')) {
+							actualRest = moment.duration(lunchTime).add(
+									fjpStandardTime).subtract(standardTime)
+									.add(time15);
+						} else if (otCheck > moment.duration('02:15')) {
+							actualRest = moment.duration(lunchTime).add(
+									fjpStandardTime).subtract(standardTime)
+									.add('00:30');
+						} else {
+							actualRest = moment.duration(lunchTime).add(
+									fjpStandardTime).subtract(standardTime);
+						}
 					}
 				}
-				overTime = moment.duration(workHour).subtract(fjpStandardTime)
-						.subtract(outPutTime).add(furikaeRest).add(annualLeave);
-				// console.log(overTime > 13.5);
-				if (overTime > moment.duration("1:30")) {
-					msg = "overtime was exceed 13h30m";
-				}
-				actualWorkHour = moment.duration(workHour).subtract(outPutTime);
-				workTime = moment.duration(actualWorkHour).add(goOutTime);
+				workHour = moment.duration(workTime).subtract(actualRest);
 			}
-			// workTime = moment.duration(actualWorkHour).add(goOutTime);
-			absentHour = moment.duration(standardTime).subtract(workTime)
-					.subtract(furikaeRest).subtract(annualLeave);
-		}
+			actualWorkHour = moment.duration(workHour).add(goOutTime);
+			
+			if (actualWorkHour > fjpStandardTime) {
+				overTime = moment.duration(actualWorkHour)
+						.subtract(fjpStandardTime).add(furikaeRest)
+						.add(annualLeave);
+			}
 
-		data[5] = dateFormat(moment.duration(outPutTime).format("hh:mm"));
+			absentHour = moment.duration(standardTime).subtract(actualWorkHour).subtract(
+					furikaeRest).subtract(annualLeave);
+			if (absentHour < time0 ) {
+				overTime = moment.duration(absentHour*-1);
+				absentHour = time0;
+				
+			}
+			
+			if (overTime > moment.duration("11:30")) {
+				msg = "overtime was exceed 13h30m";
+			}
+			
+			nightWorkTime = time0
+			if (exitTime > moment.duration("23:00")) {
+				nightWorkTime = moment.duration(exitTime).subtract("23:00");
+			}
+		}
+		
+		data[5] = dateFormat(moment.duration(actualRest).format("hh:mm"));
+		data[9] = dateFormat(moment.duration(workHour).format("hh:mm"));
+		data[10] = dateFormat(moment.duration(actualWorkHour).format("hh:mm"));
+		data[11] = dateFormat(moment.duration(absentHour).format("hh:mm"));
 		data[12] = dateFormat(moment.duration(overTime).format("hh:mm"));
-		data[15] = dateFormat(moment.duration(furikae).format("hh:mm"));
-		data[9] = dateFormat(moment.duration(actualWorkHour).format("hh:mm"));
-		data[10] = dateFormat(moment.duration(workTime).format("hh:mm"));
-		if (absentHour != null && absentHour !== "") {
-			if (absentHour < 0) {
-				data[11] = "00:00";
-				data[12] = dateFormat(moment.duration(absentHour * -1).format(
-						"hh:mm"));
-			} else {
-				data[11] = dateFormat(moment.duration(absentHour).format(
-						"hh:mm"));
-			}
-		}
-
+		data[13] = dateFormat(moment.duration(nightWorkTime).format("hh:mm"));
+		data[14] = "";
+		data[15] = dateFormat(moment.duration(workHourHoliday).format("hh:mm"));
+		data[16] = dateFormat(moment.duration(furikae).format("hh:mm"));
 		timeData[idx] = data;
-		// console.log( timeData[idx] );
-		// get col : 0,0,1,3+'～'+4,12,13,14,15,7,16,17
-
 	}
 	callback(msg);
 }
 
 function dateFormat(iDate) {
+	if (iDate == null || iDate <= 0) return "";
+	
 	var sDate = iDate.toString();
-	if (iDate < 0)
-		return "00:00";
 	return sDate.indexOf(":") == -1 ? "00:" + sDate : sDate;
 }
 
-function calFooterTime(tData) {
-
-	// console.log('otData');
-	// console.log(otData);
-
-	if (tData == "")
-		return ([ "Total", "", "", "", "", "", "", "", "", "", "", "", "", "",
-				"" ]);
-
-	var day = 0;
-	var dayData;
+function calFooterTime(tData, callback) {
 
 	var footData = [];
-	var data5 = tData[0][5];
-	var data6 = tData[0][6];
-	var data7 = tData[0][7];
-	var data8 = tData[0][8];
-	var data9 = tData[0][9];
-	var data10 = tData[0][10];
-	var data11 = tData[0][11];
-	var data12 = tData[0][12];
-	var data13 = tData[0][13];
-	var data14 = tData[0][14];
-	var data15 = tData[0][15];
-	// var total = moment.duration(otData[0][12]);
-
-	for (day = 1; day < tData.length; day++) {
-		var data = tData[day];
-
-		data5 = moment.duration(data5).add(data[5]);
-		data6 = moment.duration(data6).add(data[6]);
-		data7 = moment.duration(data7).add(data[7]);
-		data8 = moment.duration(data8).add(data[8]);
-		data9 = moment.duration(data9).add(data[9]);
-		data10 = moment.duration(data10).add(data[10]);
-		data11 = moment.duration(data11).add(data[11]);
-		data12 = moment.duration(data12).add(data[12]);
-		data13 = moment.duration(data13).add(data[13]);
-		data14 = moment.duration(data14).add(data[14]);
-		data15 = moment.duration(data15).add(data[15]);
+	var tmpArr = [];
+	for (var i = 5 ; i <= 15; i++) {
+		footData[i] = moment.duration('00:00');
+	}
+	for (var day = 0; day < tData.length; day++) {
+		for (var i = 5; i<= 15; i++) {
+			footData[i].add(tData[day][i]);
+		}
 	}
 
-	var format = "HH:mm"
-	footData.push("Total", "", "", "", "", dateFormat(data5),
-			dateFormat(data6), dateFormat(data7), dateFormat(data8),
-			dateFormat(data9), dateFormat(data10), dateFormat(data11),
-			dateFormat(data12), dateFormat(data13), dateFormat(data14),
-			dateFormat(data15));
-	console.log('final result : ' + footData);
-
-	return footData;
+	for (var i = 5 ; i <= 15; i++) {
+		footData[i] = dateFormat(moment.duration(footData[i]).format("HH:mm"));
+	}
+	
+	footData[0] = "Total";
+	callback(footData);
 }
