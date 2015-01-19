@@ -378,7 +378,7 @@ function calculateTime(timeData, index, callback) {
 			}
 
 			workHourHoliday = (workHour > furikae) ? moment.duration(workHour)
-					.add(furikae) : time0;
+					.subtract(furikae) : time0;
 			actualWorkHour = moment.duration(workHour).add(goOutTime);
 			overTime = absentHour = nightWorkTime = time0;
 		} else {
@@ -433,7 +433,7 @@ function calculateTime(timeData, index, callback) {
 
 			}
 
-			if (overTime > moment.duration("11:30")) {
+			if (overTime > moment.duration("13:30")) {
 				msg = "overtime was exceed 13h30m";
 			}
 
