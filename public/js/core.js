@@ -53,7 +53,7 @@ $("document").ready(function(){
 		var name_bar_top;
 		$('.name-bar').on('affix.bs.affix', function(){
 			name_bar_top = $('.name-bar').offset().top;
-			console.log( name_bar_top );
+			//console.log( name_bar_top );
 		});
 		
 		//staff list
@@ -72,7 +72,7 @@ $("document").ready(function(){
 		var list_group_top;
 		$('.list-group').on('affix.bs.affix', function(){
 			list_group_top = $('.list-group').offset().top - 60;
-			console.log( list_group_top );
+			//console.log( list_group_top );
 		});
 		
 		
