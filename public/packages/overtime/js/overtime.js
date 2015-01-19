@@ -91,7 +91,7 @@ function getOTData(timeData) {
 		if (otTimeDay != "") {
 			totalOneDay = otTimeDay;
 		} else if (otHoliday != "") {
-			totalOneDay = moment.duration(otHoliday).add(workOnRestDay).format("hh:mm");
+			totalOneDay = moment.duration(otHoliday).add(workOnRestDay).format("h:mm");
 		}
 
 		otData.push([ otDay, otDay, otDate, workTime, otTimeDay, otTimeNight,
@@ -108,58 +108,29 @@ function getOTData(timeData) {
 }
 
 function calFooter(otData) {
-
-	// console.log('otData');
-	// console.log(otData);
-
-	if (otData == "")
-		return ([ "Total", "", "", "", "", "", "", "", "", "", "", "", "", "",
-				"" ]);
-
-	var day = 0;
-	var dayData;
-
+	
 	var footData = [];
-	var otTimeDay = otData[0][4];
-	var otTimeNight = otData[0][5];
-	var otHoliday = otData[0][6];
-	var workSun = otData[0][7];
-	var ot2RestDay = otData[0][8];
-	var workOnRestDay = otData[0][9];
-	var totalOneDay = moment.duration(otData[0][12]);
-
-	for (day = 1; day < otData.length; day++) {
-		var data = otData[day];
-
-		console.log("totalOneDay - " + day + " : "
-				+ totalOneDay.format("hh:mm"));
-		otTimeDay = moment.duration(otTimeDay).add(data[4]);
-		otTimeNight = moment.duration(otTimeNight).add(data[5]);
-		otHoliday = moment.duration(otHoliday).add(data[6]);
-		workSun = moment.duration(workSun).add(data[7]);
-		ot2RestDay = moment.duration(ot2RestDay).add(data[8]);
-		workOnRestDay = moment.duration(workOnRestDay).add(data[9]);
-		totalOneDay = moment.duration(totalOneDay).add(data[12]);
+	for (var i = 4; i <= 9; i++) {
+		footData[i] = moment.duration('00:00');
+	}
+	
+	footData[12] = moment.duration('00:00');
+	
+	for (var day = 0; day < otData.length; day++) {
+		for (var i = 4; i <= 9; i++) {
+			footData[i].add(otData[day][i]);
+		}
+		footData[12].add(otData[day][12]);
 	}
 
-	var sub = workOnRestDay >= ot2RestDay ? ot2RestDay : workOnRestDay;
+	for (var i = 4; i <= 9; i++) {
+		footData[i] = dateFormat(moment.duration(footData[i]).format("H:mm"));
+	}
 
-	totalOneDay = moment.duration(totalOneDay).subtract(sub);
-	/*
-	 * otTimeDay = otTimeDay.hours() + ':' + otTimeDay.minutes(); otTimeNight =
-	 * otTimeNight.hours() + ':' + otTimeNight.minutes(); otHoliday =
-	 * otHoliday.hours() + ':' + otHoliday.minutes(); workSun = workSun.hours() +
-	 * ':' + workSun.minutes(); ot2RestDay = ot2RestDay.hours() + ':' +
-	 * ot2RestDay.minutes(); workOnRestDay = workOnRestDay.hours() + ':' +
-	 * workOnRestDay.minutes(); totalOneDay = totalOneDay.hours() + ':' +
-	 * totalOneDay.minutes();
-	 */
-	var format = "HH:mm"
-	footData.push("Total", "", "", "", otTimeDay.format(format), otTimeNight
-			.format(format), otHoliday.format(format), workSun.format(format),
-			ot2RestDay.format(format), workOnRestDay.format(format), "", "",
-			totalOneDay.format(format), "", "");
-	console.log('final result : ' + footData);
-
+	footData[12] = dateFormat(moment.duration(footData[12]).format("H:mm"));
+	
+	footData[0] = "Total";
+	//callback(footData);
+	
 	return footData;
 }

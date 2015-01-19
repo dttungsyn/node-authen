@@ -3,7 +3,7 @@
 /**
  * 
  */
-
+var timeFmt = "HH:mm"
 var weekday = [ "日", "月", "火", "水", "木", "金", "土" ];
 var defaultData = [ // usually get from database
 {
@@ -93,7 +93,7 @@ var defaultData = [ // usually get from database
 	"hide" : "all"
 }, {
 	"name" : "出社",
-	"defaultVal" : "9:00",
+	"defaultVal" : "09:00",
 	"defaultValWend" : "",
 	"fieldType" : "input",
 	"inputClass" : "time-input",
@@ -111,7 +111,7 @@ var defaultData = [ // usually get from database
 	}
 }, {
 	"name" : "休憩",
-	"defaultVal" : "1:00",
+	"defaultVal" : "01:00",
 	"defaultValWend" : "",
 	"fieldType" : "input",
 	"inputClass" : "time-input",
@@ -195,7 +195,7 @@ function initMonthData(fieldset, mmObj) {
 
 			// input
 			if (field.name === "出社") {
-				val = "9:00";
+				val = "09:00";
 			}
 
 			if (field.name === "退社") {
@@ -203,7 +203,7 @@ function initMonthData(fieldset, mmObj) {
 			}
 
 			if (field.name === "休憩") {
-				val = "1:00";
+				val = "01:00";
 			}
 
 			if ((date.day() == 0 || date.day() == 6)
@@ -278,7 +278,7 @@ function addDay2MonthData(fieldset, mmObj, timeData) {
 
 			// input
 			if (field.name === "出社") {
-				val = "9:00";
+				val = "09:00";
 			}
 
 			if (field.name === "退社") {
@@ -286,7 +286,7 @@ function addDay2MonthData(fieldset, mmObj, timeData) {
 			}
 
 			if (field.name === "休憩") {
-				val = "1:00";
+				val = "01:00";
 			}
 
 			if ((date.day() == 0 || date.day() == 6)
@@ -319,7 +319,7 @@ function makeTimeTable() {
 		pickDate : false,
 		useCurrent : false,
 		pick12HourFormat : true,
-		format : "H:mm",
+		format : timeFmt,
 		minuteStepping : 5,
 		direction : "bottom"
 	});
@@ -331,7 +331,7 @@ function calculateTime(timeData, index, callback) {
 	var overTime, exitTime, enterTime, actualRest, workHourHoliday, actualWorkHoliday, actualWorkHour, workTime;
 	var restDate, furikae, fjpRestDay, workHour, absentHour, furikaeRest, annualLeave, goOutTime, nightWorkTime, standardTime, fjpStandardTime;
 
-	var endIdx = (index === "all") ? timeData.length : index;
+	var endIdx = (index === "all") ? timeData.length - 1 : index;
 	var startIdx = (index === "all") ? 0 : index;
 
 	var time0 = moment.duration("00:00");
@@ -355,32 +355,39 @@ function calculateTime(timeData, index, callback) {
 		workTime = moment.duration(exitTime).subtract(enterTime);
 		overTime = time0;
 		if (restDate === '日' || restDate === '土' || fjpRestDay === '*') {
-			if (workTime >= moment.duration(halfOfDay).add(lunchTime)) {
-				var restTime = moment.duration(data[5]);
-				if (restTime == "" || restTime == '00') {
-					actualRest = lunchTime;
-				} else {
-					actualRest = (moment.duration(restTime) >= lunchTime) ? restTime
-							: lunchTime;
-				}
-			}
-
-			workHour = moment.duration(workTime).subtract(actualRest);
-			if (workHour < standardTime && workHour >= halfOfDay) {
-				furikae = halfOfDay;
-			} else if (workHour >= standardTime
-					&& workHour < moment.duration(fjpStandardTime)) {
-				furikae = workHour;
-			} else if (workHour >= moment.duration(fjpStandardTime)) {
-				furikae = fjpStandardTime;
-			} else {
-				furikae = time0;
-			}
-
-			workHourHoliday = (workHour > furikae) ? moment.duration(workHour)
-					.subtract(furikae) : time0;
-			actualWorkHour = moment.duration(workHour).add(goOutTime);
 			overTime = absentHour = nightWorkTime = time0;
+			if (enterTime == "" || enterTime == "00" || exitTime == ""
+					|| exitTime == "00" || exitTime <= enterTime) {
+				actualRest = workHourHoliday = actualWorkHour = furikae = time0;
+			} else {
+
+				if (workTime >= moment.duration(halfOfDay).add(lunchTime)) {
+					var restTime = moment.duration(data[5]);
+					if (restTime == "" || restTime == '00') {
+						actualRest = lunchTime;
+					} else {
+						actualRest = (moment.duration(restTime) >= lunchTime) ? restTime
+								: lunchTime;
+					}
+				}
+
+				workHour = moment.duration(workTime).subtract(actualRest);
+				if (workHour < standardTime && workHour >= halfOfDay) {
+					furikae = halfOfDay;
+				} else if (workHour >= standardTime
+						&& workHour < moment.duration(fjpStandardTime)) {
+					furikae = workHour;
+				} else if (workHour >= moment.duration(fjpStandardTime)) {
+					furikae = fjpStandardTime;
+				} else {
+					furikae = time0;
+				}
+
+				workHourHoliday = (workHour > furikae) ? moment.duration(
+						workHour).subtract(furikae) : time0;
+				actualWorkHour = moment.duration(workHour).add(goOutTime);
+
+			}
 		} else {
 			furikae = workHourHoliday = time0;
 			if (enterTime == "" || enterTime == "00" || exitTime == ""
@@ -443,15 +450,15 @@ function calculateTime(timeData, index, callback) {
 			}
 		}
 
-		data[5] = dateFormat(moment.duration(actualRest).format("hh:mm"));
-		data[9] = dateFormat(moment.duration(workHour).format("hh:mm"));
-		data[10] = dateFormat(moment.duration(actualWorkHour).format("hh:mm"));
-		data[11] = dateFormat(moment.duration(absentHour).format("hh:mm"));
-		data[12] = dateFormat(moment.duration(overTime).format("hh:mm"));
-		data[13] = dateFormat(moment.duration(nightWorkTime).format("hh:mm"));
+		data[5] = dateFormat(moment.duration(actualRest).format(timeFmt));
+		data[9] = dateFormat(moment.duration(workHour).format(timeFmt));
+		data[10] = dateFormat(moment.duration(actualWorkHour).format(timeFmt));
+		data[11] = dateFormat(moment.duration(absentHour).format(timeFmt));
+		data[12] = dateFormat(moment.duration(overTime).format(timeFmt));
+		data[13] = dateFormat(moment.duration(nightWorkTime).format(timeFmt));
 		data[14] = "";
-		data[15] = dateFormat(moment.duration(workHourHoliday).format("hh:mm"));
-		data[16] = dateFormat(moment.duration(furikae).format("hh:mm"));
+		data[15] = dateFormat(moment.duration(workHourHoliday).format(timeFmt));
+		data[16] = dateFormat(moment.duration(furikae).format(timeFmt));
 		timeData[idx] = data;
 	}
 	callback(msg);
@@ -479,7 +486,7 @@ function calFooterTime(tData, callback) {
 	}
 
 	for (var i = 5; i <= 15; i++) {
-		footData[i] = dateFormat(moment.duration(footData[i]).format("HH:mm"));
+		footData[i] = dateFormat(moment.duration(footData[i]).format(timeFmt));
 	}
 
 	footData[0] = "Total";

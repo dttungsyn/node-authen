@@ -196,14 +196,14 @@ angular.module('todoController', [])
 							$scope.timeDatas.data[ today.date() - 1 ].today = true;
 						}
 						
-						$scope.timeDatas.footData = [1,2,3];
-						//calculate footer
-						calFooterTime($scope.timeDatas.data, function(footData){
-							$scope.timeDatas.footData = footData;
-						});
+//						$scope.timeDatas.footData = [1,2,3];
+//						//calculate footer
+//						calFooterTime($scope.timeDatas.data, function(footData){
+//							$scope.timeDatas.footData = footData;
+//						});
 						
 						//first time calculate
-						/*calculateTime($scope.timeDatas.data, null, function(err){
+						calculateTime($scope.timeDatas.data, "all", function(err){
 							if (err) {
 								$scope.formData.user.updateWarn = err;
 				                // clear the message after 5s
@@ -218,7 +218,7 @@ angular.module('todoController', [])
 								//$scope.$apply();
 							});
 							
-						});*/
+						});
 					}
 					
 					//end loading
