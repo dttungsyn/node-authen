@@ -91,7 +91,7 @@ function getOTData(timeData) {
 		if (otTimeDay != "") {
 			totalOneDay = otTimeDay;
 		} else if (otHoliday != "") {
-			totalOneDay = moment.duration(otHoliday).add(workOnRestDay).format("h:mm");
+			totalOneDay = moment.duration(otHoliday).add(workOnRestDay).format("hh:mm");
 		}
 
 		otData.push([ otDay, otDay, otDate, workTime, otTimeDay, otTimeNight,
@@ -110,6 +110,9 @@ function getOTData(timeData) {
 function calFooter(otData) {
 	
 	var footData = [];
+	footData[0] = "Total";
+	footData[13] = "";
+	footData[14] = "";
 	for (var i = 4; i <= 9; i++) {
 		footData[i] = moment.duration('00:00');
 	}
@@ -124,13 +127,10 @@ function calFooter(otData) {
 	}
 
 	for (var i = 4; i <= 9; i++) {
-		footData[i] = dateFormat(moment.duration(footData[i]).format("H:mm"));
+		footData[i] = dateFormat(moment.duration(footData[i]).format("hh:mm"));
 	}
 
-	footData[12] = dateFormat(moment.duration(footData[12]).format("H:mm"));
-	
-	footData[0] = "Total";
-	//callback(footData);
+	footData[12] = dateFormat(moment.duration(footData[12]).format("hh:mm"));
 	
 	return footData;
 }
