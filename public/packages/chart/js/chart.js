@@ -38,10 +38,9 @@ angular.module('todoController').controller(
 						});
 
 						var timeData = $scope.$parent.timeDatas.data;
-						var yearMonth = $scope.$parent.monthstr;
 
 						d3.select('#chart svg') //Select the <svg> element you want to render the chart in.   
-						.datum(exampleData(timeData)) //Populate the <svg> element with chart data...
+						.datum(convertData(timeData)) //Populate the <svg> element with chart data...
 						.call(chart); //Finally, render the chart!
 
 						//Update the chart when window resizes.
@@ -58,9 +57,8 @@ angular.module('todoController').controller(
 							//update chart
 							setTimeout(function() {
 								var timeData = $scope.$parent.timeDatas.data;
-								var yearMonth = $scope.$parent.monthstr;
 								d3.select('#mychart svg').datum(
-										exampleData(timeData)).call(chart);
+										convertData(timeData)).call(chart);
 
 							}, 500);
 
@@ -73,9 +71,7 @@ angular.module('todoController').controller(
 				} ])
 
 //Each bar represents a single discrete quantity.
-function exampleData(timeData) {
-
-	console.log(timeData);
+function convertData(timeData) {
 
 	var day = 0;
 	var time;
