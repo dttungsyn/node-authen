@@ -329,19 +329,19 @@ function calculateTime(timeData, index, callback) {
 
 	var msg;
 	var overTime, exitTime, enterTime, actualRest, workHourHoliday, actualWorkHoliday, actualWorkHour, workTime;
-	var restDate, furikae, fjpRestDay, workHour, absentHour, furikaeRest, annualLeave, goOutTime,nightWorkTime;
-	
+	var restDate, furikae, fjpRestDay, workHour, absentHour, furikaeRest, annualLeave, goOutTime, nightWorkTime, standardTime, fjpStandardTime;
+
 	var endIdx = (index === "all") ? timeData.length : index;
 	var startIdx = (index === "all") ? 0 : index;
 
-	var time0 =  moment.duration("00:00");
+	var time0 = moment.duration("00:00");
 	var time15 = "00:15";
 
 	var lunchTime = moment.duration('1:00');
-	var standardTime = fjpStandardTime = moment.duration('8:00');
+	standardTime = fjpStandardTime = moment.duration('8:00');
 	var halfOfDay = moment.duration('4:00');
 	var totalBaseTime = moment.duration(standardTime).add(lunchTime);
-	
+
 	for (var idx = startIdx; idx <= endIdx; idx++) {
 		var data = timeData[idx];
 		restDate = data[1];
@@ -365,7 +365,6 @@ function calculateTime(timeData, index, callback) {
 				}
 			}
 
-			
 			workHour = moment.duration(workTime).subtract(actualRest);
 			if (workHour < standardTime && workHour >= halfOfDay) {
 				furikae = halfOfDay;
@@ -378,7 +377,8 @@ function calculateTime(timeData, index, callback) {
 				furikae = time0;
 			}
 
-			workHourHoliday = (workHour > furikae) ? moment.duration(workHour).add(furikae) : time0 ;
+			workHourHoliday = (workHour > furikae) ? moment.duration(workHour)
+					.add(furikae) : time0;
 			actualWorkHour = moment.duration(workHour).add(goOutTime);
 			overTime = absentHour = nightWorkTime = time0;
 		} else {
@@ -419,31 +419,30 @@ function calculateTime(timeData, index, callback) {
 				workHour = moment.duration(workTime).subtract(actualRest);
 			}
 			actualWorkHour = moment.duration(workHour).add(goOutTime);
-			
+
 			if (actualWorkHour > fjpStandardTime) {
-				overTime = moment.duration(actualWorkHour)
-						.subtract(fjpStandardTime).add(furikaeRest)
-						.add(annualLeave);
+				overTime = moment.duration(actualWorkHour).subtract(
+						fjpStandardTime).add(furikaeRest).add(annualLeave);
 			}
 
-			absentHour = moment.duration(standardTime).subtract(actualWorkHour).subtract(
-					furikaeRest).subtract(annualLeave);
-			if (absentHour < time0 ) {
-				overTime = moment.duration(absentHour*-1);
+			absentHour = moment.duration(standardTime).subtract(actualWorkHour)
+					.subtract(furikaeRest).subtract(annualLeave);
+			if (absentHour < time0) {
+				overTime = moment.duration(absentHour * -1);
 				absentHour = time0;
-				
+
 			}
-			
+
 			if (overTime > moment.duration("11:30")) {
 				msg = "overtime was exceed 13h30m";
 			}
-			
+
 			nightWorkTime = time0
 			if (exitTime > moment.duration("23:00")) {
 				nightWorkTime = moment.duration(exitTime).subtract("23:00");
 			}
 		}
-		
+
 		data[5] = dateFormat(moment.duration(actualRest).format("hh:mm"));
 		data[9] = dateFormat(moment.duration(workHour).format("hh:mm"));
 		data[10] = dateFormat(moment.duration(actualWorkHour).format("hh:mm"));
@@ -459,8 +458,9 @@ function calculateTime(timeData, index, callback) {
 }
 
 function dateFormat(iDate) {
-	if (iDate == null || iDate <= 0) return "";
-	
+	if (iDate == null || iDate <= 0)
+		return "";
+
 	var sDate = iDate.toString();
 	return sDate.indexOf(":") == -1 ? "00:" + sDate : sDate;
 }
@@ -469,19 +469,19 @@ function calFooterTime(tData, callback) {
 
 	var footData = [];
 	var tmpArr = [];
-	for (var i = 5 ; i <= 15; i++) {
+	for (var i = 5; i <= 15; i++) {
 		footData[i] = moment.duration('00:00');
 	}
 	for (var day = 0; day < tData.length; day++) {
-		for (var i = 5; i<= 15; i++) {
+		for (var i = 5; i <= 15; i++) {
 			footData[i].add(tData[day][i]);
 		}
 	}
 
-	for (var i = 5 ; i <= 15; i++) {
+	for (var i = 5; i <= 15; i++) {
 		footData[i] = dateFormat(moment.duration(footData[i]).format("HH:mm"));
 	}
-	
+
 	footData[0] = "Total";
 	callback(footData);
 }
