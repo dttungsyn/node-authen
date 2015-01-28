@@ -22,6 +22,7 @@ function exportTimeData(req, res){
 	
 	var java = require("java");
 	java.classpath.push(__dirname + "/src");
+	java.classpath.push(__dirname + "/poi-3.11-20141221.jar");
 	var UserData = java.import("jp.co.fpt.excel.UserData");
 	var userData = new UserData();
 	userData.setUserNameSync(req.params.username);
