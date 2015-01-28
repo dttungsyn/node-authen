@@ -353,41 +353,41 @@ function calculateTime(timeData, index, callback) {
 		annualLeave = moment.duration(data[8]);
 
 		workTime = moment.duration(exitTime).subtract(enterTime);
-		overTime = time0;
+		actualRest = overTime = time0;
 		if (restDate === '日' || restDate === '土' || fjpRestDay === '*') {
 			overTime = absentHour = nightWorkTime = time0;
 			if (enterTime == "" || enterTime == "00" || exitTime == ""
 					|| exitTime == "00" || exitTime <= enterTime) {
-				actualRest = workHourHoliday = actualWorkHour = furikae = time0;
+				workHour = workTime = time0;
 			} else {
-
-				if (workTime >= moment.duration(halfOfDay).add(lunchTime)) {
-					var restTime = moment.duration(data[5]);
-					if (restTime == "" || restTime == '00') {
-						actualRest = lunchTime;
-					} else {
-						actualRest = (moment.duration(restTime) >= lunchTime) ? restTime
-								: lunchTime;
-					}
-				}
-
 				workHour = moment.duration(workTime).subtract(actualRest);
-				if (workHour < standardTime && workHour >= halfOfDay) {
-					furikae = halfOfDay;
-				} else if (workHour >= standardTime
-						&& workHour < moment.duration(fjpStandardTime)) {
-					furikae = workHour;
-				} else if (workHour >= moment.duration(fjpStandardTime)) {
-					furikae = fjpStandardTime;
-				} else {
-					furikae = time0;
-				}
-
-				workHourHoliday = (workHour > furikae) ? moment.duration(
-						workHour).subtract(furikae) : time0;
-				actualWorkHour = moment.duration(workHour).add(goOutTime);
-
 			}
+
+			actualWorkHour = moment.duration(workHour).add(goOutTime);
+			if (actualWorkHour >= moment.duration(halfOfDay).add(lunchTime)) {
+				var restTime = moment.duration(data[5]);
+				if (restTime == "" || restTime == '00') {
+					actualRest = lunchTime;
+				} else {
+					actualRest = (moment.duration(restTime) >= lunchTime) ? restTime
+							: lunchTime;
+				}
+			}
+			
+			if (actualWorkHour < standardTime && actualWorkHour >= halfOfDay) {
+				furikae = halfOfDay;
+			} else if (actualWorkHour >= standardTime
+					&& actualWorkHour < moment.duration(fjpStandardTime)) {
+				furikae = actualWorkHour;
+			} else if (actualWorkHour >= moment.duration(fjpStandardTime)) {
+				furikae = fjpStandardTime;
+			} else {
+				furikae = time0;
+			}
+
+			workHourHoliday = (workHour > furikae) ? moment.duration(
+					workHour).subtract(furikae) : time0;
+			
 		} else {
 			furikae = workHourHoliday = time0;
 			if (enterTime == "" || enterTime == "00" || exitTime == ""
