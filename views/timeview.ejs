@@ -120,6 +120,12 @@
     		  	<i class="fa fa fa-spinner fa-spin" ng-show="savingTimeData"></i>
     		  	
     		  	<div class="btn-group">
+    		  		<!--export1 button-->
+    		  		<button type="button" class="savebtn btn btn-success" ng-click="exportTimeData()">
+    		  		<i class="fa fa-floppy-o"></i>&nbsp;
+    		  			Export
+    		  		</button>
+    		  			
     		  	    <button type="button" class="savebtn btn btn-primary" ng-show="formData.loginUser.staffs.length > 0 && (timeDatas.state == 1 || timeDatas.state == 2)" ng-click="approveTime()">
                         <i class="fa fa-check-square-o" style="font-size: 16px;"></i>&nbsp;
                         <span ng-show="timeDatas.state == 1">Approve</span>

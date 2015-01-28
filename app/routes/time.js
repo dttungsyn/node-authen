@@ -30,6 +30,9 @@ module.exports = function(app, passport) {
 		})(req, res, next);
 	});
 	
+	// export data
+	app.post('/api/exporttimedata/:username', isLoggedInAPI, controller.exportTimeData);
+	
 	
 	// Get time data TODO move to model - getTimeData
 	app.post('/api/timedata/:username', isLoggedInAPI, controller.getTimeData);
