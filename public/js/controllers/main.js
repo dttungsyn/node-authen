@@ -56,7 +56,8 @@ angular.module('todoController', [])
 		$scope.formData  = {};
 		$scope.timeDatas = {
 			fields: [],
-			data: {}
+			data: {},
+			footData: [1, 2, 3, 4, 5]
 		};
 		
 		$scope.hasStaff = false;
@@ -175,7 +176,7 @@ angular.module('todoController', [])
 					}
 					//not found, init data if own timesheet
 					else if ($scope.formData.loginUser.local.username == $scope.formData.user.local.username){
-						$scope.timeDatas = initMonthData(data.timedata.fieldset, moment( $scope.monthstr, "YYYY-MM" ));	//initMonthData: functions.js
+						$scope.timeDatas.data = initMonthData(data.timedata.fieldset, moment( $scope.monthstr, "YYYY-MM" )).data;	//initMonthData: functions.js
 						if (data.timedata.fieldset) $scope.timeDatas.fields = data.timedata.fieldset;	//get fields from server if possible
 						$scope.timeDatas.state = 0;
 					} else {
@@ -194,6 +195,30 @@ angular.module('todoController', [])
 						if ( today.format("YYYY-MM") == $scope.monthstr ){
 							$scope.timeDatas.data[ today.date() - 1 ].today = true;
 						}
+						
+//						$scope.timeDatas.footData = [1,2,3];
+//						//calculate footer
+//						calFooterTime($scope.timeDatas.data, function(footData){
+//							$scope.timeDatas.footData = footData;
+//						});
+						
+						//first time calculate
+						calculateTime($scope.timeDatas.data, "all", function(err){
+							if (err) {
+								$scope.formData.user.updateWarn = err;
+				                // clear the message after 5s
+				            	setTimeout(function(){
+				            		$scope.formData.user.updateWarn = null;
+				            		$scope.$apply();
+				            	}, 5000);
+							}
+							calFooterTime($scope.timeDatas.data,function(footData){
+								//console.log(footData);
+								$scope.timeDatas.footData = footData;
+								//$scope.$apply();
+							});
+							
+						});
 					}
 					
 					//end loading
@@ -205,6 +230,8 @@ angular.module('todoController', [])
 							val.state = data.staffStates.hasOwnProperty( val.local.username ) ? data.staffStates[ val.local.username ] : -1;
 						})
 					}
+					
+					
 				})
 				
 				.error(function(data) {
@@ -373,11 +400,14 @@ angular.module('todoController', [])
 	            		$scope.$apply();
 	            	}, 5000);
 				}
-				$scope.$apply();
+				calFooterTime($scope.timeDatas.data,function(footData){
+					//console.log(footData);
+					$scope.timeDatas.footData = footData;
+					$scope.$apply();
+				});
+				
 			});
 			
-			calFooterTime($scope.timeDatas.data,function(footData){
-				console.log(footData);
-			});
+			
 		});
 	});

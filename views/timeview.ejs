@@ -94,19 +94,19 @@
   <!--Time data row-->
   <div class="control row">
       <div class="col-md-2" ng-show="hasStaff && showStaff" style="margin-top: 10px;">
-            <div class="list-group">
-        
-              <a href="#" class="list-group-item" ng-repeat="staff in staffs"
-                ng-class="{'active': staff.local.username === formData.selectingUsername}" ng-click="selectStaff(staff.local.username)">
-                  {{ staff.fullname || staff.local.username }}
-                  <span class="label pull-right" ng-show="staff.state === 0"><i class="fa fa-columns" style="color: black"></i></span>
-                  <span class="label label-info pull-right" ng-show="staff.state === 1">Applied</span>
-                  <span class="label label-success pull-right" ng-show="staff.state === 2">Approved</span>
-              </a>
-              
-              
-            </div>
+        <div class="list-group">
+    
+          <a href="#" class="list-group-item" ng-repeat="staff in staffs"
+            ng-class="{'active': staff.local.username === formData.selectingUsername}" ng-click="selectStaff(staff.local.username)">
+              {{ staff.fullname || staff.local.username }}
+              <span class="label pull-right" ng-show="staff.state === 0"><i class="fa fa-columns" style="color: black"></i></span>
+              <span class="label label-info pull-right" ng-show="staff.state === 1">Applied</span>
+              <span class="label label-success pull-right" ng-show="staff.state === 2">Approved</span>
+          </a>
+          
+          
         </div>
+      </div>
         
       <div class="bs-timesheet bs-example" ng-class="{'col-md-10': hasStaff && showStaff}">
       	<i class="fa fa-list-alt" ng-show="hasStaff" ng-click="showStaff = !showStaff" style="margin: 5px; font-size: 18px; cursor: pointer"></i>
@@ -164,9 +164,22 @@
     				  	<span ng-if="field.fieldType === 'label'" >{{timeData[$index]}}</span>
     				  	<input ng-if="field.fieldType === 'input'" type="text" ng-model="timeData[$index]" ng-class="inputClass(outerIndex, field, $index)" style="" />
     				  	<textarea ng-if="field.fieldType === 'textarea'" ng-model="timeData[$index]" ng-class="inputClass(outerIndex, field, $index)" style="width: 100%; height: 97%; border: none;"></textarea>
-    				  	<!--<span ng-if="field.fieldType === 'textarea'" >{{timeData[field.name]}}</span>-->
+
     				  </td>
     				</tr>
+    				<!-- footer-->
+    				<tr style="background-color: #FCD692;">
+    				    <td ng-repeat="footdat in timeDatas.footData track by $index">
+    				        <span class="ng-scope">{{ footdat }}</span>
+    				    </td>
+    				    <td></td>
+    				    <td></td>
+    				</tr>
+<!--
+    				<tfoot>
+    				    <th ng-repeat="footdat in timeDatas.footData track by $index">{{ footdat }}</th>
+    				</tfoot>-->
+
     		      
     			  </table>
     		  </div>
