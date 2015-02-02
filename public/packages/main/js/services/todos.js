@@ -20,12 +20,20 @@ angular.module('todoService', [])
 		}
 	})
 	
+	.factory('TimeServices', TimeServices)
+	
 	.directive('onLastRepeat', function() {
         return function(scope, element, attrs) {	// this is link by default
             if (scope.$last) setTimeout(function(){
                 //console.log(scope);
-                makeTimeTable();
+                FptTIME.makeTimeTable();
                 //scope.loadingTimeData = false;
             }, 5);
         };
     });
+
+function TimeServices($http){
+	return {
+		
+	}
+}

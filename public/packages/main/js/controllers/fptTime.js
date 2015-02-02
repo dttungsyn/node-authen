@@ -1,4 +1,114 @@
+(function($){
+
 'use strict'
+	
+var FptTIME = window.FptTIME || {};
+
+
+FptTIME.version = '1.0';
+FptTIME.dev = true //set false when in production
+
+window.FptTIME = FptTIME;
+
+//======= init layout ==========
+$("document").ready(function(){
+
+	//set month picker
+	$('#timemonth').datetimepicker({
+		pickTime : false,
+		minViewMode: "months",
+		useCurrent: true
+		
+	})
+	.on("dp.change",function (e) {
+	    $("#timemonth input").change();
+	});
+	
+	//save button affix
+	setTimeout(function(){
+		$('.ts-submit').affix({
+		    offset: {
+		      top: $('.ts-submit').offset().top + 20
+		    }
+		})
+		
+		//name bar
+		$('.name-bar').affix({
+		    offset: {
+		      top: function(){
+		    	  if ( $('.name-bar').hasClass('affix') )
+		    		  return name_bar_top;
+		    	  
+		    	  return $('.name-bar').offset().top;
+		    	  
+		    	  
+		      }
+		    }
+		})
+		var name_bar_top;
+		$('.name-bar').on('affix.bs.affix', function(){
+			name_bar_top = $('.name-bar').offset().top;
+			//console.log( name_bar_top );
+		});
+		
+		//staff list
+		$('.list-group').affix({
+		    offset: {
+		      top: function(){
+		    	  if ( $('.list-group').hasClass('affix') )
+		    		  return list_group_top;
+		    	  
+		    	  return $('.list-group').offset().top - 60;
+		    	  
+		    	  
+		      }
+		    }
+		})
+		var list_group_top;
+		$('.list-group').on('affix.bs.affix', function(){
+			list_group_top = $('.list-group').offset().top - 60;
+			//console.log( list_group_top );
+		});
+		
+		
+	}, 1000);
+	
+	
+	//tab change event
+	$('.bs-timesheet a[data-toggle="tab"]').on('shown.bs.tab', function (e) {
+	  if ( $(e.target).attr("href") == "#home" ){
+		  // update time table
+		  console.log("update time table");
+		  $("#ts-table").resize();
+	  } 
+	  else if ( $(e.target).attr("href") == "#chart" ){
+		  // update chart
+		  console.log("update chart");
+		  fpttime.chart.update();
+	  }
+	  //console.log(e.relatedTarget) // previous tab
+	})
+	
+	$('.selectpicker').selectpicker();
+	
+	$('select.selectpicker').on('change', function(){
+        var selected = $('.selectpicker option:selected').val();
+        $('.selectstaff').val(selected);	//element that is bind with ng-model
+        $('.selectstaff').change();
+        //console.log(selected);
+     });
+	
+})
+
+/*
+ * Expose
+ */
+FptTIME.initMonthData = initMonthData;
+FptTIME.addDay2MonthData = addDay2MonthData
+FptTIME.makeTimeTable = makeTimeTable
+FptTIME.calculateTime = calculateTime
+FptTIME.calFooterTime = calFooterTime
+FptTIME.dateFormat = dateFormat
 
 /**
  * 
@@ -492,3 +602,7 @@ function calFooterTime(tData, callback) {
 	footData[0] = "Total";
 	callback(footData);
 }
+
+
+
+})(jQuery);

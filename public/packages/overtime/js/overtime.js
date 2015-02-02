@@ -127,10 +127,10 @@ function calFooter(otData) {
 	}
 
 	for (var i = 4; i <= 9; i++) {
-		footData[i] = dateFormat(moment.duration(footData[i]).format("hh:mm"));
+		footData[i] = FptTIME.dateFormat(moment.duration(footData[i]).format("hh:mm"));
 	}
 
-	footData[12] = dateFormat(moment.duration(footData[12]).format("hh:mm"));
+	footData[12] = FptTIME.dateFormat(moment.duration(footData[12]).format("hh:mm"));
 	
 	return footData;
 }

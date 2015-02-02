@@ -57,7 +57,7 @@ angular.module('todoController', [])
 		$scope.timeDatas = {
 			fields: [],
 			data: {},
-			footData: [1, 2, 3, 4, 5]
+			footData: []
 		};
 		
 		$scope.hasStaff = false;
@@ -172,11 +172,11 @@ angular.module('todoController', [])
 						$scope.timeDatas.fields = data.timedata.fieldset.fields;
 						$scope.timeDatas.state = data.timedata.state;
 						
-						addDay2MonthData(data.timedata.fieldset.fields, moment( $scope.monthstr, "YYYY-MM" ), data.timedata.data);	// addDay2MonthData: functions.js
+						FptTIME.addDay2MonthData(data.timedata.fieldset.fields, moment( $scope.monthstr, "YYYY-MM" ), data.timedata.data);	// addDay2MonthData: functions.js
 					}
 					//not found, init data if own timesheet
 					else if ($scope.formData.loginUser.local.username == $scope.formData.user.local.username){
-						$scope.timeDatas.data = initMonthData(data.timedata.fieldset, moment( $scope.monthstr, "YYYY-MM" )).data;	//initMonthData: functions.js
+						$scope.timeDatas.data = FptTIME.initMonthData(data.timedata.fieldset, moment( $scope.monthstr, "YYYY-MM" )).data;	//initMonthData: functions.js
 						if (data.timedata.fieldset) $scope.timeDatas.fields = data.timedata.fieldset;	//get fields from server if possible
 						$scope.timeDatas.state = 0;
 					} else {
@@ -203,7 +203,7 @@ angular.module('todoController', [])
 //						});
 						
 						//first time calculate
-						calculateTime($scope.timeDatas.data, "all", function(err){
+						FptTIME.calculateTime($scope.timeDatas.data, "all", function(err){
 							if (err) {
 								$scope.formData.user.updateWarn = err;
 				                // clear the message after 5s
@@ -212,7 +212,7 @@ angular.module('todoController', [])
 				            		$scope.$apply();
 				            	}, 5000);
 							}
-							calFooterTime($scope.timeDatas.data,function(footData){
+							FptTIME.calFooterTime($scope.timeDatas.data,function(footData){
 								//console.log(footData);
 								$scope.timeDatas.footData = footData;
 								//$scope.$apply();
@@ -387,11 +387,12 @@ angular.module('todoController', [])
 			return classes;
 		}
 		
-		//data change event
+		
+		//data change event - TODO move to fptTime.js
 		$('#ts-table').on('change', 'input', function(e){
 			var index = $(e.target).closest('tr').index();
 			//apply
-			calculateTime($scope.timeDatas.data, index, function(err){
+			FptTIME.calculateTime($scope.timeDatas.data, index, function(err){
 				if (err) {
 					$scope.formData.user.updateWarn = err;
 	                // clear the message after 5s
@@ -400,7 +401,7 @@ angular.module('todoController', [])
 	            		$scope.$apply();
 	            	}, 5000);
 				}
-				calFooterTime($scope.timeDatas.data,function(footData){
+				FptTIME.calFooterTime($scope.timeDatas.data,function(footData){
 					//console.log(footData);
 					$scope.timeDatas.footData = footData;
 					$scope.$apply();

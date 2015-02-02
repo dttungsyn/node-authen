@@ -12,7 +12,7 @@
 	<link rel="stylesheet" href="/lib/kartik-v-bootstrap-fileinput/css/fileinput.css">
 	<link rel="stylesheet" href="/lib/bootstrap-select/css/bootstrap-select.css">
 	
-	<link rel="stylesheet" href="css/main.css ">
+	<link rel="stylesheet" href="/packages/main/css/main.css">
 	<style>
 		body { padding-top:0px;}
 	</style>
@@ -24,32 +24,12 @@
 
 <!-- message  -->
 <div id="messages" class="notification-center alert alert-success" ng-show="formData.user.updateSuccess">{{ formData.user.updateSuccess }}</div>
-<div id="" class="notification-center alert alert-danger" ng-show="formData.user.updateFail">{{ formData.user.updateFail }}</div>
-<div id="" class="notification-center alert alert-warning" ng-show="formData.user.updateWarn">{{ formData.user.updateWarn }}</div>
+<div class="notification-center alert alert-danger" ng-show="formData.user.updateFail">{{ formData.user.updateFail }}</div>
+<div class="notification-center alert alert-warning" ng-show="formData.user.updateWarn">{{ formData.user.updateWarn }}</div>
 
 <% include partials/navheader.ejs %>
 
 <% include partials/userinfo.ejs %>
-
-
-<!--list user and state-->
-<!--
-<div class="container" ng-show="staffs && staffs.length > 0">
-    <div class="list-group col-md-4">
-
-      <a href="#" class="list-group-item" ng-repeat="staff in staffs"
-        ng-class="{'active': staff.local.username === formData.selectingUsername}" ng-click="selectStaff(staff.local.username)">
-          {{ staff.fullname || staff.local.username }}
-          <span class="label pull-right" ng-show="staff.state === 0"><i class="fa fa-columns" style="color: black"></i></span>
-          <span class="label label-info pull-right" ng-show="staff.state === 1">Applied</span>
-          <span class="label label-success pull-right" ng-show="staff.state === 2">Approved</span>
-      </a>
-      
-      
-    </div>
-</div>-->
-
-
 
 <div class="name-bar alert alert-info">
     <span class="Timename" style="font-size: 20px">{{formData.user.fullname || formData.user.local.username}}</span>
@@ -224,12 +204,12 @@
 <script src="/lib/bootstrap-select/js/bootstrap-select.js"></script>
 
 <!-- own script-->
-<script src="/js/controllers/functions.js"></script>
-<script src="/js/controllers/main.js"></script> <!-- load up our controller -->
+<script src="/packages/main/js/controllers/fptTime.js"></script>
+<script src="/packages/main/js/controllers/main.js"></script> <!-- load up our controller -->
 <script src="/packages/chart/js/chart.js"></script>
 <script src="/packages/overtime/js/overtime.js"></script>
-<script src="/js/services/todos.js"></script> <!-- load our todo service -->
-<script src="/js/core.js"></script><!-- load our main application -->
+<script src="/packages/main/js/services/todos.js"></script> <!-- load our todo service -->
+<script src="/packages/main/js/core.js"></script><!-- load our main application -->
 
 <script>
   $(function () {
