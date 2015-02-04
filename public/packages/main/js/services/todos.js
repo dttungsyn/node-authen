@@ -22,13 +22,13 @@ angular.module('todoService', [])
 	
 	.factory('TimeServices', TimeServices)
 	
-	.directive('onLastRepeat', function() {
+	.directive('onLastRepeat', function($timeout) {
         return function(scope, element, attrs) {	// this is link by default
-            if (scope.$last) setTimeout(function(){
+            if (scope.$last) $timeout(function(){
                 //console.log(scope);
                 FptTIME.makeTimeTable();
                 //scope.loadingTimeData = false;
-            }, 5);
+            });
         };
     });
 
