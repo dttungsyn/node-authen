@@ -95,6 +95,10 @@ hr {
 .bs-timesheet .ts-submit.affix .savebtn:hover{
 }
 
+.ts-container table{
+	margin-top: 10px;
+}
+
 .ts-container #ts-table{
 	margin-top: 10px;
 	font-family: meiryo, Arial;
@@ -157,4 +161,19 @@ hr {
 .list-group.affix {
 	position: fixed;
 	top: 60px;
+}
+
+/*
+ * multi view table
+ */
+.ts-container .multiview-tbl{
+	font-family: meiryo, Arial;
+}
+
+.ts-container .multiview-tbl a.detail{
+	cursor: pointer;
+}
+
+.ts-container .multiview-tbl button.btn{
+	font-size: .8em;
 }

@@ -88,7 +88,8 @@ function changeStatus(data, type, callback) {
 				} else {
 					callback(null, {
 						"success" : true,
-						"message" : message + " successful"
+						"message" : message + " successful",
+						"newState": data.state
 					});
 				}
 			});
@@ -107,4 +108,10 @@ function checkStatus(data, callback) {
 		}
 		return callback(null, result.state);
 	});
+}
+
+function getTimeDataState(req, res){
+	var monthstr = req.body.monthstr;
+	var users = req.body.users;
+	res.json();
 }

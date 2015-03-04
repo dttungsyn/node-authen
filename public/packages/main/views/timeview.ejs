@@ -78,6 +78,7 @@
     
           <a href="#" class="list-group-item" ng-repeat="staff in staffs"
             ng-class="{'active': staff.local.username === formData.selectingUsername}" ng-click="selectStaff(staff.local.username)">
+              <input type="checkbox" ng-if="multiview == true" ng-checked="multiViewCheck(staff.local.username)" />
               {{ staff.fullname || staff.local.username }}
               <span class="label pull-right" ng-show="staff.state === 0"><i class="fa fa-columns" style="color: black"></i></span>
               <span class="label label-info pull-right" ng-show="staff.state === 1">Applied</span>
@@ -95,8 +96,8 @@
     		  <li class="active"><a href="#home" data-toggle="tab">Time</a></li>
     		  <li><a href="#overtime" data-toggle="tab">OverTime</a></li>
     		  <li><a href="#chart" data-toggle="tab">Chart</a></li>
-    		  <li><a href="#settings" data-toggle="tab">Settings</a></li>
-    		  <div class="ts-submit" ng-show="timeDatas.data">
+    		  <li><a href="#multiview" data-toggle="tab">Multiple View</a></li>
+    		  <div class="ts-submit" ng-show="timeDatas.data && !multiview">
     		  	<i class="fa fa fa-spinner fa-spin" ng-show="savingTimeData"></i>
     		  	
     		  	<div class="btn-group">
@@ -123,6 +124,15 @@
     			  	
     		  	</div>
     		  	
+    		  </div>
+    		  
+    		  <div class="ts-submit" ng-show="multiview">
+    		      <div class="btn-group">
+    		          <button type="button" class="savebtn btn btn-success">
+                        <i class="fa fa-check-square-o" style="font-size: 16px;"></i>&nbsp;
+                        <span>Export All</span>
+                      </button>
+    		      </div>
     		  </div>
     		</ul>
     		
@@ -173,7 +183,38 @@
     		  </div>
     		  
     		  
-    		  <div class="tab-pane" id="settings">...</div>
+    		  <div class="tab-pane" id="multiview">
+    		      <table class="multiview-tbl footable">
+    		        <thead>
+    		          <th class="footable-first-column">Username</th>
+                      <th ng-repeat="header in multiViewHeaders" >
+                        {{ header }}
+                      </th>
+                      <th></th>
+                    </thead>
+                    
+    		          <tr ng-repeat="user in multiViewSelecting">
+    		              <td class="footable-first-column"><a class="detail" ng-click="multiViewShowDetail(user)">{{ user }}</a></td>
+    		              <td ng-repeat="sumdat in multiViewData[ user ].sumData track by $index">
+                            <span class="ng-scope">{{ sumdat }}</span>
+                          </td>
+                          
+                          <td>
+                              <button ng-show="multiViewData[ user ].state == 1" type="button" class="savebtn btn btn-default">
+                                <i class="fa fa-check-square-o" style="font-size: 16px;"></i>&nbsp;
+                                <span>Approve</span>
+                              </button>
+                              <button ng-show="multiViewData[ user ].state == 2" type="button" class="savebtn btn btn-primary">
+                                <i class="fa fa-check-square-o" style="font-size: 16px;"></i>&nbsp;
+                                <span>Unapprove</span>
+                              </button>
+                              <span ng-show="multiViewData[ user ].state == 2" class="" style="color: green">
+                                  <i class="fa fa-check-circle-o fa-2x"></i>
+                              </span>
+                          </td>
+    		          </tr>
+    		      </table>
+    		  </div>
     		</div>
     	
     		<!-- <input id="spinner" name="spinner" value="08:30 PM"> -->

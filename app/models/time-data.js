@@ -25,8 +25,8 @@ var TimeDataSchema = new Schema({
 
 	state : Number
 /*
- * 0: unapply 1: applied - Leader can see to approve 2: approved - Admin can see
- * to approve, user can not modify 3: approved 2 - done, leader can not modify
+ * 0: unapply, 1: applied - Leader can see to approve, 2: approved - Admin can see
+ * to approve, user can not modify, 3: approved level 2 - done, leader can not modify
  */
 
 });

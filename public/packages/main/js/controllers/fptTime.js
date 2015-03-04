@@ -74,21 +74,6 @@ $("document").ready(function(){
 	}, 1000);
 	
 	
-	//tab change event
-	$('.bs-timesheet a[data-toggle="tab"]').on('shown.bs.tab', function (e) {
-	  if ( $(e.target).attr("href") == "#home" ){
-		  // update time table
-		  console.log("update time table");
-		  $("#ts-table").resize();
-	  } 
-	  else if ( $(e.target).attr("href") == "#chart" ){
-		  // update chart
-		  console.log("update chart");
-		  fpttime.chart.update();
-	  }
-	  //console.log(e.relatedTarget) // previous tab
-	})
-	
 	$('.selectpicker').selectpicker();
 	
 	$('select.selectpicker').on('change', function(){
@@ -103,6 +88,8 @@ $("document").ready(function(){
 /*
  * Expose
  */
+FptTIME.assignChangeTabEventHandler = assignChangeTabEventHandler;
+
 FptTIME.initMonthData = initMonthData;
 FptTIME.addDay2MonthData = addDay2MonthData
 FptTIME.makeTimeTable = makeTimeTable
@@ -113,149 +100,37 @@ FptTIME.dateFormat = dateFormat
 /**
  * 
  */
+
+function assignChangeTabEventHandler( scope ){
+	//tab change event
+	$('.bs-timesheet a[data-toggle="tab"]').on('shown.bs.tab', function (e) {
+	  scope.multiview = false;
+	  if ( $(e.target).attr("href") == "#home" ){
+		  // update time table
+		  console.log("update time table");
+		  $("#ts-table").resize();
+	  } 
+	  else if ( $(e.target).attr("href") == "#chart" ){
+		  // update chart
+		  console.log("update chart");
+		  fpttime.chart.update();
+	  }
+	  else if ( $(e.target).attr("href") == "#multiview" ){
+		  // update chart
+		  console.log("open multiview");
+		  scope.multiview = true;
+	  }
+	  
+	  scope.$apply();
+	  //console.log(e.relatedTarget) // previous tab
+	})
+}
+
 var timeFmt = "HH:mm"
 var weekday = [ "日", "月", "火", "水", "木", "金", "土" ];
-var defaultData = [ // usually get from database
-{
-	"name" : "_day",
-	"defaultVal" : function(mmObj) {
-		return mmObj.date();
-	}
-}, {
-	"name" : "_wday",
-	"defaultVal" : function(mmObj) {
-		return mmObj.day();
-	}
-}, {
-	"name" : "日",
-	"defaultVal" : function(mmObj) {
-		return mmObj.format("MM月DD日");
-	},
-	"colStyle" : {
-		"width" : "150px"
-	}
-}, {
-	"name" : "曜日",
-	"defaultVal" : function(mmObj) {
-		return weekday[mmObj.day()]
-	},
-	"colStyle" : {
-		"width" : "100px"
-	}
-}, {
-	"name" : "休日",
-	"defaultVal" : "",
-	"hide" : "all"
-}, {
-	"name" : "出社",
-	"defaultVal" : "9:00",
-	"defaultValWend" : "",
-	"fieldType" : "input",
-	"inputClass" : "time-input",
-	"style" : {
-		"padding" : 2
-	}
-}, {
-	"name" : "退社",
-	"defaultVal" : "18:00",
-	"defaultValWend" : "",
-	"fieldType" : "input",
-	"inputClass" : "time-input",
-	"style" : {
-		"padding" : 2
-	}
-}, {
-	"name" : "休憩",
-	"defaultVal" : "1:00",
-	"defaultValWend" : "",
-	"fieldType" : "input",
-	"inputClass" : "time-input",
-	"style" : {
-		"padding" : 2
-	}
-}, {
-	"name" : "有給休暇",
-	"defaultVal" : "",
-	"hide" : "all"
-}, {
-	"name" : "実働",
-	"defaultVal" : "",
-	"hide" : "all"
-}, {
-	"name" : "平日無給",
-	"defaultVal" : "",
-	"hide" : "all"
-}, {
-	"colStyle" : {
-		"width" : "150px"
-	}
-}, {
-	"name" : "曜日",
-	"defaultVal" : function(mmObj) {
-		return weekday[mmObj.day()]
-	},
-	"colStyle" : {
-		"width" : "100px"
-	}
-}, {
-	"name" : "休日",
-	"defaultVal" : "",
-	"hide" : "all"
-}, {
-	"name" : "出社",
-	"defaultVal" : "09:00",
-	"defaultValWend" : "",
-	"fieldType" : "input",
-	"inputClass" : "time-input",
-	"style" : {
-		"padding" : 2
-	}
-}, {
-	"name" : "退社",
-	"defaultVal" : "18:00",
-	"defaultValWend" : "",
-	"fieldType" : "input",
-	"inputClass" : "time-input",
-	"style" : {
-		"padding" : 2
-	}
-}, {
-	"name" : "休憩",
-	"defaultVal" : "01:00",
-	"defaultValWend" : "",
-	"fieldType" : "input",
-	"inputClass" : "time-input",
-	"style" : {
-		"padding" : 2
-	}
-}, {
-	"name" : "有給休暇",
-	"defaultVal" : "",
-	"hide" : "all"
-}, {
-	"name" : "実働",
-	"defaultVal" : "",
-	"hide" : "all"
-}, {
-	"name" : "平日無給",
-	"defaultVal" : "",
-	"hide" : "all"
-}, {
-	"name" : "平日通常残業",
-	"defaultVal" : "",
-}, {
-	"name" : "備考/Note (休みの種別など記入）",
-	"defaultVal" : "",
-	"hide" : "phone,tablet",// phone,tablet
-	"fieldType" : "textarea",
-	"style" : {
-		"padding" : 0
-	}
-} ]
+var defaultData = []
 
-function getCurrentMonth() {
-
-}
+function getCurrentMonth() {}
 
 function getInputMonth() {
 	return jQuery("#timemonth input").val();

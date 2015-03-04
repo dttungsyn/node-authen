@@ -6,7 +6,7 @@ angular.module('todoController', [])
 	
 
 	// inject the Todo service factory into our controller
-	.controller('mainController', function($scope, $http, Todos) {
+	.controller('mainController', function($scope, $http, Todos, TimeServices) {
 
 		// GET =====================================================================
 		// when landing on the page, get all todos and show them
@@ -72,7 +72,7 @@ angular.module('todoController', [])
 			
 			$scope.hasStaff = $scope.staffs && $scope.staffs.length > 0;
 			
-			//add approve to the list 
+			//add this to the staff list 
 			if (data.staffs.length > 0)
 				$scope.staffs.unshift({
 					_id: data._id,
@@ -82,12 +82,11 @@ angular.module('todoController', [])
 					}
 				});
 			
-			
         })
         
         
         // select staff
-		$scope.$watch(function() { 
+		$scope.$watch(function() {
 			return $scope.formData.selectingUsername
 		},
         function() {
@@ -110,9 +109,14 @@ angular.module('todoController', [])
 		});
 		
 		$scope.selectStaff = function( username ){
-			$scope.formData.selectingUsername = username;
-			$('.selectpicker').val(username);
-			$('.selectpicker').selectpicker('refresh');
+			if ( !$scope.multiview ) {
+				$scope.formData.selectingUsername = username;
+				$('.selectpicker').val(username);
+				$('.selectpicker').selectpicker('refresh');
+			}
+			else {
+				$scope.multiViewToggle( username );
+			}
 		}
         
         
@@ -257,7 +261,6 @@ angular.module('todoController', [])
                 console.log('Error: ' + data);
 	        });
 			
-			
 		}
 		
 		// Save Time Data
@@ -318,7 +321,7 @@ angular.module('todoController', [])
             		$scope.$apply();
             	}, 5000);
             	
-            	$scope.timeDatas.state = $scope.timeDatas.state == 1? 2 : 1;
+            	$scope.timeDatas.state = data.newState;
             	
             	//update list staff
             	for (var i = 0; i < $scope.staffs.length; i ++){
@@ -411,4 +414,54 @@ angular.module('todoController', [])
 			
 			
 		});
+		
+		FptTIME.assignChangeTabEventHandler( $scope );
+		
+		
+		/*
+		 * Multiple Users View Tab
+		 */
+		$scope.mutliview = false;
+		$scope.multiViewSelecting = [];
+		$scope.multiViewData = {};
+		$scope.multiViewAdd = function( username ){
+			$scope.multiViewSelecting.push( username );
+		};
+		$scope.multiViewRemove = function( username ){
+			var ind = multiViewSelecting.indexOf( username );
+		};
+		$scope.multiViewCheck = function( username ){
+			return $scope.multiViewSelecting.indexOf( username ) > -1;
+		};
+		$scope.multiViewToggle = function( username ){
+			var idx = $scope.multiViewSelecting.indexOf(username);
+
+		    // is currently selected
+		    if (idx > -1) {
+		      $scope.multiViewSelecting.splice(idx, 1);
+		    }
+
+		    // is newly selected
+		    else {
+		      $scope.multiViewSelecting.push(username);
+		      
+		      // load sum data
+		      TimeServices.getSumData(username, $scope.monthstr, function( sumData, state ){
+		    	  $scope.multiViewData[ username ] = {
+		    		sumData: sumData,
+		    		state: state
+		    	  }
+		    	  console.log( sumData );
+		      });
+		      //$scope.monthstr
+		    }
+		    
+		    //console.log( $scope.multiViewSelecting );
+		}
+		$scope.multiViewHeaders = TimeServices.getSumHeaders();
+		$scope.multiViewShowDetail = function( user ){
+			$scope.mutliview = false;
+			$('#myTab a:first').tab('show');
+			$scope.selectStaff( user );
+		}
 	});
