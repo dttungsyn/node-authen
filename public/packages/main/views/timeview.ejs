@@ -59,7 +59,7 @@
       
       <% if (isApprover) {%>
         <div class="select-staff col-sm-10">
-            <button class="btn btn-primary" ng-click="getTimeData(false)">reload</button>
+            <!--<button class="btn btn-default" ng-click="getTimeData(false)" style="">reload</button>-->
             <select class="selectpicker" data-live-search="true">
                 <option class="selfopt"><%= user.local.username%></option>
             <% user.staffs.forEach(function(el, index) {%>
