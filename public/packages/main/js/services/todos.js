@@ -97,6 +97,16 @@ function TimeServices($http){
 			.success( function(data){
 				updateStateHandler(data, cb);
 			});
+		},
+		
+		getTimeDataState: function( users, monthstr, cb ){
+			$http.post('/api/get-timedata-states/', {
+				"users": users,
+				"monthstr": monthstr
+			})	// monthstr: 2014-01
+			.success( function(states){
+				cb( states );
+			});
 		}
 	}
 }

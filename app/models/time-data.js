@@ -162,6 +162,31 @@ TimeDataSchema.statics.updateTimeData = function(data, callback) {
 					})
 }
 
+/*
+ * Get approve state of 'users' in 'monthstr'
+ */
+TimeDataSchema.statics.getTimeDataState = function(users, monthstr, cb) {
+	this.find({
+		monthStr: monthstr,
+		username: {
+			"$in": users
+		}
+	}, function(err, docs){
+		
+		if (err){
+			cb( null );
+			return;
+		}
+		
+		var states = {};
+		for (var i = 0; i < docs.length; i ++){
+			states[ docs[i].username ] = docs[i].state;
+		}
+		
+		cb( states );
+	})
+}
+
 var TimeData = mongoose.model('time-data', TimeDataSchema);
 
 // =========== define the schema for fields model =========

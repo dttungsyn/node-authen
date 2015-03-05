@@ -80,9 +80,9 @@
             ng-class="{'active': staff.local.username === formData.selectingUsername}" ng-click="selectStaff(staff.local.username)">
               <input type="checkbox" ng-if="multiview == true" ng-checked="multiViewCheck(staff.local.username)" />
               {{ staff.fullname || staff.local.username }}
-              <span class="label pull-right" ng-show="staff.state === 0"><i class="fa fa-columns" style="color: black"></i></span>
-              <span class="label label-info pull-right" ng-show="staff.state === 1">Applied</span>
-              <span class="label label-success pull-right" ng-show="staff.state === 2">Approved</span>
+              <span class="label pull-right" ng-show="states[staff.local.username] === 0"><i class="fa fa-columns" style="color: black"></i></span>
+              <span class="label label-info pull-right" ng-show="states[staff.local.username] === 1">Applied</span>
+              <span class="label label-success pull-right" ng-show="states[staff.local.username] === 2">Approved</span>
           </a>
           
           
@@ -107,16 +107,26 @@
     		  			Export
     		  		</button>
     		  			
-    		  	    <button type="button" class="savebtn btn btn-primary" ng-show="formData.loginUser.staffs.length > 0 && (timeDatas.state == 1 || timeDatas.state == 2)" ng-click="approveTime()">
+    		  	    <button type="button" class="savebtn btn btn-primary" ng-show="formData.loginUser.staffs.length > 0 && timeDatas.state == 1" ng-click="approve(formData.user.local.username)">
                         <i class="fa fa-check-square-o" style="font-size: 16px;"></i>&nbsp;
-                        <span ng-show="timeDatas.state == 1">Approve</span>
-                        <span ng-show="timeDatas.state == 2">Unapprove</span> 
+                        Approve
                     </button>
-    			  	<button type="button" class="savebtn btn btn-success" ng-show="formData.loginUser.local.username == formData.user.local.username && (timeDatas.state == 1 || timeDatas.state == 0)" ng-click="applyTime()">
+                    
+                    <button type="button" class="savebtn btn btn-primary" ng-show="formData.loginUser.staffs.length > 0 && timeDatas.state == 2" ng-click="unapprove(formData.user.local.username)">
+                        <i class="fa fa-check-square-o" style="font-size: 16px;"></i>&nbsp;
+                        Unapprove
+                    </button>
+                    
+    			  	<button type="button" class="savebtn btn btn-success" ng-show="formData.loginUser.local.username == formData.user.local.username && timeDatas.state == 0" ng-click="apply(formData.user.local.username)">
     			  		<i class="fa fa-check-circle-o"></i>&nbsp;
-    			  		<span ng-show="timeDatas.state == 0">Apply</span>
-    			  		<span ng-show="timeDatas.state == 1">UnApply</span>
+    			  		Apply
     			  	</button>
+    			  	
+    			  	<button type="button" class="savebtn btn btn-success" ng-show="formData.loginUser.local.username == formData.user.local.username && timeDatas.state == 1" ng-click="unapply(formData.user.local.username)">
+                        <i class="fa fa-check-circle-o"></i>&nbsp;
+                        UnApply
+                    </button>
+    			  	
     			  	<button type="button" class="savebtn btn btn-success" ng-disabled="timeDatas.state > 1" ng-click="saveTimeData()">
     			  		<i class="fa fa-floppy-o"></i>&nbsp;
     			  		Save
@@ -195,20 +205,20 @@
                     
     		          <tr ng-repeat="user in multiViewSelecting">
     		              <td class="footable-first-column"><a class="detail" ng-click="multiViewShowDetail(user)">{{ user }}</a></td>
-    		              <td ng-repeat="sumdat in multiViewData[ user ].sumData track by $index">
+    		              <td ng-repeat="sumdat in multiViewData[ user ] track by $index">
                             <span class="ng-scope">{{ sumdat }}</span>
                           </td>
                           
                           <td>
-                              <button ng-show="multiViewData[ user ].state == 1" type="button" class="savebtn btn btn-default">
+                              <button ng-show="states[ user ] == 1" type="button" class="savebtn btn btn-default">
                                 <i class="fa fa-check-square-o" style="font-size: 16px;"></i>&nbsp;
                                 <span>Approve</span>
                               </button>
-                              <button ng-show="multiViewData[ user ].state == 2" type="button" class="savebtn btn btn-primary">
+                              <button ng-show="states[ user ] == 2" type="button" class="savebtn btn btn-primary">
                                 <i class="fa fa-check-square-o" style="font-size: 16px;"></i>&nbsp;
                                 <span>Unapprove</span>
                               </button>
-                              <span ng-show="multiViewData[ user ].state == 2" class="" style="color: green">
+                              <span ng-show="states[ user ] == 2" class="" style="color: green">
                                   <i class="fa fa-check-circle-o fa-2x"></i>
                               </span>
                           </td>

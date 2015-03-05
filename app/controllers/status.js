@@ -9,6 +9,8 @@ var REJECT = 3;
 exports.approve = approve;
 exports.unapprove = unapprove;
 exports.reject = reject;
+exports.getTimeDataState = getTimeDataState;
+
 
 function approve(req, res) {
 
@@ -17,7 +19,7 @@ function approve(req, res) {
 		"monthStr" : req.body.monthstr
 	};
 
-	changeStatus(data, APPROVE, function(err, result) {
+	_changeStatus(data, APPROVE, function(err, result) {
 		res.json(err ? err : result);
 	});
 }
@@ -29,7 +31,7 @@ function unapprove(req, res) {
 		"monthStr" : req.body.monthstr
 	};
 
-	changeStatus(data, UNAPPROVE, function(err, result) {
+	_changeStatus(data, UNAPPROVE, function(err, result) {
 		res.json(err ? err : result);
 	});
 
@@ -40,12 +42,12 @@ function reject(req, res) {
 		"username" : req.params.username,
 		"monthStr" : req.body.monthstr
 	};
-	changeStatus(data, REJECT, function(err, result) {
+	_changeStatus(data, REJECT, function(err, result) {
 		res.json(err ? err : result);
 	});
 }
 
-function changeStatus(data, type, callback) {
+function _changeStatus(data, type, callback) {
 
 	if (data.monthStr === null || data.monthStr.trim() === ""
 			|| data.username.trim() === "") {
@@ -56,7 +58,7 @@ function changeStatus(data, type, callback) {
 		return;
 	}
 
-	checkStatus(data, function(err, state) {
+	_checkStatus(data, function(err, state) {
 		if (err || state === null) {
 			callback({
 				"success" : false,
@@ -97,7 +99,7 @@ function changeStatus(data, type, callback) {
 	});
 }
 
-function checkStatus(data, callback) {
+function _checkStatus(data, callback) {
 	Timedata.findState(data, function(err, result) {
 		if (err) {
 			callback(err, false);
@@ -113,5 +115,8 @@ function checkStatus(data, callback) {
 function getTimeDataState(req, res){
 	var monthstr = req.body.monthstr;
 	var users = req.body.users;
-	res.json();
+	Timedata.getTimeDataState(users, monthstr, function(states){
+		res.json( states );
+	})
+	
 }

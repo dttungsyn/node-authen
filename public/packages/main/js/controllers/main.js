@@ -61,6 +61,8 @@ angular.module('todoController', [])
 		};
 		
 		$scope.hasStaff = false;
+		$scope.staffs = [];
+		$scope.states = {};
 		
 		//get user info at first
 		$http.get('/api/userdata').success(function(data) {
@@ -72,7 +74,7 @@ angular.module('todoController', [])
 			
 			$scope.hasStaff = $scope.staffs && $scope.staffs.length > 0;
 			
-			//add this to the staff list 
+			//add this person to the staff list 
 			if (data.staffs.length > 0)
 				$scope.staffs.unshift({
 					_id: data._id,
@@ -81,6 +83,8 @@ angular.module('todoController', [])
 						username: data.local.username
 					}
 				});
+			
+			
 			
         })
         
@@ -160,6 +164,17 @@ angular.module('todoController', [])
 				staffs = staffs.map(function(val, i){
 					return val.local.username;
 				})
+				
+				//init states
+				for (var i = 0; i < staffs.length; i ++){
+					$scope.states[ staffs[i] ] = -1;
+				}
+				
+				//update states
+				TimeServices.getTimeDataState(staffs, $scope.monthstr, function( states ){
+					$.extend( $scope.states, states );
+					console.log( $scope.states );
+				});
 			}
 			
 			//show loading pin
@@ -175,6 +190,8 @@ angular.module('todoController', [])
 						$scope.timeDatas.data  = data.timedata.data;
 						$scope.timeDatas.fields = data.timedata.fieldset.fields;
 						$scope.timeDatas.state = data.timedata.state;
+						
+						$scope.states[ $scope.formData.user.local.username ] = data.timedata.state; //in case of normal user
 						
 						FptTIME.addDay2MonthData(data.timedata.fieldset.fields, moment( $scope.monthstr, "YYYY-MM" ), data.timedata.data);	// addDay2MonthData: functions.js
 					}
@@ -200,12 +217,6 @@ angular.module('todoController', [])
 							$scope.timeDatas.data[ today.date() - 1 ].today = true;
 						}
 						
-//						$scope.timeDatas.footData = [1,2,3];
-//						//calculate footer
-//						calFooterTime($scope.timeDatas.data, function(footData){
-//							$scope.timeDatas.footData = footData;
-//						});
-						
 						//first time calculate
 						FptTIME.calculateTime($scope.timeDatas.data, "all", function(err){
 							if (err) {
@@ -227,15 +238,6 @@ angular.module('todoController', [])
 					
 					//end loading
 					$scope.loadingTimeData = false;
-					
-					//update other staff's state of this month
-					if (data.staffStates && isGetState){
-						$scope.staffs.map(function(val){
-							val.state = data.staffStates.hasOwnProperty( val.local.username ) ? data.staffStates[ val.local.username ] : -1;
-						})
-					}
-					
-					
 				})
 				
 				.error(function(data) {
@@ -303,58 +305,55 @@ angular.module('todoController', [])
 	        });
 		}
 		
-		//approve or unapprove
-		$scope.approveTime = function(){
-			if ($scope.timeDatas.state < 1 && $scope.timeDatas.state > 2) return;
+		//approve, apply handler
+		var _success = function(username, state, msg){
+			$scope.formData.user.updateSuccess = msg ;
+            // clear the message after 5s
+        	setTimeout(function(){
+        		$scope.formData.user.updateSuccess = null;
+        		$scope.$apply();
+        	}, 5000);
+        	$scope.timeDatas.state = state;
+        	$scope.states[ username ] = state;
+		};
+		
+		$scope.approve = function(username, monthstr){
+			if ($scope.states[ username ] != 1) return;
+			monthstr = monthstr || $scope.monthstr;
 			
-			var url = $scope.timeDatas.state == 1 ? '/api/approve-timedata/' : '/api/unapprove-timedata/';
-			$http.post(url + $scope.formData.user.local.username, {
-				"monthstr": $scope.monthstr
-			})	// monthstr: 2014-01
-			.success( success );
-			
-			function success(data){
-				$scope.formData.user.updateSuccess = data.message ;
-                // clear the message after 5s
-            	setTimeout(function(){
-            		$scope.formData.user.updateSuccess = null;
-            		$scope.$apply();
-            	}, 5000);
-            	
-            	$scope.timeDatas.state = data.newState;
-            	
-            	//update list staff
-            	for (var i = 0; i < $scope.staffs.length; i ++){
-            		if ($scope.staffs[i].local.username === $scope.formData.user.local.username){
-            			$scope.staffs[i].state = $scope.timeDatas.state;
-            			break;
-            		}
-            	}
-			}
+			TimeServices.approve(username, monthstr, function(data){
+				_success(username, data.newState, "Approve Success");
+			})
 		}
 		
-		//apply or unapply
-		$scope.applyTime = function(){
-			if ($scope.timeDatas.state > 1) return;
+		$scope.unapprove = function(username, monthstr){
+			if ($scope.states[ username ] != 2) return;
+			monthstr = monthstr || $scope.monthstr;
 			
-			var url = $scope.timeDatas.state == 0 ? '/api/approve-timedata/' : '/api/unapprove-timedata/';
-			$http.post(url + $scope.formData.user.local.username, {
-				"monthstr": $scope.monthstr
-			})	// monthstr: 2014-01
-			.success( success );
-			
-			function success(data){
-				$scope.formData.user.updateSuccess = data.message ;
-                // clear the message after 5s
-            	setTimeout(function(){
-            		$scope.formData.user.updateSuccess = null;
-            		$scope.$apply();
-            	}, 5000);
-            	
-            	$scope.timeDatas.state = $scope.timeDatas.state == 0? 1 : 0;
-			}
+			TimeServices.unapprove(username, monthstr, function(data){
+				_success(username, data.newState, "Unapprove Success");
+			})
 		}
 		
+		$scope.apply = function(username, monthstr){
+			if ($scope.states[ username ] != 0) return;
+			monthstr = monthstr || $scope.monthstr;
+			
+			TimeServices.approve(username, monthstr, function(data){
+				_success(username, data.newState, "Apply Success");
+			})
+		}
+		
+		$scope.unapply = function(username, monthstr){
+			if ($scope.states[ username ] != 1) return;
+			monthstr = monthstr || $scope.monthstr;
+			
+			console.log( username );
+			
+			TimeServices.unapprove(username, monthstr, function(data){
+				_success(username, data.newState, "Unapply Success");
+			})
+		}		
 		
 		//calculate cell class
 		$scope.cellClass = function(fieldName, index){
@@ -447,10 +446,9 @@ angular.module('todoController', [])
 		      
 		      // load sum data
 		      TimeServices.getSumData(username, $scope.monthstr, function( sumData, state ){
-		    	  $scope.multiViewData[ username ] = {
-		    		sumData: sumData,
-		    		state: state
-		    	  }
+		    	  $scope.multiViewData[ username ] =  sumData;
+		    	  //update state
+		    	  $scope.states[ username ] = state;
 		    	  console.log( sumData );
 		      });
 		      //$scope.monthstr

@@ -100,7 +100,9 @@ function getTimeData(req, res){
 					"success" : false,
 					"message" : "not found!",
 					"timedata" : data
-				}
+				};
+				
+				res.json(rs);
 				
 			});
 			
@@ -112,11 +114,13 @@ function getTimeData(req, res){
 				"success" : true,
 				"message" : "",
 				"timedata" : timedata
-			}
+			};
+			
+			res.json(rs);
 		}
 		
 		//get staff's state if needed
-		var staffs = req.body.staffs;
+		/*var staffs = req.body.staffs;
 		TimeData.find({
 			"username" : {
 				'$in': staffs
@@ -137,9 +141,7 @@ function getTimeData(req, res){
 			rs.staffStates = staffStates;
 			
 			res.json(rs);
-		})
-		
-		
+		})*/
 
 	});
 }
