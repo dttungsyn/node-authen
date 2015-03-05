@@ -33,7 +33,7 @@
 
 <div class="name-bar alert alert-info">
     <span class="Timename" style="font-size: 20px">{{formData.user.fullname || formData.user.local.username}}</span>
-    <span ng-show="timeDatas.state == 2" class="alert alert-success pull-right" style="margin: -15px">
+    <span ng-show="states[ formData.user.local.username ] == 2" class="alert alert-success pull-right" style="margin: -15px">
         <i class="fa fa-check-circle-o fa-2x"></i>
         Approved
     </span>
@@ -78,7 +78,7 @@
     
           <a href="#" class="list-group-item" ng-repeat="staff in staffs"
             ng-class="{'active': staff.local.username === formData.selectingUsername}" ng-click="selectStaff(staff.local.username)">
-              <input type="checkbox" ng-if="multiview == true" ng-checked="multiViewCheck(staff.local.username)" />
+              <input type="checkbox" ng-if="multiview == true" readonly="readonly" ng-checked="multiViewCheck(staff.local.username)" />
               {{ staff.fullname || staff.local.username }}
               <span class="label pull-right" ng-show="states[staff.local.username] === 0"><i class="fa fa-columns" style="color: black"></i></span>
               <span class="label label-info pull-right" ng-show="states[staff.local.username] === 1">Applied</span>
@@ -107,27 +107,31 @@
     		  			Export
     		  		</button>
     		  			
-    		  	    <button type="button" class="savebtn btn btn-primary" ng-show="formData.loginUser.staffs.length > 0 && timeDatas.state == 1" ng-click="approve(formData.user.local.username)">
+    		  	    <button type="button" class="savebtn btn btn-primary" ng-show="formData.loginUser.staffs.length > 0 && states[formData.user.local.username] == 1" 
+    		  	        ng-click="approve(formData.user.local.username)">
                         <i class="fa fa-check-square-o" style="font-size: 16px;"></i>&nbsp;
                         Approve
                     </button>
                     
-                    <button type="button" class="savebtn btn btn-primary" ng-show="formData.loginUser.staffs.length > 0 && timeDatas.state == 2" ng-click="unapprove(formData.user.local.username)">
+                    <button type="button" class="savebtn btn btn-primary" ng-show="formData.loginUser.staffs.length > 0 && states[formData.user.local.username] == 2" 
+                        ng-click="unapprove(formData.user.local.username)">
                         <i class="fa fa-check-square-o" style="font-size: 16px;"></i>&nbsp;
                         Unapprove
                     </button>
                     
-    			  	<button type="button" class="savebtn btn btn-success" ng-show="formData.loginUser.local.username == formData.user.local.username && timeDatas.state == 0" ng-click="apply(formData.user.local.username)">
+    			  	<button type="button" class="savebtn btn btn-success" ng-show="formData.loginUser.local.username == formData.user.local.username && states[formData.user.local.username] == 0" 
+    			  	    ng-click="apply(formData.user.local.username)">
     			  		<i class="fa fa-check-circle-o"></i>&nbsp;
     			  		Apply
     			  	</button>
     			  	
-    			  	<button type="button" class="savebtn btn btn-success" ng-show="formData.loginUser.local.username == formData.user.local.username && timeDatas.state == 1" ng-click="unapply(formData.user.local.username)">
+    			  	<button type="button" class="savebtn btn btn-success" ng-show="formData.loginUser.local.username == formData.user.local.username && states[formData.user.local.username] == 1" 
+    			  	    ng-click="unapply(formData.user.local.username)">
                         <i class="fa fa-check-circle-o"></i>&nbsp;
                         UnApply
                     </button>
     			  	
-    			  	<button type="button" class="savebtn btn btn-success" ng-disabled="timeDatas.state > 1" ng-click="saveTimeData()">
+    			  	<button type="button" class="savebtn btn btn-success" ng-disabled="states[formData.user.local.username] > 1" ng-click="saveTimeData()">
     			  		<i class="fa fa-floppy-o"></i>&nbsp;
     			  		Save
     			  	</button>
@@ -210,11 +214,11 @@
                           </td>
                           
                           <td>
-                              <button ng-show="states[ user ] == 1" type="button" class="savebtn btn btn-default">
+                              <button ng-show="states[ user ] == 1" type="button" class="savebtn btn btn-default" ng-click="approve(user)">
                                 <i class="fa fa-check-square-o" style="font-size: 16px;"></i>&nbsp;
                                 <span>Approve</span>
                               </button>
-                              <button ng-show="states[ user ] == 2" type="button" class="savebtn btn btn-primary">
+                              <button ng-show="states[ user ] == 2" type="button" class="savebtn btn btn-primary" ng-click="unapprove(user)">
                                 <i class="fa fa-check-square-o" style="font-size: 16px;"></i>&nbsp;
                                 <span>Unapprove</span>
                               </button>

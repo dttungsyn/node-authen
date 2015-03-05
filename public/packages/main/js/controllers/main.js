@@ -189,8 +189,6 @@ angular.module('todoController', [])
 					if ( data.success ){
 						$scope.timeDatas.data  = data.timedata.data;
 						$scope.timeDatas.fields = data.timedata.fieldset.fields;
-						$scope.timeDatas.state = data.timedata.state;
-						
 						$scope.states[ $scope.formData.user.local.username ] = data.timedata.state; //in case of normal user
 						
 						FptTIME.addDay2MonthData(data.timedata.fieldset.fields, moment( $scope.monthstr, "YYYY-MM" ), data.timedata.data);	// addDay2MonthData: functions.js
@@ -199,7 +197,6 @@ angular.module('todoController', [])
 					else if ($scope.formData.loginUser.local.username == $scope.formData.user.local.username){
 						$scope.timeDatas.data = FptTIME.initMonthData(data.timedata.fieldset, moment( $scope.monthstr, "YYYY-MM" )).data;	//initMonthData: functions.js
 						if (data.timedata.fieldset) $scope.timeDatas.fields = data.timedata.fieldset;	//get fields from server if possible
-						$scope.timeDatas.state = 0;
 					} else {
 						//dont display
 						$scope.timeDatas.data = null;
@@ -313,7 +310,6 @@ angular.module('todoController', [])
         		$scope.formData.user.updateSuccess = null;
         		$scope.$apply();
         	}, 5000);
-        	$scope.timeDatas.state = state;
         	$scope.states[ username ] = state;
 		};
 		
