@@ -177,3 +177,10 @@ hr {
 .ts-container .multiview-tbl button.btn{
 	font-size: .8em;
 }
+
+@media screen and (max-width: 767px) {
+  .list-group.affix {
+	position: relative;
+	top: 0px;
+  }
+}
