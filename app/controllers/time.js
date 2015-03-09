@@ -118,30 +118,6 @@ function getTimeData(req, res){
 			
 			res.json(rs);
 		}
-		
-		//get staff's state if needed
-		/*var staffs = req.body.staffs;
-		TimeData.find({
-			"username" : {
-				'$in': staffs
-			},
-			"monthStr" : req.body.monthstr
-		}, {'username': 1, 'state': 1}).exec(function(err, timeUsers) {
-			if (err || !timeUsers){
-				return res.json(rs);
-			}
-			
-			var staffStates = {};
-			for (var i = 0; i < timeUsers.length; i ++){
-				var username = timeUsers[i].username;
-				var state = timeUsers[i].state || 0;
-				staffStates[ username ] = state;
-			}
-			
-			rs.staffStates = staffStates;
-			
-			res.json(rs);
-		})*/
 
 	});
 }
