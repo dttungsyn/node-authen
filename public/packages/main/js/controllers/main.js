@@ -246,19 +246,23 @@ angular.module('todoController', [])
 		// export time data
 		$scope.exportTimeData = function(){
 			console.log($scope.timeDatas.data);
-			console.log(typeof($scope.timeDatas.data));
-			$http.post('/api/exporttimedata/' + $scope.formData.user.local.username, {
+			var url = '/api/exporttimedata/' + $scope.formData.user.local.username;
+			
+			/*$http.post('/api/exporttimedata/' + $scope.formData.user.local.username, {
 				"monthstr": $scope.monthstr
-				, "data"	  : $scope.timeDatas.data
 			})	
 			.success( function ( data ){
-				
-				console.log(data)
+				saveAs(data);
+				console.log("saved ?");
 			})
 			
 			.error(function(data) {
                 console.log('Error: ' + data);
-	        });
+	        });*/
+			
+			$('<form action="' + url + '" method="POST">' + 
+				    '<input type="hidden" name="monthstr" value="' + $scope.monthstr+ '">' +
+				    '</form>').submit();
 			
 		}
 		

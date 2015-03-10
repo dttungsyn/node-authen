@@ -6,6 +6,7 @@
 
 var TimeData = require("../models/time-data.js");
 var User = require("../models/user.js");
+var ExportXlsx = require("../export/exportXlsx.js");
 
 exports.updateTimeFromExcel = updateTimeFromExcel;
 exports.exportTimeData = exportTimeData;
@@ -18,6 +19,14 @@ function updateTimeFromExcel(req, res){
 }
 
 function exportTimeData(req, res){
+	var username = req.params.username;
+	var monthstr = req.body.monthstr;
+	ExportXlsx.exportTimeData(username, monthstr, function(filename){
+		res.download(filename);
+	})
+}
+
+/*function exportTimeData(req, res){
 	// TODO check right to update time data
 	
 	var java = require("java");
@@ -70,7 +79,7 @@ function convertData(timeData) {
 	}
 	
 	return monthData;
-}
+}*/
 
 function getTimeData(req, res){
 	//TODO check right to get time data
