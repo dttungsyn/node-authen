@@ -72,7 +72,6 @@ public class UserData {
 	public static int[] getH_M(String time){
 		String[] H_Mstr = time.split(":");
 		int[] H_M = new int[2];
-		System.out.println(time);
 		H_M[0] = Integer.parseInt(H_Mstr[0]);
 		H_M[1] = Integer.parseInt(H_Mstr[1]);
 		

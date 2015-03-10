@@ -20,9 +20,6 @@ var configDB = require('../../config/database.js');*/
 exports.exportTimeData = exportTimeData;
 
 function exportTimeData(username, monthstr, cb){
-	console.log( monthstr );
-	console.log( __dirname );
-	var workbook = XLSX.readFile( __dirname + "/" + monthstr + '/Template_従業員出勤簿(TIMESHEET).xlsm', {cellStyles:true});
 	
 	TimeData.findOne({
 		"username" : username,
@@ -85,7 +82,7 @@ function _exportTimeData(username, monthstr, timeData, cb){
 	exportExcel.setUserDataSync(userData);
 	
 	//save data to excel file
-	var filepath = __dirname + "/" + monthstr + "/template(TIMESHEET)_" + username + ".xls";
+	var filepath = __dirname + "/" + monthstr + "/従業員出勤簿(TIMESHEET)_" + username + ".xls";
 	exportExcel.exportDataSync(__dirname + "/" + monthstr + "/tmp_template(TIMESHEET).xls", filepath);
 	
 	if ( typeof(cb) === 'function' ) cb( filepath );
@@ -105,8 +102,6 @@ function _convertData(timeData) {
 		}
 		monthData.addSync(dayData);
 	}
-	
-	console.log(monthData);
 	
 	return monthData;
 }

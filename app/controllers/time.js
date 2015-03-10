@@ -22,6 +22,7 @@ function exportTimeData(req, res){
 	var username = req.params.username;
 	var monthstr = req.body.monthstr;
 	ExportXlsx.exportTimeData(username, monthstr, function(filename){
+		res.set("charset", "utf-8");
 		res.download(filename);
 	})
 }
