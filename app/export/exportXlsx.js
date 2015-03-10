@@ -32,10 +32,10 @@ function exportTimeData(username, monthstr, cb){
 			return cb("err");
 		}
 		var timeData = data.data;
-		//_exportTimeData(username, monthstr, timeData, cb);
-		_saveTimesheetFile(workbook, timeData, __dirname + "/" + monthstr + '/' + username + "_従業員出勤簿(TIMESHEET).xlsm", function(filename){
+		_exportTimeData(username, monthstr, timeData, cb);
+		/*_saveTimesheetFile(workbook, timeData, __dirname + "/" + monthstr + '/' + username + "_従業員出勤簿(TIMESHEET).xlsm", function(filename){
 			cb(filename);
-		});
+		});*/
 	});
 }
 
@@ -69,22 +69,26 @@ function _exportTimeData(username, monthstr, timeData, cb){
 	var java = require("java");
 	java.classpath.push(__dirname + "/src");
 	java.classpath.push(__dirname + "/poi-3.11-20141221.jar");
-	var UserData = java.import("jp.co.fpt.excel.UserData");
-	var userData = new UserData();
+	
+	/*var UserData = java.import("jp.co.fpt.excel.UserData");
+	var userData = new UserData();*/
+	var userData = java.newInstanceSync("jp.co.fpt.excel.UserData");
 	userData.setUserNameSync(username);
 	userData.setMonthSync(parseInt(monthstr.split("-")[1]));
 	userData.setYearSync(parseInt(monthstr.split("-")[0]));
+	userData.setTimeDataSync( _convertData(timeData) );
 	
-	var list = _convertData(timeData);
 	
-	userData.setTimeDataSync(list);
-	var ExportToExcelFile = java.import("jp.co.fpt.excel.ExportToExcelFile");
-
-	var exportExcel = new ExportToExcelFile();
+	/*var ExportToExcelFile = java.import("jp.co.fpt.excel.ExportToExcelFile");
+	var exportExcel = new ExportToExcelFile();*/
+	var exportExcel = java.newInstanceSync("jp.co.fpt.excel.ExportToExcelFile");
 	exportExcel.setUserDataSync(userData);
-	exportExcel.exportDataSync(__dirname + "/_tmp_template(TIMESHEET).xls");
 	
-	if ( typeof(cb) === 'function' ) cb( "abcd" );
+	//save data to excel file
+	var filepath = __dirname + "/" + monthstr + "/template(TIMESHEET)_" + username + ".xls";
+	exportExcel.exportDataSync(__dirname + "/" + monthstr + "/tmp_template(TIMESHEET).xls", filepath);
+	
+	if ( typeof(cb) === 'function' ) cb( filepath );
 }
 
 function _convertData(timeData) {
@@ -92,29 +96,17 @@ function _convertData(timeData) {
 	var java = require("java");
 	var ArrayList = java.import('java.util.ArrayList');
 	var monthData = new ArrayList();
-	var dayData;
-	
-	
-	var day = 0;
-	var time;
 
-	var start = [], end = [];
-
-	for (day = 0; day < timeData.length; day++) {
-		time = timeData[day];
-		
-		if (time[3] == "")
-			continue;
-		dayData = new ArrayList();
-		start = time[3].split(":");
-		end = time[4].split(":");
-		dayData.addSync(day);
-		dayData.addSync(parseInt(start[0]));
-		dayData.addSync(parseInt(start[1]));
-		dayData.addSync(parseInt(end[0]));
-		dayData.addSync(parseInt(end[1]));
+	for (var day = 0; day < timeData.length; day++) {
+		var time = timeData[day];
+		var dayData = new ArrayList();
+		for ( var col = 0; col < time.length; col ++){
+			dayData.addSync( time[col] );
+		}
 		monthData.addSync(dayData);
 	}
+	
+	console.log(monthData);
 	
 	return monthData;
 }
