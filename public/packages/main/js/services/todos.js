@@ -62,7 +62,7 @@ function TimeServices($http){
 						}
 						FptTIME.calFooterTime(timeData,function(footData){
 							//console.log(footData);
-							var _extractInd = [5, 9, 10, 11];
+							var _extractInd = [5, 9, 10, 11, 12];
 							var sumData = [];
 							for (var i = 0; i < _extractInd.length; i ++){
 								var ind = _extractInd[ i ];
@@ -76,7 +76,7 @@ function TimeServices($http){
 		},
 		
 		getSumHeaders: function(){
-			return ['休憩', '実働', 'Working Siteでの実働', '平日無給']
+			return ['休憩', '実働', 'Working Siteでの実働', '平日無給', '平日通常残業']
 		},
 		
 		approve: function( user, monthstr, cb ){
