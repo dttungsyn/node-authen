@@ -10,6 +10,7 @@ var ExportXlsx = require("../export/exportXlsx.js");
 
 exports.updateTimeFromExcel = updateTimeFromExcel;
 exports.exportTimeData = exportTimeData;
+exports.exportMultipleTimeData = exportMultipleTimeData;
 exports.getTimeData = getTimeData;
 exports.updateTimeData = updateTimeData;
 exports.renderTimeview = renderTimeview;
@@ -32,6 +33,25 @@ function exportTimeData(req, res){
 		//res.setHeader('Content-disposition', 'attachment; filename=ああ;charset=utf-8');
 		res.set("charset", "utf-8");
 		res.download(filename);
+		console.log( res.get('Content-disposition') );
+		console.log( res.get('Content-type') );
+	})
+}
+
+/**
+ * 
+ * @param req
+ * @param res
+ */
+function exportMultipleTimeData(req, res){
+	var users = req.body.users;
+	var monthstr = req.body.monthstr;
+	ExportXlsx.exportMultipleTimeData(users, monthstr, function(zipFile){
+		
+		//res.setHeader('Content-Type', 'application/vnd.ms-excel; charset=utf-8');
+		//res.setHeader('Content-disposition', 'attachment; filename=ああ;charset=utf-8');
+		res.set("charset", "utf-8");
+		res.download(zipFile);
 		console.log( res.get('Content-disposition') );
 		console.log( res.get('Content-type') );
 	})

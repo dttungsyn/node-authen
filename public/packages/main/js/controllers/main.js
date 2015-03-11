@@ -467,4 +467,19 @@ angular.module('todoController', [])
 			$('#myTab a:first').tab('show');
 			$scope.selectStaff( user );
 		}
+		
+		$scope.exportMultiData = function(){
+			var url = '/api/export-multiple-timedata/';
+			
+			var form = '<form action="' + url + '" method="POST">'
+		    	+	'<input type="hidden" name="monthstr" value="' + $scope.monthstr + '">';
+			for (var i in $scope.multiViewSelecting){
+				var user = $scope.multiViewSelecting[i];
+				form += '<input type="hidden" name="users[]" value="' + user + '">'
+			}
+			
+			form += '</form>';
+			
+			$( form ).submit();
+		}
 	});

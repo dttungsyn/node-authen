@@ -32,6 +32,7 @@ module.exports = function(app, passport) {
 	
 	// export data
 	app.post('/api/exporttimedata/:username', isLoggedInAPI, controller.exportTimeData);
+	app.post('/api/export-multiple-timedata', isLoggedInAPI, controller.exportMultipleTimeData);
 	
 	
 	// Get time data TODO move to model - getTimeData
