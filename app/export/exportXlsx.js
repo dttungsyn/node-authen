@@ -6,19 +6,73 @@ var User = require("../models/user.js");
 
 if(typeof require !== 'undefined') XLSX = require('xlsx');
 
-/*var mongoose = require('mongoose');
-var configDB = require('../../config/database.js');*/
-
-//configuration ===============================================================
-//mongoose.connect(configDB.url);
-
-
-/*exportTimeData('dttung1412', '2015-03', function(filename){
-	console.log(filename);
-});*/
-
 exports.exportTimeData = exportTimeData;
+exports.exportMultipleTimeData = exportMultipleTimeData;
 
+/**
+ * 
+ */
+function exportMultipleTimeData(users, monthstr, cb){
+	var done = 0;
+	var filepaths = [];
+	
+	for (var i in users){
+		var user = users[i];
+		exportTimeData(user, monthstr, function( filepath ){
+			done ++;
+			filepaths.push( filepath );
+			zip();
+		})
+	}
+	
+	function zip(){
+		if (done < users.length) return;
+		done = 0;
+		
+		var JSZip = require('jszip');
+		var zip = new JSZip();
+		var fs = require("fs");
+
+		function addFile (ind) {
+			if (ind == filepaths.length){
+				saveZip();
+				return;
+			}
+
+			fs.readFile( filepaths[ind], function(err, data) {
+			  if (err) throw err;
+
+			  zip.file(users[ind] + "_従業員出勤簿(TIMESHEET)_" + monthstr.replace("-","") + ".xls", data);
+
+			  addFile( ind + 1 );
+			});
+		}
+
+		addFile(0);
+		
+		function saveZip(){
+			var zipFile = __dirname + "/" + monthstr + "/" + "timesheets_" + monthstr.replace("-","") + ".zip";
+			var content = zip.generate({type:"nodebuffer"});
+			
+			fs.writeFile(zipFile, content, function(err){
+				/*...*/
+				if (err) {
+					return cb(null);
+				}
+				
+				cb( zipFile );
+				
+			});
+		}
+	}
+}
+
+/**
+ * 
+ * @param username
+ * @param monthstr
+ * @param cb
+ */
 function exportTimeData(username, monthstr, cb){
 	
 	TimeData.findOne({
@@ -36,6 +90,13 @@ function exportTimeData(username, monthstr, cb){
 	});
 }
 
+/**
+ * 
+ * @param workbook
+ * @param timeData
+ * @param filename
+ * @param cb
+ */
 function _saveTimesheetFile( workbook, timeData, filename, cb ){
 	var worksheet = workbook.Sheets['Timesheet'];
 	
@@ -61,6 +122,13 @@ function _saveTimesheetFile( workbook, timeData, filename, cb ){
 	if ( typeof(cb) === 'function' ) cb( filename );
 }
 
+/**
+ * Call java class
+ * @param username
+ * @param monthstr
+ * @param timeData
+ * @param cb
+ */
 function _exportTimeData(username, monthstr, timeData, cb){
 	// TODO check right to update time data
 	var java = require("java");
@@ -83,11 +151,16 @@ function _exportTimeData(username, monthstr, timeData, cb){
 	
 	//save data to excel file
 	var filepath = __dirname + "/" + monthstr + "/" + username + "_従業員出勤簿(TIMESHEET)_" + monthstr.replace("-","") + ".xls";
-	exportExcel.exportDataSync(__dirname + "/" + monthstr + "/tmp_template(TIMESHEET).xls", filepath);
+	exportExcel.exportDataSync(__dirname + "/tmp_template(TIMESHEET).xls", filepath);
 	
 	if ( typeof(cb) === 'function' ) cb( filepath );
 }
 
+/**
+ * 
+ * @param timeData
+ * @returns {ArrayList}
+ */
 function _convertData(timeData) {
 	
 	var java = require("java");

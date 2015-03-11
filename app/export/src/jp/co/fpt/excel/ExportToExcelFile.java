@@ -1,5 +1,6 @@
 package jp.co.fpt.excel;
 
+import java.io.File;
 import java.io.FileInputStream;
 import java.io.FileNotFoundException;
 import java.io.FileOutputStream;
@@ -57,6 +58,8 @@ public class ExportToExcelFile {
 			}
 			
 			// Write the output to a file
+			File file = new File(savepath);
+			file.getParentFile().mkdirs();
 			FileOutputStream fileOut = new FileOutputStream(savepath);
 			
 			wb.write(fileOut);
