@@ -80,9 +80,9 @@ function exportTimeData(username, monthstr, cb){
 		"monthStr" : monthstr
 	}).exec(function(err, data) {
 		if (err){
-			return cb("err");
+			return cb(null);
 		}
-		var timeData = data.data;
+		var timeData = data ? data.data : null;
 		_exportTimeData(username, monthstr, timeData, cb);
 		/*_saveTimesheetFile(workbook, timeData, __dirname + "/" + monthstr + '/' + username + "_従業員出勤簿(TIMESHEET).xlsm", function(filename){
 			cb(filename);
@@ -167,13 +167,15 @@ function _convertData(timeData) {
 	var ArrayList = java.import('java.util.ArrayList');
 	var monthData = new ArrayList();
 
-	for (var day = 0; day < timeData.length; day++) {
-		var time = timeData[day];
-		var dayData = new ArrayList();
-		for ( var col = 0; col < time.length; col ++){
-			dayData.addSync( time[col] );
+	if (timeData){
+		for (var day = 0; day < timeData.length; day++) {
+			var time = timeData[day];
+			var dayData = new ArrayList();
+			for ( var col = 0; col < time.length; col ++){
+				dayData.addSync( time[col] );
+			}
+			monthData.addSync(dayData);
 		}
-		monthData.addSync(dayData);
 	}
 	
 	return monthData;
