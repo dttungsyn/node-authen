@@ -48,10 +48,7 @@ angular.module('todoController').controller(
 							chart.update()
 						});
 
-						$scope.$watch(function() {
-							return $scope.$parent.timeDatas.data;
-						}, function() {
-
+						$scope.$on('dataChanged', function(e){
 							console.log("Time data changed!");
 
 							//update chart
@@ -61,8 +58,7 @@ angular.module('todoController').controller(
 										convertData(timeData)).call(chart);
 
 							}, 500);
-
-						});
+						})
 
 						fpttime.chart = chart;	//expose to global to update when tab change
 						return chart;

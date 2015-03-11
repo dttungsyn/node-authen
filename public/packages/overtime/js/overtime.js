@@ -24,6 +24,17 @@ angular
 								footers : [ "Total", "", "", "", "", "", "",
 										"", "", "", "", "", "", "", "" ]
 							};
+							
+							$scope.$on('dataChanged', function(e){
+								var timeData = $scope.$parent.timeDatas.data;
+								console.log("Time data changed - ot !");
+								$scope.overTimeData.data = getOTData(timeData);
+								$scope.overTimeData.footers = calFooter($scope.overTimeData.data);
+							})
+							
+							/*$scope.$on('dataChanged', function(){
+								update();
+							})
 
 							$scope
 									.$watch(
@@ -35,7 +46,7 @@ angular
 														.log("Time data changed-ot!");
 												$scope.overTimeData.data = getOTData(timeData);
 												$scope.overTimeData.footers = calFooter($scope.overTimeData.data);
-											});
+											});*/
 						} ])
 
 		.directive(

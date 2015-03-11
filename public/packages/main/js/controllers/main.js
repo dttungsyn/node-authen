@@ -235,6 +235,9 @@ angular.module('todoController', [])
 					
 					//end loading
 					$scope.loadingTimeData = false;
+					
+					//broadcast for the first time
+					$scope.$broadcast('dataChanged');
 				})
 				
 				.error(function(data) {
@@ -411,6 +414,8 @@ angular.module('todoController', [])
 				
 			});
 			
+			//broadcast
+			$scope.$broadcast('dataChanged');
 			
 		});
 		
