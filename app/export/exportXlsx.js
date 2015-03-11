@@ -82,7 +82,7 @@ function _exportTimeData(username, monthstr, timeData, cb){
 	exportExcel.setUserDataSync(userData);
 	
 	//save data to excel file
-	var filepath = __dirname + "/" + monthstr + "/従業員出勤簿(TIMESHEET)_" + username + ".xls";
+	var filepath = __dirname + "/" + monthstr + "/" + username + "_従業員出勤簿(TIMESHEET)_" + monthstr.replace("-","") + ".xls";
 	exportExcel.exportDataSync(__dirname + "/" + monthstr + "/tmp_template(TIMESHEET).xls", filepath);
 	
 	if ( typeof(cb) === 'function' ) cb( filepath );

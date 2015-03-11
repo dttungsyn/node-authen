@@ -245,7 +245,7 @@ angular.module('todoController', [])
 		
 		// export time data
 		$scope.exportTimeData = function(){
-			console.log($scope.timeDatas.data);
+			//console.log($scope.timeDatas.data);
 			var url = '/api/exporttimedata/' + $scope.formData.user.local.username;
 			
 			/*$http.post('/api/exporttimedata/' + $scope.formData.user.local.username, {
