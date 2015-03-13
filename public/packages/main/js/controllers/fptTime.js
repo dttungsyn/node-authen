@@ -96,6 +96,7 @@ FptTIME.makeTimeTable = makeTimeTable
 FptTIME.calculateTime = calculateTime
 FptTIME.calFooterTime = calFooterTime
 FptTIME.dateFormat = dateFormat
+FptTIME.addHoliday2TimeData = addHoliday2TimeData
 
 /**
  * 
@@ -135,6 +136,8 @@ function getCurrentMonth() {}
 function getInputMonth() {
 	return jQuery("#timemonth input").val();
 }
+
+
 
 /**
  * 
@@ -211,6 +214,14 @@ function initMonthData(fieldset, mmObj) {
 	 */
 
 	return rs;
+}
+
+function addHoliday2TimeData(holidays, timeData){
+	for (var i in holidays){
+		var holiday = holidays[i];
+		if (holiday > timeData.length) return;
+		timeData[ holiday - 1 ][2] = "*";
+	}
 }
 
 /**

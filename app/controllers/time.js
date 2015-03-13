@@ -92,7 +92,7 @@ function getTimeData(req, res){
 					"timedata" : data
 				};
 				
-				res.json(rs);
+				_addHolidayInfo();
 				
 			});
 			
@@ -106,10 +106,36 @@ function getTimeData(req, res){
 				"timedata" : timedata
 			};
 			
-			res.json(rs);
+			_addHolidayInfo();
+		}
+		
+		function _addHolidayInfo(){
+			var year = parseInt( req.body.monthstr.split("-")[0] );
+			var month = parseInt( req.body.monthstr.split("-")[1] );
+			
+			_getHolidayMonth(year,month,function( holidays ){
+				rs.holidays = holidays;
+				res.json( rs );
+			})
 		}
 
 	});
+}
+
+/**
+ * 
+ * @param year
+ * @param month
+ * @param cb
+ */
+function _getHolidayMonth(year, month, cb){
+	var Calendar = require("../models/calendar.js");
+	Calendar.findOne({'year': year}).exec(function(err, calendar){
+		if (err){
+			return cb(null);
+		}
+		cb( calendar.months[month] );
+	})
 }
 
 /**

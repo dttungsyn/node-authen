@@ -175,6 +175,10 @@ angular.module('todoController', [])
 					$.extend( $scope.states, states );
 					console.log( $scope.states );
 				});
+				
+				//reload multiView data
+				//$scope.multiViewReload();
+				$scope.multiViewDeSelectAll();
 			}
 			
 			//show loading pin
@@ -205,6 +209,7 @@ angular.module('todoController', [])
 					//check state > 0
 					
 					if ($scope.timeDatas.data){
+						FptTIME.addHoliday2TimeData(data.holidays, $scope.timeDatas.data);
 						//save originalData to detect change
 						$scope.originalData = JSON.parse(JSON.stringify($scope.timeDatas.data));
 						
@@ -425,7 +430,7 @@ angular.module('todoController', [])
 		/*
 		 * Multiple Users View Tab
 		 */
-		$scope.mutliview = false;
+		$scope.multiview = false;
 		$scope.multiViewSelecting = [];
 		$scope.multiViewData = {};
 		$scope.multiViewAdd = function( username ){
@@ -438,32 +443,44 @@ angular.module('todoController', [])
 			return $scope.multiViewSelecting.indexOf( username ) > -1;
 		};
 		$scope.multiViewToggle = function( username ){
-			var idx = $scope.multiViewSelecting.indexOf(username);
-
-		    // is currently selected
-		    if (idx > -1) {
-		      $scope.multiViewSelecting.splice(idx, 1);
-		    }
-
-		    // is newly selected
-		    else {
-		      $scope.multiViewSelecting.push(username);
-		      
-		      // load sum data
-		      TimeServices.getSumData(username, $scope.monthstr, function( sumData, state ){
-		    	  $scope.multiViewData[ username ] =  sumData;
-		    	  //update state
-		    	  $scope.states[ username ] = state;
-		    	  console.log( sumData );
-		      });
-		      //$scope.monthstr
-		    }
+			
+			var staffs = $scope.staffs.map(function(staff, i){
+				return staff.local.username;
+			});
+			var multiViewSelecting = $scope.multiViewSelecting;
+		    
+	    	var i = 0;
+	    	for (var ind = 0; ind < multiViewSelecting.length; ind++){
+	    		var selectedUser = multiViewSelecting[ind];
+	    		
+	    		//if find username unselect, return
+	    		if (selectedUser === username){
+	    			$scope.multiViewSelecting.splice(ind, 1);
+	    			return;
+	    		}
+	    		
+	    		for (;staffs[i] != selectedUser && staffs[i] != username; i ++);
+	    		
+	    		//found username before selectedUser, got the ind 
+	    		if (staffs[i] == username) break;
+	    	}
+	    	
+	    	console.log( ind );
+	    	
+	    	//insert username to ind
+	    	multiViewSelecting.splice(ind, 0, username);
+	    	// load sum data
+		    TimeServices.getSumData(username, $scope.monthstr, function( sumData, state ){
+		    	$scope.multiViewData[ username ] =  sumData;
+		    	//update state
+		    	$scope.states[ username ] = state;
+		    });
 		    
 		    //console.log( $scope.multiViewSelecting );
 		}
 		$scope.multiViewHeaders = TimeServices.getSumHeaders();
 		$scope.multiViewShowDetail = function( user ){
-			$scope.mutliview = false;
+			$scope.multiview = false;
 			$('#myTab a:first').tab('show');
 			$scope.selectStaff( user );
 		}
@@ -481,5 +498,28 @@ angular.module('todoController', [])
 			form += '</form>';
 			
 			$( form ).submit();
+		}
+		
+		$scope.multiViewSelectAll = function(){
+			$scope.multiViewSelecting = []
+			$scope.staffs.map(function(staff){
+				$scope.multiViewToggle(staff.local.username);
+			});
+		}
+		
+		$scope.multiViewDeSelectAll = function(){
+			$scope.multiViewSelecting = []
+		}
+		
+		$scope.multiViewReload = function(){
+			// load sum data
+			for (var i in $scope.multiViewSelecting){
+				var username = $scope.multiViewSelecting[i];
+			    TimeServices.getSumData(username, $scope.monthstr, function( sumData, state ){
+			    	$scope.multiViewData[ username ] =  sumData;
+			    	//update state
+			    	$scope.states[ username ] = state;
+			    });
+			}
 		}
 	});

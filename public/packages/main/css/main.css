@@ -184,3 +184,18 @@ hr {
 	top: 0px;
   }
 }
+
+/*
+ * Tab sub-function
+ */
+.nav-tabs > li.tab-func > a {
+  font-size: 13px;
+  font-style: italic;
+  color: #888;
+  cursor: pointer;
+  
+}
+.nav-tabs > li.tab-func > a:hover {
+  color: ##9E9E9E;
+  background: white;
+}

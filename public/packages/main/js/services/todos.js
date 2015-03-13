@@ -48,7 +48,7 @@ function TimeServices($http){
 					var timeData = data.timedata.data;
 					var state = data.timedata.state;
 					if ( !timeData ){
-						cb( [0,0,0,0], -1 );
+						cb( [0,0,0,0,0], -1 );
 						return;
 					}
 					FptTIME.calculateTime(timeData, "all", function(err){

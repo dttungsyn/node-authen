@@ -187,6 +187,13 @@ TimeDataSchema.statics.getTimeDataState = function(users, monthstr, cb) {
 	})
 }
 
+/**
+ * Load timedata with fieldset populated
+ */
+TimeDataSchema.statics.load = function(user, monthstr, cb){
+	TimeData.findOne();
+}
+
 var TimeData = mongoose.model('time-data', TimeDataSchema);
 
 // =========== define the schema for fields model =========

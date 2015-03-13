@@ -12,7 +12,12 @@ public class UserData {
 	
 	private ArrayList<ArrayList<String>> timeData;
 	
-	public static int[] DATA_TYPE = new int[]{0,0,0,1,1,1,1,1,1,0,0,0,0,0,0,0,2,2};
+	/*
+	 * 0: not touch
+	 * 1: datetime
+	 * 2: string
+	 */
+	public static int[] DATA_TYPE = new int[]{0,0,2,1,1,1,1,1,1,0,0,0,0,0,0,0,2,2};
 	
 	public UserData(){
 	}
