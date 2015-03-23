@@ -172,7 +172,8 @@ function renderTimeview(req, res){
 		
 		res.render('timeview.ejs', {
 			user : user,
-			isApprover: user.staffs && user.staffs.length > 0
+			isApprover: user.staffs && user.staffs.length > 0,
+			page: 'timeview'
 		});
 	});
 }

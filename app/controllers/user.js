@@ -10,7 +10,14 @@ var User = require("../models/user.js");
 exports.getUserData = getUserData;
 exports.getUserDataByUsername = getUserDataByUsername;
 exports.updateUserDataByUsername = updateUserDataByUsername;
+exports.getStaffUserData = getStaffUserData;
 
+/**
+ * 
+ * @param req
+ * @param res
+ * @returns
+ */
 function getUserData(req, res){
 	var user = req.user;
 	
@@ -31,6 +38,11 @@ function getUserData(req, res){
 	});
 }
 
+/**
+ * 
+ * @param req
+ * @param res
+ */
 function getUserDataByUsername(req, res){
 	//console.log(req.params);
 	
@@ -47,9 +59,12 @@ function getUserDataByUsername(req, res){
 	});
 }
 
+/**
+ * 
+ * @param req
+ * @param res
+ */
 function updateUserDataByUsername(req, res){
-	var user = req.user;
-	
 	// check update right
 	//TODO check right
 	User.findOne({"local.username": req.params.username}).exec(function(err, user){
@@ -76,5 +91,33 @@ function updateUserDataByUsername(req, res){
 				"message" : "Update successful! " + user.fullname
 			})
 		})
+	});
+}
+
+/**
+ * 
+ * @param req
+ * @param res
+ */
+function getStaffUserData(req, res){
+	var user = req.user;
+
+	User.findOne({"_id": req.user._id}).populate("staffs", "local.username data").exec(function(err, user){
+		if (err){
+			return res.json("error!");
+		}
+		if (!user){
+			return res.json("user not found!");
+		}
+		
+		user.staffs.unshift({
+			local: {
+				username: user.local.username
+			},
+			data: user.data,
+			data_fields: user.data_fields
+		});
+		
+		res.json( user.staffs );
 	});
 }

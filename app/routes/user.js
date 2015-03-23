@@ -9,10 +9,14 @@ module.exports = function(app, passport) {
 	app.get('/api/userdata', isLoggedInAPI, controller.getUserData);
 	
 	// url with param - getUserDataByUsername
-	app.get('/api/userdata/:username', isLoggedInAPI, controller.getUserDataByUsername)
+	app.get('/api/userdata/:username', isLoggedInAPI, controller.getUserDataByUsername);
 	
 	// Update user info - updateUserDataByUsername
-	app.post('/api/userdata/:username', isLoggedInAPI, controller.updateUserDataByUsername)
+	app.post('/api/userdata/:username', isLoggedInAPI, controller.updateUserDataByUsername);
+	
+	// Get many users data
+	app.get('/api/staffuserdata', isLoggedInAPI, controller.getStaffUserData);
+	
 }
 
 //route middleware to ensure user is logged in
