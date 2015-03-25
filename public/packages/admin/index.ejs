@@ -1,5 +1,5 @@
 <!DOCTYPE html>
-<html lang="en" ng-app="adminModule">
+<html lang="en">
 <head>
   <meta charset="utf-8" />
 
@@ -24,12 +24,41 @@
   <!-- Bootstrap -->
   <link rel="stylesheet" href="/lib/bootstrap-3.2.0/css/bootstrap.css">
   
+  <!-- font awesome-->
+  <link rel="stylesheet" href="/lib/font-awesome-4.2.0/css/font-awesome.css">
+  
+  <link rel="stylesheet" href="/packages/admin/css/admin.css" />
+      
+</head>
+
+<body ng-app="adminModule" ng-controller="adminController">
+  <% include ./../main/views/partials/navheader.ejs %>
+  <div class="container">
+      
+	<table staff-data-table id="" class="display">
+        <!--
+        <thead>
+                    <tr>
+                        <th>Office</th>
+                    </tr>
+                </thead>-->
+      <tr><td>
+        <span class="pull-right group-icons">
+          <i class="fa fa-edit" style="color: #3B67AB"></i>
+          <i class="fa fa-check" style="color: #3B67AB"></i>
+        </span>
+      </td></tr>
+      
+        
+    </table>
+  </div>
+
   <!-- jQuery -->
   <!-- <script type="text/javascript" charset="utf8" src="/DataTables-1.10.5/media/js/jquery.js"></script> -->
   <script src="//ajax.googleapis.com/ajax/libs/jquery/2.0.3/jquery.min.js"></script>
   
   <!-- load Angular -->
-  <script src="//ajax.googleapis.com/ajax/libs/angularjs/1.2.4/angular.min.js"></script><!-- load angular 1.2.4 -->
+  <script src="/lib/angular/angular.js"></script><!-- load angular 1.3.15 -->
   
   <!-- load up bootstrap js -->
   <script src="/lib/bootstrap-3.2.0/js/bootstrap.js"></script> 
@@ -41,14 +70,32 @@
   <script src="/packages/admin/js/controllers/admin.js"></script>
   <script src="/packages/admin/js/services/admin.js"></script>
   <script src="/packages/admin/js/directives/admin.js"></script>
-      
-</head>
 
-<body ng-controller="adminController">
-  <% include ./../main/views/partials/navheader.ejs %>
-  <div class="container">
-	<table staff-data-table id="table_id" class="display">
-    </table>
-  </div>
+  <!-- Modal -->
+    <div class="modal fade" id="myModal" tabindex="-1" role="dialog" aria-labelledby="myModalLabel" aria-hidden="true">
+      <div class="modal-dialog">
+        <div class="modal-content">
+          <div class="modal-header">
+            <button type="button" class="close" data-dismiss="modal" aria-label="Close"><span aria-hidden="true">&times;</span></button>
+            <h4 class="modal-title" id="myModalLabel">Modal title</h4>
+          </div>
+          <div class="modal-body">
+            <form>
+                
+              <div class="form-group" ng-repeat="column in columns">
+                <label for="modal_{{column}}" class="control-label">{{column}}</label>
+                <input type="text" class="form-control" id="modal_{{column}}" ng-model="tableData[ openUserInd ][ column ]">
+              </div>
+
+            </form>
+          </div>
+          <div class="modal-footer">
+            <button type="button" class="btn btn-default" data-dismiss="modal">Close</button>
+            <button type="button" class="btn btn-primary">Save changes</button>
+          </div>
+        </div>
+      </div>
+    </div>
+
 </body>
 </html>

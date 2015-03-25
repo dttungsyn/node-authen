@@ -1,0 +1,9 @@
+.staff-data-tbl .group-icons{
+	cursor: pointer;
+	display: none;
+}
+
+.staff-data-tbl tr:hover .group-icons{
+	display: block;
+}
+
