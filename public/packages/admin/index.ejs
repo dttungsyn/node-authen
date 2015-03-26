@@ -81,17 +81,28 @@
           </div>
           <div class="modal-body">
             <form>
-                
-              <div class="form-group" ng-repeat="column in columns">
-                <label for="modal_{{column}}" class="control-label">{{column}}</label>
-                <input type="text" class="form-control" id="modal_{{column}}" ng-model="tableData[ openUserInd ][ column ]">
+              <!-- fix columns -->
+              <div class="form-group" ng-repeat="column in fixColumns">
+                <label for="fix_{{column}}" class="control-label">{{column}}</label>
+                <input type="text" class="form-control" id="fix_{{column}}" ng-model="openUser[ column ]">
               </div>
+              
+              <!-- custom columns -->
+              <div class="form-group" ng-repeat="column in customColumns">
+                <label for="cus_{{column}}" class="control-label">{{column}}</label>
+                <span class="">
+                  <i class="fa fa-check" style="color: #3B67AB"></i>
+                </span>
+                <input type="text" class="form-control" id="cus_{{column}}" ng-model="openUser[ column ]">
+              </div>
+              
+              
 
             </form>
           </div>
           <div class="modal-footer">
             <button type="button" class="btn btn-default" data-dismiss="modal">Close</button>
-            <button type="button" class="btn btn-primary">Save changes</button>
+            <button type="button" class="btn btn-primary" ng-click="save()">Save changes</button>
           </div>
         </div>
       </div>

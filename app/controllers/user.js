@@ -11,6 +11,8 @@ exports.getUserData = getUserData;
 exports.getUserDataByUsername = getUserDataByUsername;
 exports.updateUserDataByUsername = updateUserDataByUsername;
 exports.getStaffUserData = getStaffUserData;
+exports.updateStaffUserData = updateStaffUserData;
+
 
 /**
  * 
@@ -102,7 +104,8 @@ function updateUserDataByUsername(req, res){
 function getStaffUserData(req, res){
 	var user = req.user;
 
-	User.findOne({"_id": req.user._id}).populate("staffs", "local.username data").exec(function(err, user){
+	//populate staff data
+	User.findOne({"_id": req.user._id}).populate("staffs", "local.username local.email data").exec(function(err, user){
 		if (err){
 			return res.json("error!");
 		}
@@ -110,9 +113,11 @@ function getStaffUserData(req, res){
 			return res.json("user not found!");
 		}
 		
+		//add self data to array of staffs data 
 		user.staffs.unshift({
 			local: {
-				username: user.local.username
+				username: user.local.username,
+				email: user.local.email
 			},
 			data: user.data,
 			data_fields: user.data_fields
@@ -120,4 +125,54 @@ function getStaffUserData(req, res){
 		
 		res.json( user.staffs );
 	});
+}
+
+/**
+ * 
+ * @param req
+ * @param res
+ */
+function updateStaffUserData( req, res ){
+	var admin = req.user;
+	var userdata = req.body.userData;
+	var data_fields = req.body.customColumns;
+	
+	admin.data_fields = data_fields;
+	
+	// update userdata & then admin data fields
+	User.findOne({"local.username": userdata.userid}).exec(function(err, user){
+		if (err){
+			return res.json("error!");
+		}
+		if (!user){
+			return res.json("user not found!");
+		}
+		
+		user.data = userdata;
+		
+		//save user
+		user.save(function(err) {
+			if (err)
+				return res.json({
+					"success" : false,
+					"message" : "server error"
+				});
+
+			//save admin
+			admin.save(function(err) {
+				if (err)
+					return res.json({
+						"success" : false,
+						"message" : "server error"
+					});
+
+				return res.json({
+					"success" : true,
+					"message" : "Update successful! " + user.local.username
+				})
+			});
+		});
+		
+	});
+	
 }

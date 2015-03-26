@@ -8,8 +8,13 @@ angular.module('adminModule')
 				
 			},
 			
-			saveUserData: function( userdata, columns ){
-				
+			saveUserData: function( userdata, customColumns, cb ){
+				$http.post('/api/updateuserdata', {
+					userData: userdata,
+					customColumns: customColumns
+				}).success(function(data){
+					cb( data );
+				});
 			}
 		};
 	}]);

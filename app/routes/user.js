@@ -17,6 +17,8 @@ module.exports = function(app, passport) {
 	// Get many users data
 	app.get('/api/staffuserdata', isLoggedInAPI, controller.getStaffUserData);
 	
+	// Update user data
+	app.post('/api/updateuserdata', isLoggedInAPI, controller.updateStaffUserData);
 }
 
 //route middleware to ensure user is logged in
