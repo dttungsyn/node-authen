@@ -56,6 +56,7 @@
   <!-- jQuery -->
   <!-- <script type="text/javascript" charset="utf8" src="/DataTables-1.10.5/media/js/jquery.js"></script> -->
   <script src="//ajax.googleapis.com/ajax/libs/jquery/2.0.3/jquery.min.js"></script>
+  <script src="//code.jquery.com/ui/1.11.4/jquery-ui.js"></script>
   
   <!-- load Angular -->
   <script src="/lib/angular/angular.js"></script><!-- load angular 1.3.15 -->
@@ -87,16 +88,21 @@
                 <input type="text" class="form-control" id="fix_{{column}}" ng-model="openUser[ column ]">
               </div>
               
-              <!-- custom columns -->
-              <div class="form-group" ng-repeat="column in customColumns">
-                <label for="cus_{{column}}" class="control-label">{{column}}</label>
-                <span class="">
-                  <i class="fa fa-check" style="color: #3B67AB"></i>
-                </span>
-                <input type="text" class="form-control" id="cus_{{column}}" ng-model="openUser[ column ]">
+              <div class="sortable">
+                <!-- custom columns -->
+                <div class="form-group" ng-repeat="column in customColumns">
+                    <label for="cus_{{column}}" class="control-label">{{column}}</label>
+                    <span class="">
+                      <i class="fa fa-remove" style="color: #A8BCDB" ng-click="removeCustomCol($index)"></i>
+                    </span>
+                    <input type="text" class="form-control" id="cus_{{column}}" ng-model="openUser[ column ]">
+                </div>    
               </div>
               
               
+              <span class="">
+                <i class="fa fa-plus-circle" style="color: #70C255" ng-click="addCustomCol($index)"></i>
+              </span>
 
             </form>
           </div>

@@ -140,7 +140,7 @@ function updateStaffUserData( req, res ){
 	admin.data_fields = data_fields;
 	
 	// update userdata & then admin data fields
-	User.findOne({"local.username": userdata.userid}).exec(function(err, user){
+	User.findOne({"_id": userdata._id}).exec(function(err, user){
 		if (err){
 			return res.json("error!");
 		}
@@ -148,6 +148,13 @@ function updateStaffUserData( req, res ){
 			return res.json("user not found!");
 		}
 		
+		//update fix column
+		user.local.username = userdata.userid;
+		user.local.email = userdata.email;
+		
+		delete userdata.userid;
+		delete userdata.email;
+		// custom column
 		user.data = userdata;
 		
 		//save user

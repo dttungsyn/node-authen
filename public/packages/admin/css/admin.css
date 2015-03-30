@@ -1,9 +1,29 @@
+.staff-data-tbl tr td{
+	position: relative;
+	-webkit-transition-duration: 2s; /* Safari */
+    transition-duration: 2s;
+}
+
+.staff-data-tbl tr.just-modified td{
+	background-color: #A5FFA6;
+	-webkit-transition-duration: 0s; /* Safari */
+    transition-duration: 0s;
+}
+
 .staff-data-tbl .group-icons{
 	cursor: pointer;
 	display: none;
+	position: absolute;
+	right: 0;
+	top: 9px;
 }
 
 .staff-data-tbl tr:hover .group-icons{
 	display: block;
 }
 
+
+
+.modal-content i.fa{
+	cursor: pointer;
+}

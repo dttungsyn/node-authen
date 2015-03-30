@@ -31,10 +31,12 @@ angular.module('adminModule')
 				
 				//add fix data to custom data
 				var tableData = data.map( function( staff, ind ){
-					//add userid, (email)
+					//add _id, userid, (email)
 					var obj = staff.data || {};
+					obj._id = staff._id;
 					obj.userid = staff.local.username;
 					obj.email  = staff.local.email;
+					
 					
 					for (var i = 1; i < columns.length; i ++){
 						if ( !obj[ columns[i].data ] ) obj[ columns[i].data ] = "";
@@ -57,8 +59,13 @@ angular.module('adminModule')
 				//make DataTable
 				var table = element.DataTable({
 					data: tableData,
-					columns: columns
+					columns: columns,
+					paging: false
 				});
+				table.groupIcons = groupIcons;
+				
+				//debug
+				window.tableda = table;
 				
 				// save to service
 				adminServices.datatable = table;
@@ -75,7 +82,8 @@ angular.module('adminModule')
 				});
 				
 				// handle icon click
-				element.find("tbody tr td:last-child .fa-edit").click(function(){
+				element.find("tbody tr td:last-child").click(function(e){
+					if ( !$(e.target).hasClass('fa-edit') ) return;
 					//var _userid = $(this).closest("tr").
 					scope.openUserInd = _findIndByUserId( tableData, table.row( $(this).closest("tr") ).data().userid );
 					scope.openUser = table.row( $(this).closest("tr") ).data();
