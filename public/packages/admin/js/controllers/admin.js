@@ -1,7 +1,8 @@
 /**
  * @author fpt-dev
  */
-angular.module('adminModule', [])
+angular.module('adminModule', []);
+angular.module('adminModule')
 	.controller('adminController', ['$scope', 'adminServices', function( $scope, adminServices ) {
 		$scope.fixColumns = [];
 		$scope.customColumns = [];
@@ -37,9 +38,10 @@ angular.module('adminModule', [])
 			}
 			
 			else {
-			// if columns number change
-				adminServices.destroyTable();
-				adminServices.getAndRender( $scope );
+			// if columns number change or reorder
+				location.reload();
+				//adminServices.destroyTable();
+				//adminServices.getAndRender( $scope );
 			}
 			
 		}

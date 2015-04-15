@@ -52,7 +52,7 @@ $("document").ready(function(){
 		});
 		
 		//staff list
-		$('.list-group').affix({
+		/*$('.list-group').affix({
 		    offset: {
 		      top: function(){
 		    	  if ( $('.list-group').hasClass('affix') )
@@ -63,7 +63,7 @@ $("document").ready(function(){
 		    	  
 		      }
 		    }
-		})
+		})*/
 		var list_group_top;
 		$('.list-group').on('affix.bs.affix', function(){
 			list_group_top = $('.list-group').offset().top - 60;
