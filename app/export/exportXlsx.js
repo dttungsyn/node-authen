@@ -42,7 +42,7 @@ function exportMultipleTimeData(users, monthstr, cb){
 			fs.readFile( filepaths[ind], function(err, data) {
 			  if (err) throw err;
 
-			  zip.file(users[ind] + "_従業員出勤簿(TIMESHEET)_" + monthstr.replace("-","") + ".xls", data);
+			  zip.file(users[ind] + "_(TIMESHEET)_" + monthstr.replace("-","") + ".xls", data);
 
 			  addFile( ind + 1 );
 			});
@@ -51,7 +51,7 @@ function exportMultipleTimeData(users, monthstr, cb){
 		addFile(0);
 		
 		function saveZip(){
-			var zipFile = __dirname + "/" + monthstr + "/" + "timesheets_" + monthstr.replace("-","") + ".zip";
+			var zipFile = __dirname + "/files/" + monthstr + "/" + "timesheets_" + monthstr.replace("-","") + ".zip";
 			var content = zip.generate({type:"nodebuffer"});
 			
 			fs.writeFile(zipFile, content, function(err){
@@ -150,7 +150,7 @@ function _exportTimeData(username, monthstr, timeData, cb){
 	exportExcel.setUserDataSync(userData);
 	
 	//save data to excel file
-	var filepath = __dirname + "/" + monthstr + "/" + username + "_従業員出勤簿(TIMESHEET)_" + monthstr.replace("-","") + ".xls";
+	var filepath = __dirname + "/files/" + monthstr + "/" + username + "_(TIMESHEET)_" + monthstr.replace("-","") + ".xls";
 	exportExcel.exportDataSync(__dirname + "/tmp_template(TIMESHEET).xls", filepath);
 	
 	if ( typeof(cb) === 'function' ) cb( filepath );
