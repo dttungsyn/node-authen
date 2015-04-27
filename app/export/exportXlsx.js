@@ -84,9 +84,6 @@ function exportTimeData(username, monthstr, cb){
 		}
 		var timeData = data ? data.data : null;
 		_exportTimeData(username, monthstr, timeData, cb);
-		/*_saveTimesheetFile(workbook, timeData, __dirname + "/" + monthstr + '/' + username + "_従業員出勤簿(TIMESHEET).xlsm", function(filename){
-			cb(filename);
-		});*/
 	});
 }
 
@@ -151,7 +148,7 @@ function _exportTimeData(username, monthstr, timeData, cb){
 	
 	//save data to excel file
 	var filepath = __dirname + "/files/" + monthstr + "/" + username + "_(TIMESHEET)_" + monthstr.replace("-","") + ".xls";
-	exportExcel.exportDataSync(__dirname + "/tmp_template(TIMESHEET).xls", filepath);
+	exportExcel.exportDataSync(__dirname + "/files/templates/" + monthstr.replace("-", "") + "_Template_(TIMESHEET)_WebVersion_1.0.xls", filepath);
 	
 	if ( typeof(cb) === 'function' ) cb( filepath );
 }
