@@ -8,6 +8,7 @@ module.exports = function(app, passport) {
 	app.get('/admin', isLoggedIn, controller.renderAdminPage);
 	app.post('/admin/addStaff', isLoggedIn, controller.addStaff);
 	app.post('/admin/removeStaff', isLoggedIn, controller.removeStaff);
+	app.post('/admin/changePass', isLoggedIn, controller.changePass);
 }
 
 //route middleware to ensure user is logged in

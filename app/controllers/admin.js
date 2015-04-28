@@ -7,6 +7,7 @@ var User = require("../models/user.js");
 exports.renderAdminPage = renderAdminPage;
 exports.addStaff = addStaff;
 exports.removeStaff = removeStaff;
+exports.changePass = changePass;
 
 /**
  * 
@@ -80,5 +81,36 @@ function removeStaff(req, res){
 			
 			res.json('remove staff success');
 		});
+	});
+}
+
+function changePass(req, res){
+	var user = req.user;	//get from session
+	var staff_username = req.body.staff_username;
+	var new_pass = req.body.new_pass;
+	
+	User.findOne({'local.username': staff_username}, {'local': 1}).exec(function(err, staff){
+		if (err || !staff){
+			console.log('find staff error!');
+			res.json('find staff error!');
+			return;
+		}
+		var pos;
+		if ( (pos = user.staffs.indexOf(staff._id)) == -1 && user.local.username !== staff_username ){
+			console.log('not own staff');
+			res.json('not own staff');
+			return;
+		}
+		
+		staff.local.password = staff.generateHash( new_pass );
+		staff.save(function(err){
+			if (err){
+				console.log(err);
+				return;
+			}
+			
+			res.json('change pass ' + staff.local.username  + ' success!');
+		});
+		
 	});
 }

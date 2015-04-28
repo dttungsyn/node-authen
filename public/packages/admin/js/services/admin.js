@@ -125,6 +125,14 @@ angular.module('adminModule')
 							
 							return;
 						}
+						else if ($(e.target).hasClass('fa-shield')){
+							var new_pass = prompt("Please enter new password", "");
+							if (new_pass){
+								adminServices.changePass( table.row( $(this).closest("tr") ).data().userid, new_pass );
+							}
+							return;
+						}
+						
 						if ( !$(e.target).hasClass('fa-edit') ) return;
 						//var _userid = $(this).closest("tr").
 						scope.openUserInd = _findIndByUserId( tableData, table.row( $(this).closest("tr") ).data().userid );
@@ -160,5 +168,14 @@ angular.module('adminModule')
 					location.reload();
 				});
 			},
+			
+			changePass: function(staff_username, new_pass){
+				
+				$http.post('/admin/changePass', {
+					'staff_username': staff_username,
+					'new_pass': new_pass}).success(function(data){
+					console.log(data);
+				});
+			}
 		};
 	}]);

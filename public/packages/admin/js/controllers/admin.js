@@ -68,10 +68,10 @@ angular.module('adminModule')
 	    	adminServices.addStaff( staff );
 	    }
 	    
-	    $scope.removeStaff = function( staff ){
+	    /*$scope.removeStaff = function( staff ){
 	    	adminServices.removeStaff( staff );
 	    }
-		
+*/		
 		//debug
 		 
 	}]);
