@@ -120,6 +120,11 @@ angular.module('adminModule')
 					// handle icon click
 					element.find("tbody tr td:last-child").unbind();
 					element.find("tbody tr td:last-child").click(function(e){
+						if ($(e.target).hasClass('fa-remove')){
+							adminServices.removeStaff( table.row( $(this).closest("tr") ).data().userid );
+							
+							return;
+						}
 						if ( !$(e.target).hasClass('fa-edit') ) return;
 						//var _userid = $(this).closest("tr").
 						scope.openUserInd = _findIndByUserId( tableData, table.row( $(this).closest("tr") ).data().userid );
@@ -140,6 +145,20 @@ angular.module('adminModule')
 					this.datatable.destroy(true);
 				}
 				
-			}
+			},
+			
+			addStaff: function(staff_username){
+				$http.post('/admin/addStaff', {'staff_username': staff_username}).success(function(data){
+					console.log(data);
+					location.reload();
+				});
+			},
+			
+			removeStaff: function(staff_username){
+				return $http.post('/admin/removeStaff', {'staff_username': staff_username}).success(function(data){
+					console.log(data);
+					location.reload();
+				});
+			},
 		};
 	}]);

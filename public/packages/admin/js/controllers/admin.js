@@ -62,6 +62,15 @@ angular.module('adminModule')
 		
 		$( ".sortable" ).sortable();
 	    $( ".sortable" ).disableSelection();
+	    
+	    $scope.addStaff = function(){
+	    	var staff = prompt("Please enter staff username", "");
+	    	adminServices.addStaff( staff );
+	    }
+	    
+	    $scope.removeStaff = function( staff ){
+	    	adminServices.removeStaff( staff );
+	    }
 		
 		//debug
 		 

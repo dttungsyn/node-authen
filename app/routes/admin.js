@@ -6,6 +6,8 @@ var controller = require("../controllers/admin.js");
 module.exports = function(app, passport) {
 	
 	app.get('/admin', isLoggedIn, controller.renderAdminPage);
+	app.post('/admin/addStaff', isLoggedIn, controller.addStaff);
+	app.post('/admin/removeStaff', isLoggedIn, controller.removeStaff);
 }
 
 //route middleware to ensure user is logged in
